@@ -1,0 +1,21 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.2",
+    "@codemirror/state": "^6.1.4",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "codemirror": "^6.0.1",
+    "rollup": "^3.6.0"
+  },
+  "type": "module"
+}

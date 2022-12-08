@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navbar-toggler-icon:focus-visible {
+  outline: none;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler:focus {
+  text-decoration: none;
+  outline: 0;
+  box-shadow: none;
+}
+
+#editor {
+  font-size: 12px;
+}
+
+.editor-menu-bar {
+  border-bottom: 1px solid #acb0bb;
+  padding: 8.5px 15px;
+  background: #f4f5f8;
+  border: 1px solid #ddd;
+}
+
+.editor-footer {
+  border-top: solid 1px #ccc;
+  background-color: #f4f5f8;
+  padding: 8.5px 15px;
+  border: 1px solid #ddd;
+}
+
+.editor-menu-button {
+  color: white;
+  background-color: #4a87e3;
+  border:none;
+  border-radius: 3px;
+  font-size: 13px;
+  padding: 0 10px;
+  margin-right: 5px;
+}
+
+.editor-menu-button:hover {
+  background-color: #437acc;
+  border: none;
+}
