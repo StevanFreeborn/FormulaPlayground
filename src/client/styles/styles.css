@@ -50,3 +50,8 @@
   background-color: #437acc;
   border: none;
 }
+
+.form-control:focus,
+.form-select:focus {
+  border: 1px solid #ced4da;
+}

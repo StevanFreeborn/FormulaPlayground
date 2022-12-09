@@ -39,7 +39,20 @@
     </header>
 
     <main class="d-flex flex-column flex-grow-1 overflow-auto">
-      <div class="container-fluid d-flex flex-grow-1 overflow-auto">
+      <div class="container-fluid d-flex flex-column flex-grow-1 overflow-auto">
+        <div class="row  my-3">
+          <div class="col">
+            <input id="apiKey" type="password" class="form-control shadow-none" placeholder="Api Key">
+          </div>
+          <div class="col">
+            <select id="appId" class="form-select shadow-none">
+              <option value="" selected>Select App</option>
+            </select>
+          </div>
+          <div class="col">
+            <input id="recordId" type="number" class="form-control shadow-none" placeholder="Record Id" min="1">
+          </div>
+        </div>
         <div class="row flex-grow-1 overflow-auto">
           <div class="col d-flex flex-column flex-grow-1 mh-100 overflow-auto">
             <div class="editor-container d-flex flex-column flex-grow-1 mh-100 overflow-auto">
@@ -125,6 +138,7 @@
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
   <script src="scripts/bundled/editor.js"></script>
+  <script src="scripts/bundled/index.js"></script>
 </body>
 
 </html>
