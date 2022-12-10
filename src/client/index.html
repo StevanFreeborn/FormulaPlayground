@@ -43,14 +43,15 @@
         <div class="row  my-3">
           <div class="col">
             <input id="apiKey" type="password" class="form-control shadow-none" placeholder="Api Key">
+            <div id="apiKeyError" class="text-danger"></div>
           </div>
           <div class="col">
-            <select id="appId" class="form-select shadow-none">
+            <select id="app" class="form-select shadow-none visually-hidden">
               <option value="" selected>Select App</option>
             </select>
           </div>
           <div class="col">
-            <input id="recordId" type="number" class="form-control shadow-none" placeholder="Record Id" min="1">
+            <input id="record" type="number" class="form-control shadow-none visually-hidden" placeholder="Record Id" min="1">
           </div>
         </div>
         <div class="row flex-grow-1 overflow-auto">
