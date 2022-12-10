@@ -1,20 +1,27 @@
 import { EditorView, basicSetup } from 'codemirror';
+import { keymap }  from '@codemirror/view';
 import { EditorState, Compartment } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript';
+import { indentWithTab } from '@codemirror/commands';
 
-const language = new Compartment();
-const tabSize = new Compartment();
+export default class Editor {
+  static setup = state => {
+    const language = new Compartment();
+    const tabSize = new Compartment();
 
-const state = EditorState.create({
-  doc: '',
-  extensions: [
-    basicSetup,
-    language.of(javascript()),
-    tabSize.of(EditorState.tabSize.of(4)),
-  ],
-})
+    const editorState = EditorState.create({
+      doc: '',
+      extensions: [
+        basicSetup,
+        keymap.of([indentWithTab]),
+        language.of(javascript()),
+        tabSize.of(EditorState.tabSize.of(4)),
+      ],
+    });
 
-const editor = new EditorView({
-  state: state,
-  parent: document.getElementById('editor'),
-});
+    return new EditorView({
+      state: editorState,
+      parent: state.editor,
+    });
+  };
+}

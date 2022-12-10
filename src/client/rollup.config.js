@@ -9,12 +9,4 @@ export default [
     },
     plugins: [nodeResolve()],
   },
-  {
-    input: './scripts/editor.js',
-    output: {
-      file: './scripts/bundled/editor.js',
-      format: 'iife',
-    },
-    plugins: [nodeResolve()],
-  },
 ];

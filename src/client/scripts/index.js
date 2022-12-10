@@ -1,62 +1,25 @@
-const apiKeyInput = document.getElementById('apiKey');
-const apiKeyError = document.getElementById('apiKeyError');
-const appInput = document.getElementById('app');
-const recordInput = document.getElementById('record');
+import Events from './events.js';
+import IndexEventHandler from './handlers/indexEventHandler.js';
+import Editor from './editor.js';
 
-apiKeyInput.addEventListener('change', async e => {
-  e.preventDefault();
-  recordInput.classList.add('visually-hidden');
-  recordInput.value = '';
+const state = {
+  apiKeyInput: document.getElementById('apiKey'),
+  apiKeyError: document.getElementById('apiKeyError'),
+  appInput: document.getElementById('app'),
+  recordInput: document.getElementById('record'),
+  editor: document.getElementById('editor'),
+};
 
-  appInput.selectedIndex = 0;
-  
-  while (appInput.childElementCount > 1) {
-    appInput.removeChild(appInput.lastChild);
-  }
+const editor = Editor.setup(state);
 
-  if (!e.currentTarget.value) {
-    appInput.classList.add('visually-hidden');
-    return;
-  }
-  
-  const res = await fetch('http://localhost:5085/api/apps', {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      'x-api-version': 2,
-      'x-apikey': e.currentTarget.value,
-    }
-  });
-
-  if (res.ok == false) {
-    appInput.classList.add('visually-hidden');
-    const data = await res.json();
-    const errorMessage = data?.error ?? 'Unable to retrieve apps.';
-    apiKeyError.innerText = errorMessage;
-    return;
-  }
-
-  const apps = await res.json();
-
-  apps.forEach(app => {
-    const option = document.createElement('option');
-    option.id = app.id;
-    option.value = app.id;
-    option.text = app.name;
-
-    appInput.append(option);
-  });
-
-  appInput.classList.remove('visually-hidden');
+state.apiKeyInput.addEventListener(Events.change, e => {
+  IndexEventHandler.handleApiInputChange(e, state);
 });
 
-apiKeyInput.addEventListener('input', e => apiKeyError.innerText = '');
+state.apiKeyInput.addEventListener(Events.input, e =>
+  IndexEventHandler.handleApiInput(e, state)
+);
 
-appInput.addEventListener('change', e => {
-  if (!e.currentTarget.value) {
-    recordInput.classList.add('visually-hidden');
-    return;
-  }
-
-  recordInput.classList.remove('visually-hidden');
-});
+state.appInput.addEventListener(Events.change, e =>
+  IndexEventHandler.handleAppInputChange(e, state)
+);
