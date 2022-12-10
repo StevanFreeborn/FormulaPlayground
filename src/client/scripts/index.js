@@ -5,6 +5,9 @@ const recordInput = document.getElementById('record');
 
 apiKeyInput.addEventListener('change', async e => {
   e.preventDefault();
+  recordInput.classList.add('visually-hidden');
+  recordInput.value = '';
+
   appInput.selectedIndex = 0;
   
   while (appInput.childElementCount > 1) {
