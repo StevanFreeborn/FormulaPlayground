@@ -49,6 +49,7 @@
             <select id="app" class="form-select shadow-none visually-hidden">
               <option value="" selected>Select App</option>
             </select>
+            <div id="appError" class="text-danger ps-1"></div>
           </div>
           <div class="col">
             <input id="record" type="number" class="form-control shadow-none visually-hidden" placeholder="Record Id" min="1">
@@ -138,6 +139,7 @@
   <div id="fieldsModal" class="position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
     <div id="fieldsSearchBoxContainer" class="p-2">
       <input id="fieldsSearchBox" class="form-control form-control-sm" type="text" placeholder="Filter">
+      <!-- TODO: Add search icon -->
     </div>
     <div id="fieldsListContainer" class="overflow-auto">
       <ul id="fieldsList" class="list-unstyled px-3 m-0">

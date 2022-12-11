@@ -66,6 +66,7 @@
 }
 
 #fieldsModal {
+  z-index: 100;
   width: 600px;
   height: 250px;
   border: 1px solid #acb0bb;

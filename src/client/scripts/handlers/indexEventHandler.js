@@ -44,37 +44,44 @@ export default class IndexEventHandler {
 
   static handleApiInput = (e, state) => {
     state.apiKeyError.innerText = '';
+    state.appError.innerText = '';
   };
 
   static handleAppInputChange = async (e, state) => {
-    while (state.fieldsList.childElementCount > 0) {
-      state.fieldsList.removeChild(state.fieldsList.lastChild);
-    }
-    
-    // const placeHolder = document.createElement('li');
-    // placeHolder.id = 'fieldsPlaceHolder';
-    // placeHolder.innerText = 'No fields yet retrieved.';
-    // state.fieldsList.append(placeHolder);
+    const clearFieldsList = () => {
+      while (state.fieldsList.childElementCount > 0) {
+        state.fieldsList.removeChild(state.fieldsList.lastChild);
+      }
+    };
+
+    clearFieldsList();
+    state.appError.innerText = '';
+
+    const placeHolder = document.createElement('li');
+    placeHolder.id = 'fieldsPlaceHolder';
+    placeHolder.innerText = 'No fields yet retrieved.';
+    state.fieldsList.append(placeHolder);
 
     if (!e.currentTarget.value) {
       state.recordInput.classList.add('visually-hidden');
       return;
     }
 
-    state.recordInput.classList.remove('visually-hidden');
-
-    const response = await FieldService.getFields(state.apiKeyInput.value, e.currentTarget.value);
+    const response = await FieldService.getFields(
+      state.apiKeyInput.value,
+      e.currentTarget.value
+    );
 
     if (response.ok == false) {
       const data = await response.json();
-      const errorElement = document.createElement('li');
-      const errorMessageElement = document.createElement('span');
-      errorMessageElement.classList.add('text-danger');
-      errorMessageElement.innerText = data?.error ?? 'Unable to retrieve fields list.';
-      errorElement.append(errorMessageElement);
-      state.fieldsList.append(errorElement);
+      const errorMessage = data?.error ?? 'Unable to retrieve fields list.';
+      state.appError.innerText = errorMessage;
       return;
     }
+
+    state.recordInput.classList.remove('visually-hidden');
+
+    clearFieldsList();
 
     const fields = await response.json();
 
@@ -86,22 +93,52 @@ export default class IndexEventHandler {
       fieldNameElement.classList.add('field-name');
       fieldElement.append(fieldNameElement);
       state.fieldsList.append(fieldElement);
-    })
+    });
+  };
+
+  static handleFieldsButtonClick = async (e, state) => {
+    if (state.fieldsModal.style.left || state.fieldsModal.style.top) {
+      state.fieldsModal.style.left = '';
+      state.fieldsModal.style.top = '';
+      return;
+    }
+  
+    const buttonPosition = e.currentTarget.getBoundingClientRect();
+    state.fieldsSearchBox.focus();
+    state.fieldsModal.style.left = buttonPosition.x + 'px';
+    state.fieldsModal.style.top = (buttonPosition.y + buttonPosition.height) + 'px';
   }
 
   static handleFieldsSearchBoxInput = (e, state) => {
     const filterValue = e.currentTarget.value.toLowerCase();
     const fieldNameElements = state.fieldsList.getElementsByTagName('li');
 
+    if (fieldNameElements[0].id == 'fieldsPlaceHolder') {
+      return;
+    }
+
     [...fieldNameElements].forEach(fieldNameElement => {
-      const isMatch = fieldNameElement.innerText.toLowerCase().includes(filterValue);
+      const isMatch = fieldNameElement.innerText
+        .toLowerCase()
+        .includes(filterValue);
       if (isMatch) {
         fieldNameElement.style.display = '';
         return;
       }
 
       fieldNameElement.style.display = 'none';
-    })
+    });
+  };
 
-  }
+  static handleDocumentClick = (e, state) => {
+    if (
+      e.target != state.fieldsModal &&
+      !state.fieldsModal.contains(e.target) &&
+      !state.fieldsButton.contains(e.target) &&
+      e.target != state.fieldsButton
+    ) {
+      state.fieldsModal.style.left = '';
+      state.fieldsModal.style.top = '';
+    }
+  };
 }

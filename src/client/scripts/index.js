@@ -6,6 +6,7 @@ const state = {
   apiKeyInput: document.getElementById('apiKey'),
   apiKeyError: document.getElementById('apiKeyError'),
   appInput: document.getElementById('app'),
+  appError: document.getElementById('appError'),
   recordInput: document.getElementById('record'),
   fieldsButton: document.getElementById('fieldsButton'),
   fieldsModal: document.getElementById('fieldsModal'),
@@ -18,17 +19,13 @@ const state = {
 
 const editor = Editor.setup(state);
 
-state.fieldsButton.addEventListener(Events.click, e => {
-  if (state.fieldsModal.style.left || state.fieldsModal.style.top) {
-    state.fieldsModal.style.left = '';
-    state.fieldsModal.style.top = '';
-    return;
-  }
-  const buttonPosition = e.currentTarget.getBoundingClientRect();
-  state.fieldsSearchBox.focus();
-  state.fieldsModal.style.left = buttonPosition.x + 'px';
-  state.fieldsModal.style.top = (buttonPosition.y + buttonPosition.height) + 'px';
-})
+document.addEventListener(Events.click, e =>
+  IndexEventHandler.handleDocumentClick(e, state)
+);
+
+state.fieldsButton.addEventListener(Events.click, e =>
+  IndexEventHandler.handleFieldsButtonClick(e, state)
+);
 
 state.apiKeyInput.addEventListener(Events.change, e => {
   IndexEventHandler.handleApiInputChange(e, state);
