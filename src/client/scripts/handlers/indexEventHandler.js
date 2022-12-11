@@ -1,4 +1,5 @@
 import { showPanel } from '@codemirror/view';
+import Editor from '../editor.js';
 import AppService from '../services/appService.js';
 import FieldService from '../services/fieldService.js';
 
@@ -102,12 +103,13 @@ export default class IndexEventHandler {
       state.fieldsModal.style.top = '';
       return;
     }
-  
+
     const buttonPosition = e.currentTarget.getBoundingClientRect();
     state.fieldsSearchBox.focus();
     state.fieldsModal.style.left = buttonPosition.x + 'px';
-    state.fieldsModal.style.top = (buttonPosition.y + buttonPosition.height) + 'px';
-  }
+    state.fieldsModal.style.top =
+      buttonPosition.y + buttonPosition.height + 'px';
+  };
 
   static handleFieldsSearchBoxInput = (e, state) => {
     const filterValue = e.currentTarget.value.toLowerCase();
@@ -128,6 +130,17 @@ export default class IndexEventHandler {
 
       fieldNameElement.style.display = 'none';
     });
+  };
+
+  static handleFieldsListClick = (e, state, editor) => {
+    const fieldToken = `{:${e.target.innerText}}`;
+
+    editor.dispatch(editor.state.replaceSelection(fieldToken));
+
+    state.fieldsModal.style.left = '';
+    state.fieldsModal.style.top = '';
+
+    editor.focus();
   };
 
   static handleDocumentClick = (e, state) => {

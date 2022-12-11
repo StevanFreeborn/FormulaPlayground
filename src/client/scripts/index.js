@@ -17,7 +17,7 @@ const state = {
   editor: document.getElementById('editor'),
 };
 
-const editor = Editor.setup(state);
+const editorView = Editor.setup(state);
 
 document.addEventListener(Events.click, e =>
   IndexEventHandler.handleDocumentClick(e, state)
@@ -41,4 +41,8 @@ state.appInput.addEventListener(Events.change, e =>
 
 state.fieldsSearchBox.addEventListener(Events.input, e =>
   IndexEventHandler.handleFieldsSearchBoxInput(e, state)
+);
+
+state.fieldsList.addEventListener(Events.click, e =>
+  IndexEventHandler.handleFieldsListClick(e, state, editorView)
 );
