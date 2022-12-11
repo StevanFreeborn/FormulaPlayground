@@ -80,3 +80,23 @@
   background-color: #fddfbc;
   cursor: default
 }
+
+.field-token,
+.field-token > span.ͼl {
+  font-weight: bold;
+  color: #f08008;
+}
+
+.list-value-token {
+  font-weight: bold;
+}
+
+.custom-function {
+  font-weight: bold;
+  color: #4040ff;
+}
+
+.ͼ1.cm-focused .field-token > span.cm-matchingBracket,
+.ͼ1.cm-focused .list-value-token > span.cm-matchingBracket {
+  background-color: transparent;
+}

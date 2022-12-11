@@ -8,3 +8,9 @@ export const API_VERSION_HEADER_VALUE = 2;
 export const ACCEPT_HEADER_NAME = 'Accept';
 export const JSON_TYPE_HEADER_VALUE = 'application/json';
 export const CONTENT_TYPE_HEADER_NAME = 'Content-Type';
+export const CUSTOM_FUNCTIONS = [
+  'Sum',
+  'Average',
+  'Max',
+  'Min',
+]
