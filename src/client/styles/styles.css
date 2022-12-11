@@ -55,3 +55,22 @@
 .form-select:focus {
   border: 1px solid #ced4da;
 }
+
+#fieldsSearchBox.form-control:focus {
+  box-shadow: 0 0 5px 0 #4a87e3;
+}
+
+#fieldsSearchBoxContainer {
+  border-bottom: 1px solid #acb0bb;
+  background-color: #f4f5f8;
+}
+
+#fieldsModal {
+  width: 600px;
+  border: 1px solid #acb0bb;
+}
+
+.field-name:hover {
+  background-color: #fddfbc;
+  cursor: default;
+}

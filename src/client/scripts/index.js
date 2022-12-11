@@ -7,10 +7,28 @@ const state = {
   apiKeyError: document.getElementById('apiKeyError'),
   appInput: document.getElementById('app'),
   recordInput: document.getElementById('record'),
+  fieldsButton: document.getElementById('fieldsButton'),
+  fieldsModal: document.getElementById('fieldsModal'),
+  fieldsSearchBox: document.getElementById('fieldsSearchBox'),
+  fieldsList: document.getElementById('fieldsList'),
+  operatorsButton: document.getElementById('operatorsButton'),
+  functionsButton: document.getElementById('functionsButton'),
   editor: document.getElementById('editor'),
 };
 
 const editor = Editor.setup(state);
+
+state.fieldsButton.addEventListener(Events.click, e => {
+  if (state.fieldsModal.style.left || state.fieldsModal.style.top) {
+    state.fieldsModal.style.left = '';
+    state.fieldsModal.style.top = '';
+    return;
+  }
+  const buttonPosition = e.currentTarget.getBoundingClientRect();
+  state.fieldsSearchBox.focus();
+  state.fieldsModal.style.left = buttonPosition.x + 'px';
+  state.fieldsModal.style.top = (buttonPosition.y + buttonPosition.height) + 'px';
+})
 
 state.apiKeyInput.addEventListener(Events.change, e => {
   IndexEventHandler.handleApiInputChange(e, state);

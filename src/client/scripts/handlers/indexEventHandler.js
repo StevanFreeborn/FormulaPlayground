@@ -1,4 +1,5 @@
 import AppService from '../services/appService.js';
+import FieldService from '../services/fieldService.js';
 
 export default class IndexEventHandler {
   static handleApiInputChange = async (e, state) => {
@@ -44,11 +45,16 @@ export default class IndexEventHandler {
     state.apiKeyError.innerText = '';
   };
 
-  static handleAppInputChange = (e, state) => {
+  static handleAppInputChange = async (e, state) => {
     if (!e.currentTarget.value) {
       state.recordInput.classList.add('visually-hidden');
       return;
     }
+
+    const fields = await FieldService.getFields(apiKey, e.currentTarget.value);
+    fields.forEach(field => {
+      // TODO: Add each field to field list as selectable element
+    })
   
     state.recordInput.classList.remove('visually-hidden');
   }

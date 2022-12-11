@@ -1,4 +1,5 @@
 using Onspring.API.SDK;
+using Onspring.API.SDK.Enums;
 using Onspring.API.SDK.Models;
 using System.Text.Json;
 
@@ -42,5 +43,43 @@ public class OnspringService : IOnspringService
     } while (currentPage <= totalPages);
 
     return apps;
+  }
+
+  public async Task<List<Field>> GetFields(string apiKey, int appId)
+  {
+
+    var onspringClient = new OnspringClient(_baseUrl, apiKey);
+
+    var pagingRequest = new PagingRequest(1, 50);
+    var currentPage = pagingRequest.PageNumber;
+    var totalPages = 1;
+    var fields = new List<Field>();
+
+    do
+    {
+      var response = await onspringClient.GetFieldsForAppAsync(appId, pagingRequest);
+
+      if (response.IsSuccessful is false)
+      {
+        throw new ApplicationException("Failed to retrieve fields.")
+        {
+          Data = { { "OnspringResponse", JsonSerializer.Serialize(response) }, },
+        };
+      }
+
+      fields.AddRange(response.Value.Items);
+      pagingRequest.PageNumber++;
+      currentPage = pagingRequest.PageNumber;
+      totalPages = response.Value.TotalPages;
+    } while (currentPage <= totalPages);
+
+    // TODO: Investigate other field types that potentially need to be filtered out
+    fields.FindAll(field =>
+      field.Type != FieldType.Attachment ||
+      field.Type != FieldType.Image ||
+      field.Type != FieldType.Reference ||
+      field.Type != FieldType.SurveyReference);
+
+    return fields;
   }
 }
