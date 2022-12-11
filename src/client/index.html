@@ -135,14 +135,13 @@
       </div>
     </footer>
   </div>
-  <div id="fieldsModal" class="position-absolute bg-white rounded-1">
+  <div id="fieldsModal" class="position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
     <div id="fieldsSearchBoxContainer" class="p-2">
       <input id="fieldsSearchBox" class="form-control form-control-sm" type="text" placeholder="Filter">
     </div>
-    <div id="fieldsListContainer">
+    <div id="fieldsListContainer" class="overflow-auto">
       <ul id="fieldsList" class="list-unstyled px-3 m-0">
-        <li><span class="field-name">Test Field 1</span></li>
-        <li>Test Field 2</li>
+        <li id="fieldsPlaceHolder">No fields yet retrieved.</li>
       </ul>
     </div>
   </div>

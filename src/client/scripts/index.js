@@ -41,3 +41,7 @@ state.apiKeyInput.addEventListener(Events.input, e =>
 state.appInput.addEventListener(Events.change, e =>
   IndexEventHandler.handleAppInputChange(e, state)
 );
+
+state.fieldsSearchBox.addEventListener(Events.input, e =>
+  IndexEventHandler.handleFieldsSearchBoxInput(e, state)
+);

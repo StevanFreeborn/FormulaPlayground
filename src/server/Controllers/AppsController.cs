@@ -30,7 +30,8 @@ public class AppsController : ControllerBase
     }
     catch (Exception e)
     {
-      return StatusCode(500, new { error = e.Message });
+      Console.WriteLine(e);
+      return StatusCode(500, new { error = "Failed to retrieve apps." });
     }
   }
 }

@@ -67,10 +67,15 @@
 
 #fieldsModal {
   width: 600px;
+  height: 250px;
   border: 1px solid #acb0bb;
+}
+
+.field-name {
+  padding: 1px 0.25em 1px 0.25em;
 }
 
 .field-name:hover {
   background-color: #fddfbc;
-  cursor: default;
+  cursor: default
 }

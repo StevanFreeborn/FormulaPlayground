@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Services;
+using server.Models;
 
 namespace server.Controllers;
 
@@ -17,25 +18,25 @@ public class FieldsController : ControllerBase
   }
 
   [HttpPost(Name = "GetFields")]
-  public async Task<IActionResult> GetFields([FromHeader(Name = "x-apikey")] string apiKey, int appId)
+  public async Task<IActionResult> GetFields([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] GetFieldsRequest request)
   {
-    Console.WriteLine(appId);
     if (String.IsNullOrWhiteSpace(apiKey)) {
       return BadRequest(new { error = "Enter a valid api key" });
     }
 
-    if (appId <= 0) {
+    if (request.AppId <= 0) {
       return BadRequest( new { error = "Invalid appId" });
     }
 
     try
     {
-      var apps = await _onspringService.GetFields(apiKey, appId);
-      return Ok(apps);
+      var fields = await _onspringService.GetFields(apiKey, request.AppId);
+      return Ok(fields);
     }
     catch (Exception e)
     {
-      return StatusCode(500, new { error = e.Message });
+      Console.WriteLine(e);
+      return StatusCode(500, new { error = "Failed to retrieve fields." });
     }
   }
 }
