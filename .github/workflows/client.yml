@@ -3,7 +3,7 @@ name: client ci/cd
 on:
   push:
     paths:
-     - src/client/**
+      - src/client/**
     branches:
       - master
 jobs:
