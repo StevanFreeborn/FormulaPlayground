@@ -13,6 +13,10 @@ const state = {
   fieldsSearchBox: document.getElementById('fieldsSearchBox'),
   fieldsList: document.getElementById('fieldsList'),
   operatorsButton: document.getElementById('operatorsButton'),
+  operatorsModal: document.getElementById('operatorsModal'),
+  mathOperatorsList: document.getElementById('mathOperatorsList'),
+  comparisonOperatorsList: document.getElementById('comparisonOperatorsList'),
+  logicalOperatorsList: document.getElementById('logicalOperatorsList'),
   functionsButton: document.getElementById('functionsButton'),
   editor: document.getElementById('editor'),
 };
@@ -25,6 +29,10 @@ document.addEventListener(Events.click, e =>
 
 state.fieldsButton.addEventListener(Events.click, e =>
   IndexEventHandler.handleFieldsButtonClick(e, state)
+);
+
+state.operatorsButton.addEventListener(Events.click, e => 
+  IndexEventHandler.handleOperatorsButtonClick(e, state)
 );
 
 state.apiKeyInput.addEventListener(Events.change, e => {

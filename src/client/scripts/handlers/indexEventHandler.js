@@ -97,18 +97,23 @@ export default class IndexEventHandler {
     });
   };
 
-  static handleFieldsButtonClick = async (e, state) => {
-    if (state.fieldsModal.style.left || state.fieldsModal.style.top) {
-      state.fieldsModal.style.left = '';
-      state.fieldsModal.style.top = '';
+  static handleFieldsButtonClick = (e, state) => {
+    if (this.isModalDisplayed(state.fieldsModal)) {
+      this.hideModal(state.fieldsModal);
       return;
     }
 
-    const buttonPosition = e.currentTarget.getBoundingClientRect();
+    this.showModal(state.fieldsModal, e.currentTarget);
     state.fieldsSearchBox.focus();
-    state.fieldsModal.style.left = buttonPosition.x + 'px';
-    state.fieldsModal.style.top =
-      buttonPosition.y + buttonPosition.height + 'px';
+  };
+
+  static handleOperatorsButtonClick = (e, state) => {
+    if (this.isModalDisplayed(state.operatorsModal)) {
+      this.hideModal(state.operatorsModal);
+      return;
+    }
+
+    this.showModal(state.operatorsModal, e.currentTarget);
   };
 
   static handleFieldsSearchBoxInput = (e, state) => {
@@ -133,25 +138,60 @@ export default class IndexEventHandler {
   };
 
   static handleFieldsListClick = (e, state, editor) => {
+    if (e.target.id = 'fieldsPlaceHolder') {
+      return;
+    }
+
     const fieldToken = `{:${e.target.innerText}}`;
-
     editor.dispatch(editor.state.replaceSelection(fieldToken));
-
-    state.fieldsModal.style.left = '';
-    state.fieldsModal.style.top = '';
-
+    this.hideModal(state.fieldsModal);
     editor.focus();
   };
 
   static handleDocumentClick = (e, state) => {
-    if (
-      e.target != state.fieldsModal &&
-      !state.fieldsModal.contains(e.target) &&
-      !state.fieldsButton.contains(e.target) &&
-      e.target != state.fieldsButton
-    ) {
-      state.fieldsModal.style.left = '';
-      state.fieldsModal.style.top = '';
+    if (this.isNotFieldsModalFieldsButtonOrChild(e.target, state)) {
+      if (this.isModalDisplayed(state.fieldsModal)) {
+        this.hideModal(state.fieldsModal);
+      }
     }
+
+    if (this.isNotOpModalOpButtonOrChild(e.target, state)) {
+      if (this.isModalDisplayed(state.operatorsModal)) {
+        this.hideModal(state.operatorsModal);
+      }
+    }
+  };
+
+  static isNotFieldsModalFieldsButtonOrChild = (targetElement, state) => {
+    return (
+      targetElement != state.fieldsModal &&
+      !state.fieldsModal.contains(targetElement) &&
+      !state.fieldsButton.contains(targetElement) &&
+      targetElement != state.fieldsButton
+    );
+  };
+
+  static isNotOpModalOpButtonOrChild = (targetElement, state) => {
+    return (
+      targetElement != state.operatorsModal &&
+      !state.operatorsModal.contains(targetElement) &&
+      !state.operatorsButton.contains(targetElement) &&
+      targetElement != state.operatorsButton
+    );
+  };
+
+  static isModalDisplayed = modal => {
+    return modal.style.left || modal.style.top;
+  };
+
+  static hideModal = modal => {
+    modal.style.left = '';
+    modal.style.top = '';
+  };
+
+  static showModal = (modal, posElement) => {
+    const pos = posElement.getBoundingClientRect();
+    modal.style.left = pos.x + 'px';
+    modal.style.top = pos.y + pos.height + 'px';
   };
 }

@@ -3,7 +3,12 @@ import { CUSTOM_FUNCTIONS } from '../constants';
 
 const customFunctionDecoration = Decoration.mark({ class: 'custom-function' });
 
-const customFunctionRegex = new RegExp(CUSTOM_FUNCTIONS.join('|'), 'g');
+const customFunctionNames = CUSTOM_FUNCTIONS
+.map(fn => fn.name)
+.sort((a, b) => a - b)
+.join('|');
+
+const customFunctionRegex = new RegExp(customFunctionNames, 'g');
 
 const customFunctionDecorator = new MatchDecorator({
   regexp: customFunctionRegex,
