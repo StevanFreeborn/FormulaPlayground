@@ -25,6 +25,7 @@ const state = {
     const listElement = document.createElement('li');
     listElement.classList.add('container');
     listElement.classList.add('operator');
+    listElement.setAttribute('data-operator-symbol', operator.symbol);
 
     const rowElement = document.createElement('div');
     rowElement.classList.add('row');
@@ -181,6 +182,10 @@ const state = {
     const transaction = this.editorView.state.replaceSelection(fieldToken);
     this.editorView.dispatch(transaction);
   },
+  insertOperator(operator) {
+    const transaction = this.editorView.state.replaceSelection(operator);
+    this.editorView.dispatch(transaction);
+  },
   focusOnEditor() {
     this.editorView.focus();
   },
@@ -196,10 +201,8 @@ const state = {
     this.operatorsModal.style.left = '';
     this.operatorsModal.style.top = '';
   },
-  initialize() {
+  setupEventListeners() {
     const eventHandler = new IndexEventHandler(this);
-
-    this.setupOperatorsList();
 
     document.addEventListener(Events.click, eventHandler.handleDocumentClick);
     
@@ -216,7 +219,14 @@ const state = {
     this.fieldsSearchBox.addEventListener(Events.input, eventHandler.handleFieldsSearchBoxInput);
     
     this.fieldsList.addEventListener(Events.click, eventHandler.handleFieldsListClick);
+
+    this.mathOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
+    
+    this.comparisonOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
+    
+    this.logicalOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
   }
 };
 
-state.initialize();
+state.setupOperatorsList();
+state.setupEventListeners();

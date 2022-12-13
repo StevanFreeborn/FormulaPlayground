@@ -34,7 +34,7 @@ export default class IndexEventHandler {
     this.state.resetAppError();
   };
 
-  handleAppInputChange = async (e) => {
+  handleAppInputChange = async e => {
     this.state.resetAppError();
     this.state.clearFieldsList();
 
@@ -67,7 +67,7 @@ export default class IndexEventHandler {
     this.state.addFieldListItems(fields);
   };
 
-  handleFieldsButtonClick = (e) => {
+  handleFieldsButtonClick = e => {
     if (this.state.isFieldsModalDisplayed()) {
       this.state.hideFieldsModal();
       return;
@@ -76,7 +76,7 @@ export default class IndexEventHandler {
     this.state.showFieldsModal();
   };
 
-  handleOperatorsButtonClick = (e) => {
+  handleOperatorsButtonClick = e => {
     if (this.state.isOperatorsModalDisplayed()) {
       this.state.hideOperatorsModal();
       return;
@@ -85,12 +85,12 @@ export default class IndexEventHandler {
     this.state.showOperatorsModal();
   };
 
-  handleFieldsSearchBoxInput = (e) => {
+  handleFieldsSearchBoxInput = e => {
     const filterValue = e.currentTarget.value.toLowerCase();
     this.state.filterFieldsList(filterValue);
   };
 
-  handleFieldsListClick = (e) => {
+  handleFieldsListClick = e => {
     if (e.target.id == 'fieldsPlaceHolder') {
       return;
     }
@@ -100,7 +100,14 @@ export default class IndexEventHandler {
     this.state.focusOnEditor();
   };
 
-  handleDocumentClick = (e) => {
+  handleOperatorListClick = e => {
+    const symbol = e.target.closest('li').getAttribute('data-operator-symbol');
+    this.state.insertOperator(symbol);
+    this.state.hideOperatorsModal();
+    this.state.focusOnEditor();
+  };
+
+  handleDocumentClick = e => {
     const isNotFldModalFldButtonOrAChild =
       e.target != this.state.fieldsModal &&
       !this.state.fieldsModal.contains(e.target) &&
@@ -117,7 +124,10 @@ export default class IndexEventHandler {
       this.state.hideFieldsModal();
     }
 
-    if (isNotOpModalOpButtonOrAChild && this.state.isOperatorsModalDisplayed()) {
+    if (
+      isNotOpModalOpButtonOrAChild &&
+      this.state.isOperatorsModalDisplayed()
+    ) {
       this.state.hideOperatorsModal();
     }
   };
