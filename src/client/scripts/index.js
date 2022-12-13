@@ -1,6 +1,8 @@
+import Editor from './editor.js';
 import Events from './events.js';
 import IndexEventHandler from './handlers/indexEventHandler.js';
-import Editor from './editor.js';
+import { OPERATORS } from './constants.js';
+import OperatorTypes from './operatorTypes.js';
 
 const state = {
   apiKeyInput: document.getElementById('apiKey'),
@@ -19,8 +21,66 @@ const state = {
   logicalOperatorsList: document.getElementById('logicalOperatorsList'),
   functionsButton: document.getElementById('functionsButton'),
   editorView: Editor.setup(document.getElementById('editor')),
+  createOperatorListElement(operator) {
+    const listElement = document.createElement('li');
+    listElement.classList.add('container');
+    listElement.classList.add('operator');
+
+    const rowElement = document.createElement('div');
+    rowElement.classList.add('row');
+    
+    const symbolElement = document.createElement('div');
+    symbolElement.classList.add('col-3');
+    symbolElement.classList.add('text-center');
+    symbolElement.innerHTML = operator.symbol;
+    
+    const nameElement = document.createElement('div');
+    nameElement.classList.add('col-9')
+    nameElement.classList.add('text-start');
+    nameElement.classList.add('text-nowrap');
+    nameElement.innerHTML = operator.name;
+
+    rowElement.append(symbolElement);
+    rowElement.append(nameElement);
+
+    listElement.append(rowElement);
+
+    return listElement;
+  },
+  addMathOperatorListItem(operator) {
+    const listElement = this.createOperatorListElement(operator);
+    this.mathOperatorsList.append(listElement);
+  },
+  addComparsionOperatorListItem(operator) {
+    const listElement = this.createOperatorListElement(operator);
+    this.comparisonOperatorsList.append(listElement);
+  },
+  addLogicalOperatorListItem(operator) {
+    const listElement = this.createOperatorListElement(operator);
+    this.logicalOperatorsList.append(listElement);
+  },
+  setupOperatorsList() {
+    OPERATORS.forEach(operator => {
+      switch (operator.type) {
+        case OperatorTypes.math:
+          this.addMathOperatorListItem(operator);
+          break;
+        case OperatorTypes.comparison:
+          this.addComparsionOperatorListItem(operator);
+          break;
+        case OperatorTypes.logical:
+          this.addLogicalOperatorListItem(operator);
+          break;
+        default:
+          break;
+      }
+    });
+  },
   showApiKeyError(message) {
     this.apiKeyError.innerText = message;
+  },
+  resetApiKeyError() {
+    this.apiKeyError.innerText = '';
   },
   resetAppInput() {
     this.appInput.selectedIndex = 0;
@@ -40,6 +100,18 @@ const state = {
   },
   showAppInput() {
     this.appInput.classList.remove('visually-hidden');
+  },
+  showAppError(message) {
+    this.appError.innerText = message;
+  },
+  resetAppError() {
+    this.appError.innerText = '';
+  },
+  showRecordInput() {
+    state.recordInput.classList.remove('visually-hidden');
+  },
+  hideRecordInput() {
+    this.recordInput.classList.add('visually-hidden');
   },
   resetRecordInput() {
     this.recordInput.classList.add('visually-hidden');
@@ -81,6 +153,29 @@ const state = {
       this.hideFieldName(fieldNameElement, filter)
     );
   },
+  clearFieldsList() {
+    while (this.fieldsList.childElementCount > 0) {
+      this.fieldsList.removeChild(this.fieldsList.lastChild);
+    }
+  },
+  addFieldsListPlaceHolder() {
+    const placeHolder = document.createElement('li');
+    placeHolder.id = 'fieldsPlaceHolder';
+    placeHolder.innerText = 'No fields yet retrieved.';
+    this.fieldsList.append(placeHolder);
+  },
+  addFieldListItem(field) {
+    const fieldElement = document.createElement('li');
+    const fieldNameElement = document.createElement('span');
+    fieldNameElement.innerText = field.name;
+
+    fieldNameElement.classList.add('field-name');
+    fieldElement.append(fieldNameElement);
+    this.fieldsList.append(fieldElement);
+  },
+  addFieldListItems(fields) {
+    fields.forEach(field => this.addFieldListItem(field));
+  },
   insertFieldToken(tokenText) {
     const fieldToken = `{:${tokenText}}`;
     const transaction = this.editorView.state.replaceSelection(fieldToken);
@@ -101,36 +196,27 @@ const state = {
     this.operatorsModal.style.left = '';
     this.operatorsModal.style.top = '';
   },
+  initialize() {
+    const eventHandler = new IndexEventHandler(this);
+
+    this.setupOperatorsList();
+
+    document.addEventListener(Events.click, eventHandler.handleDocumentClick);
+    
+    this.fieldsButton.addEventListener(Events.click, eventHandler.handleFieldsButtonClick);
+    
+    this.operatorsButton.addEventListener(Events.click, eventHandler.handleOperatorsButtonClick);
+    
+    this.apiKeyInput.addEventListener(Events.change, eventHandler.handleApiInputChange);
+    
+    this.apiKeyInput.addEventListener(Events.input, eventHandler.handleApiInput);
+    
+    this.appInput.addEventListener(Events.change, eventHandler.handleAppInputChange);
+    
+    this.fieldsSearchBox.addEventListener(Events.input, eventHandler.handleFieldsSearchBoxInput);
+    
+    this.fieldsList.addEventListener(Events.click, eventHandler.handleFieldsListClick);
+  }
 };
 
-document.addEventListener(Events.click, e =>
-  IndexEventHandler.handleDocumentClick(e, state)
-);
-
-state.fieldsButton.addEventListener(Events.click, e =>
-  IndexEventHandler.handleFieldsButtonClick(e, state)
-);
-
-state.operatorsButton.addEventListener(Events.click, e =>
-  IndexEventHandler.handleOperatorsButtonClick(e, state)
-);
-
-state.apiKeyInput.addEventListener(Events.change, e => {
-  IndexEventHandler.handleApiInputChange(e, state);
-});
-
-state.apiKeyInput.addEventListener(Events.input, e =>
-  IndexEventHandler.handleApiInput(e, state)
-);
-
-state.appInput.addEventListener(Events.change, e =>
-  IndexEventHandler.handleAppInputChange(e, state)
-);
-
-state.fieldsSearchBox.addEventListener(Events.input, e =>
-  IndexEventHandler.handleFieldsSearchBoxInput(e, state)
-);
-
-state.fieldsList.addEventListener(Events.click, e =>
-  IndexEventHandler.handleFieldsListClick(e, state)
-);
+state.initialize();

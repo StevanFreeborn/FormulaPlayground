@@ -2,9 +2,13 @@ import AppService from '../services/appService.js';
 import FieldService from '../services/fieldService.js';
 
 export default class IndexEventHandler {
-  static handleApiInputChange = async (e, state) => {
-    state.resetRecordInput();
-    state.resetAppInput();
+  constructor(indexState) {
+    this.state = indexState;
+  }
+
+  handleApiInputChange = async e => {
+    this.state.resetRecordInput();
+    this.state.resetAppInput();
 
     if (!e.currentTarget.value) {
       return;
@@ -15,122 +19,106 @@ export default class IndexEventHandler {
     if (res.ok == false) {
       const data = await res.json();
       const errorMessage = data?.error ?? 'Unable to retrieve apps.';
-      state.showApiKeyError(errorMessage);
+      this.state.showApiKeyError(errorMessage);
       return;
     }
 
     const apps = await res.json();
 
-    state.addAppOptions(apps);
-    state.showAppInput();
+    this.state.addAppOptions(apps);
+    this.state.showAppInput();
   };
 
-  static handleApiInput = (e, state) => {
-    state.apiKeyError.innerText = '';
-    state.appError.innerText = '';
+  handleApiInput = e => {
+    this.state.resetApiKeyError();
+    this.state.resetAppError();
   };
 
-  static handleAppInputChange = async (e, state) => {
-    const clearFieldsList = () => {
-      while (state.fieldsList.childElementCount > 0) {
-        state.fieldsList.removeChild(state.fieldsList.lastChild);
-      }
-    };
-
-    clearFieldsList();
-    state.appError.innerText = '';
-
-    const placeHolder = document.createElement('li');
-    placeHolder.id = 'fieldsPlaceHolder';
-    placeHolder.innerText = 'No fields yet retrieved.';
-    state.fieldsList.append(placeHolder);
+  handleAppInputChange = async (e) => {
+    this.state.resetAppError();
+    this.state.clearFieldsList();
 
     if (!e.currentTarget.value) {
-      state.recordInput.classList.add('visually-hidden');
+      this.state.hideRecordInput();
+      this.state.resetRecordInput();
+      this.state.addFieldsListPlaceHolder();
       return;
     }
 
     const response = await FieldService.getFields(
-      state.apiKeyInput.value,
+      this.state.apiKeyInput.value,
       e.currentTarget.value
     );
 
     if (response.ok == false) {
       const data = await response.json();
       const errorMessage = data?.error ?? 'Unable to retrieve fields list.';
-      state.appError.innerText = errorMessage;
+      this.state.showAppError(errorMessage);
+      this.state.hideRecordInput();
+      this.state.resetRecordInput();
+      this.state.addFieldsListPlaceHolder();
       return;
     }
 
-    state.recordInput.classList.remove('visually-hidden');
-
-    clearFieldsList();
+    this.state.showRecordInput();
 
     const fields = await response.json();
 
-    fields.forEach(field => {
-      const fieldElement = document.createElement('li');
-      const fieldNameElement = document.createElement('span');
-      fieldNameElement.innerText = field.name;
-
-      fieldNameElement.classList.add('field-name');
-      fieldElement.append(fieldNameElement);
-      state.fieldsList.append(fieldElement);
-    });
+    this.state.addFieldListItems(fields);
   };
 
-  static handleFieldsButtonClick = (e, state) => {
-    if (state.isFieldsModalDisplayed()) {
-      state.hideFieldsModal();
+  handleFieldsButtonClick = (e) => {
+    if (this.state.isFieldsModalDisplayed()) {
+      this.state.hideFieldsModal();
       return;
     }
 
-    state.showFieldsModal();
+    this.state.showFieldsModal();
   };
 
-  static handleOperatorsButtonClick = (e, state) => {
-    if (state.isOperatorsModalDisplayed()) {
-      state.hideOperatorsModal();
+  handleOperatorsButtonClick = (e) => {
+    if (this.state.isOperatorsModalDisplayed()) {
+      this.state.hideOperatorsModal();
       return;
     }
 
-    state.showOperatorsModal();
+    this.state.showOperatorsModal();
   };
 
-  static handleFieldsSearchBoxInput = (e, state) => {
+  handleFieldsSearchBoxInput = (e) => {
     const filterValue = e.currentTarget.value.toLowerCase();
-    state.filterFieldsList(filterValue);
+    this.state.filterFieldsList(filterValue);
   };
 
-  static handleFieldsListClick = (e, state) => {
+  handleFieldsListClick = (e) => {
     if (e.target.id == 'fieldsPlaceHolder') {
       return;
     }
 
-    state.insertFieldToken(e.target.innerText);
-    state.hideFieldsModal();
-    state.focusOnEditor();
+    this.state.insertFieldToken(e.target.innerText);
+    this.state.hideFieldsModal();
+    this.state.focusOnEditor();
   };
 
-  static handleDocumentClick = (e, state) => {
+  handleDocumentClick = (e) => {
     const isNotFldModalFldButtonOrAChild =
-      e.target != state.fieldsModal &&
-      !state.fieldsModal.contains(e.target) &&
-      !state.fieldsButton.contains(e.target) &&
-      e.target != state.fieldsButton;
+      e.target != this.state.fieldsModal &&
+      !this.state.fieldsModal.contains(e.target) &&
+      !this.state.fieldsButton.contains(e.target) &&
+      e.target != this.state.fieldsButton;
 
     const isNotOpModalOpButtonOrAChild =
-      e.target != state.operatorsModal &&
-      !state.operatorsModal.contains(e.target) &&
-      !state.operatorsButton.contains(e.target) &&
-      e.target != state.operatorsButton;
+      e.target != this.state.operatorsModal &&
+      !this.state.operatorsModal.contains(e.target) &&
+      !this.state.operatorsButton.contains(e.target) &&
+      e.target != this.state.operatorsButton;
 
-    if (isNotFldModalFldButtonOrAChild && state.isFieldsModalDisplayed()) {
-      state.hideFieldsModal();
+    if (isNotFldModalFldButtonOrAChild && this.state.isFieldsModalDisplayed()) {
+      this.state.hideFieldsModal();
     }
 
-    if (isNotOpModalOpButtonOrAChild && state.isOperatorsModalDisplayed()) {
-      state.hideOperatorsModal();
+    if (isNotOpModalOpButtonOrAChild && this.state.isOperatorsModalDisplayed()) {
+      this.state.hideOperatorsModal();
     }
   };
 }

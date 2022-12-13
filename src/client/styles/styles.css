@@ -74,8 +74,6 @@
 
 #operatorsModal {
   z-index: 100;
-  width: 600px;
-  height: 250px;
   border: 1px solid #acb0bb;
 }
 
@@ -85,7 +83,7 @@
 
 .field-name:hover {
   background-color: #fddfbc;
-  cursor: default
+  cursor: pointer
 }
 
 .field-token,
@@ -106,4 +104,21 @@
 .ͼ1.cm-focused .field-token > span.cm-matchingBracket,
 .ͼ1.cm-focused .list-value-token > span.cm-matchingBracket {
   background-color: transparent;
+}
+
+.operator {
+  padding: 3px 30px 3px 15px;
+}
+
+.operator:hover {
+  background-color: #fddfbc;
+  cursor: pointer
+}
+
+.operator-symbol {
+  align-self: center;
+}
+
+.operator-name {
+  align-self: flex-start;
 }
