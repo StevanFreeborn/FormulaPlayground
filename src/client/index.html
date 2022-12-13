@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100 overflow-hidden">
+<html lang="en" class="h-100">
 
 <head>
   <meta charset="UTF-8">
@@ -12,9 +12,9 @@
   <link rel="stylesheet" href="styles/codeMirror.css">
   <link rel=stylesheet href="styles/styles.css">
 </head>
-<!-- comment -->
+
 <body class="h-100">
-  <div class="d-flex flex-column min-vh-100 mh-100">
+  <div class="d-flex flex-column min-vh-100">
     <header>
       <div class="">
         <nav class="navbar navbar-expand-sm navbar-light">
@@ -38,9 +38,9 @@
       </div>
     </header>
 
-    <main class="d-flex flex-column flex-grow-1 overflow-auto">
-      <div class="container-fluid d-flex flex-column flex-grow-1 overflow-auto">
-        <div class="row  my-3">
+    <main class="d-flex flex-column flex-grow-1">
+      <div class="container-fluid d-flex flex-column flex-grow-1">
+        <div class="row my-3">
           <div class="col">
             <input id="apiKey" type="password" class="form-control shadow-none" placeholder="Api Key">
             <div id="apiKeyError" class="text-danger"></div>
@@ -55,10 +55,10 @@
             <input id="record" type="number" class="form-control shadow-none visually-hidden" placeholder="Record Id" min="1">
           </div>
         </div>
-        <div class="row flex-grow-1 overflow-auto">
-          <div class="col d-flex flex-column flex-grow-1 mh-100 overflow-auto">
-            <div class="editor-container d-flex flex-column flex-grow-1 mh-100 overflow-auto">
-              <div class="editor-menu-bar d-flex flex-row">
+        <div class="row flex-grow-1">
+          <div class="col d-flex flex-column flex-grow-1">
+            <div class="editor-container d-flex flex-column flex-grow-1">
+              <div class="editor-menu-bar d-flex flex-row sticky-top">
                 <div class="d-flex flex-row justify-content-between">
                   <button id='fieldsButton' class="editor-menu-button">Fields <svg
                       xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -78,7 +78,7 @@
                     </svg></button>
                 </div>
               </div>
-              <div id="editor" class="mh-100 flex-grow-1 overflow-auto">
+              <div id="editor" class="flex-grow-1 h-100">
               </div>
               <div class="editor-footer"></div>
             </div>
@@ -136,7 +136,7 @@
       </div>
     </footer>
   </div>
-  <div id="fieldsModal" class="position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
+  <div id="fieldsModal" class="visually-hidden position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
     <div id="fieldsSearchBoxContainer" class="p-2">
       <input id="fieldsSearchBox" class="form-control form-control-sm" type="text" placeholder="Filter">
       <!-- TODO: Add search icon -->
@@ -147,7 +147,7 @@
       </ul>
     </div>
   </div>
-  <div id="operatorsModal" class="position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
+  <div id="operatorsModal" class="visually-hidden position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
     <div id="operatorsListContainer" class="overflow-auto py-2">
       <ul id="mathOperatorsList" class="list-group">
       </ul>

@@ -125,12 +125,14 @@ const state = {
     const pos = this.fieldsButton.getBoundingClientRect();
     this.fieldsModal.style.left = pos.x + 'px';
     this.fieldsModal.style.top = pos.y + pos.height + 'px';
+    this.fieldsModal.classList.remove('visually-hidden');
     this.fieldsSearchBox.focus();
   },
   hideFieldsModal() {
     this.fieldsModal.style.left = '';
     this.fieldsModal.style.top = '';
     this.fieldsSearchBox.value = '';
+    this.fieldsModal.classList.add('visually-hidden');
     this.filterFieldsList(this.fieldsSearchBox.value);
   },
   hideFieldName(element, filterValue) {
@@ -196,10 +198,12 @@ const state = {
     const pos = this.operatorsButton.getBoundingClientRect();
     this.operatorsModal.style.left = pos.x + 'px';
     this.operatorsModal.style.top = pos.y + pos.height + 'px';
+    this.operatorsModal.classList.remove('visually-hidden');
   },
   hideOperatorsModal() {
     this.operatorsModal.style.left = '';
     this.operatorsModal.style.top = '';
+    this.operatorsModal.classList.add('visually-hidden');
   },
   setupEventListeners() {
     const eventHandler = new IndexEventHandler(this);
