@@ -8,7 +8,7 @@ import { listViewPlugin } from './viewPlugins/listViewPlugin';
 import { customFunctionViewPlugin } from './viewPlugins/customFunctionsViewPlugin';
 
 export default class Editor {
-  static setup = state => {
+  static setup = element => {
     const tabSize = new Compartment();
 
     const editorState = EditorState.create({
@@ -26,7 +26,7 @@ export default class Editor {
 
     return new EditorView({
       state: editorState,
-      parent: state.editor,
+      parent: element,
     });
   };
 }

@@ -18,10 +18,90 @@ const state = {
   comparisonOperatorsList: document.getElementById('comparisonOperatorsList'),
   logicalOperatorsList: document.getElementById('logicalOperatorsList'),
   functionsButton: document.getElementById('functionsButton'),
-  editor: document.getElementById('editor'),
-};
+  editorView: Editor.setup(document.getElementById('editor')),
+  showApiKeyError(message) {
+    this.apiKeyError.innerText = message;
+  },
+  resetAppInput() {
+    this.appInput.selectedIndex = 0;
+    while (this.appInput.childElementCount > 1) {
+      this.appInput.removeChild(state.appInput.lastChild);
+    }
+  },
+  addAppOption(app) {
+    const option = document.createElement('option');
+    option.id = app.id;
+    option.value = app.id;
+    option.text = app.name;
+    this.appInput.append(option);
+  },
+  addAppOptions(apps) {
+    apps.forEach(app => this.addAppOption(app));
+  },
+  showAppInput() {
+    this.appInput.classList.remove('visually-hidden');
+  },
+  resetRecordInput() {
+    this.recordInput.classList.add('visually-hidden');
+    this.recordInput.value = '';
+  },
+  isFieldsModalDisplayed() {
+    return this.fieldsModal.style.left || this.fieldsModal.style.top;
+  },
+  showFieldsModal() {
+    const pos = this.fieldsButton.getBoundingClientRect();
+    this.fieldsModal.style.left = pos.x + 'px';
+    this.fieldsModal.style.top = pos.y + pos.height + 'px';
+    this.fieldsSearchBox.focus();
+  },
+  hideFieldsModal() {
+    this.fieldsModal.style.left = '';
+    this.fieldsModal.style.top = '';
+    this.fieldsSearchBox.value = '';
+    this.filterFieldsList(this.fieldsSearchBox.value);
+  },
+  hideFieldName(element, filterValue) {
+    const isMatch = element.innerText.toLowerCase().includes(filterValue);
 
-const editorView = Editor.setup(state);
+    if (isMatch) {
+      element.style.display = '';
+      return;
+    }
+
+    element.style.display = 'none';
+  },
+  filterFieldsList(filter) {
+    const fieldNameElements = [...this.fieldsList.getElementsByTagName('li')];
+
+    if (fieldNameElements[0].id == 'fieldsPlaceHolder') {
+      return;
+    }
+
+    fieldNameElements.forEach(fieldNameElement =>
+      this.hideFieldName(fieldNameElement, filter)
+    );
+  },
+  insertFieldToken(tokenText) {
+    const fieldToken = `{:${tokenText}}`;
+    const transaction = this.editorView.state.replaceSelection(fieldToken);
+    this.editorView.dispatch(transaction);
+  },
+  focusOnEditor() {
+    this.editorView.focus();
+  },
+  isOperatorsModalDisplayed() {
+    return this.operatorsModal.style.left || this.operatorsModal.style.top;
+  },
+  showOperatorsModal() {
+    const pos = this.operatorsButton.getBoundingClientRect();
+    this.operatorsModal.style.left = pos.x + 'px';
+    this.operatorsModal.style.top = pos.y + pos.height + 'px';
+  },
+  hideOperatorsModal() {
+    this.operatorsModal.style.left = '';
+    this.operatorsModal.style.top = '';
+  },
+};
 
 document.addEventListener(Events.click, e =>
   IndexEventHandler.handleDocumentClick(e, state)
@@ -31,7 +111,7 @@ state.fieldsButton.addEventListener(Events.click, e =>
   IndexEventHandler.handleFieldsButtonClick(e, state)
 );
 
-state.operatorsButton.addEventListener(Events.click, e => 
+state.operatorsButton.addEventListener(Events.click, e =>
   IndexEventHandler.handleOperatorsButtonClick(e, state)
 );
 
@@ -52,5 +132,5 @@ state.fieldsSearchBox.addEventListener(Events.input, e =>
 );
 
 state.fieldsList.addEventListener(Events.click, e =>
-  IndexEventHandler.handleFieldsListClick(e, state, editorView)
+  IndexEventHandler.handleFieldsListClick(e, state)
 );

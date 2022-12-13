@@ -1,46 +1,28 @@
-import { showPanel } from '@codemirror/view';
-import Editor from '../editor.js';
 import AppService from '../services/appService.js';
 import FieldService from '../services/fieldService.js';
 
 export default class IndexEventHandler {
   static handleApiInputChange = async (e, state) => {
-    state.recordInput.classList.add('visually-hidden');
-    state.recordInput.value = '';
-
-    state.appInput.selectedIndex = 0;
-
-    while (state.appInput.childElementCount > 1) {
-      state.appInput.removeChild(state.appInput.lastChild);
-    }
+    state.resetRecordInput();
+    state.resetAppInput();
 
     if (!e.currentTarget.value) {
-      state.appInput.classList.add('visually-hidden');
       return;
     }
 
     const res = await AppService.getApps(e.currentTarget.value);
 
     if (res.ok == false) {
-      state.appInput.classList.add('visually-hidden');
       const data = await res.json();
       const errorMessage = data?.error ?? 'Unable to retrieve apps.';
-      state.apiKeyError.innerText = errorMessage;
+      state.showApiKeyError(errorMessage);
       return;
     }
 
     const apps = await res.json();
 
-    apps.forEach(app => {
-      const option = document.createElement('option');
-      option.id = app.id;
-      option.value = app.id;
-      option.text = app.name;
-
-      state.appInput.append(option);
-    });
-
-    state.appInput.classList.remove('visually-hidden');
+    state.addAppOptions(apps);
+    state.showAppInput();
   };
 
   static handleApiInput = (e, state) => {
@@ -98,100 +80,57 @@ export default class IndexEventHandler {
   };
 
   static handleFieldsButtonClick = (e, state) => {
-    if (this.isModalDisplayed(state.fieldsModal)) {
-      this.hideModal(state.fieldsModal);
+    if (state.isFieldsModalDisplayed()) {
+      state.hideFieldsModal();
       return;
     }
 
-    this.showModal(state.fieldsModal, e.currentTarget);
-    state.fieldsSearchBox.focus();
+    state.showFieldsModal();
   };
 
   static handleOperatorsButtonClick = (e, state) => {
-    if (this.isModalDisplayed(state.operatorsModal)) {
-      this.hideModal(state.operatorsModal);
+    if (state.isOperatorsModalDisplayed()) {
+      state.hideOperatorsModal();
       return;
     }
 
-    this.showModal(state.operatorsModal, e.currentTarget);
+    state.showOperatorsModal();
   };
 
   static handleFieldsSearchBoxInput = (e, state) => {
     const filterValue = e.currentTarget.value.toLowerCase();
-    const fieldNameElements = state.fieldsList.getElementsByTagName('li');
-
-    if (fieldNameElements[0].id == 'fieldsPlaceHolder') {
-      return;
-    }
-
-    [...fieldNameElements].forEach(fieldNameElement => {
-      const isMatch = fieldNameElement.innerText
-        .toLowerCase()
-        .includes(filterValue);
-      if (isMatch) {
-        fieldNameElement.style.display = '';
-        return;
-      }
-
-      fieldNameElement.style.display = 'none';
-    });
+    state.filterFieldsList(filterValue);
   };
 
-  static handleFieldsListClick = (e, state, editor) => {
-    if (e.target.id = 'fieldsPlaceHolder') {
+  static handleFieldsListClick = (e, state) => {
+    if (e.target.id == 'fieldsPlaceHolder') {
       return;
     }
 
-    const fieldToken = `{:${e.target.innerText}}`;
-    editor.dispatch(editor.state.replaceSelection(fieldToken));
-    this.hideModal(state.fieldsModal);
-    editor.focus();
+    state.insertFieldToken(e.target.innerText);
+    state.hideFieldsModal();
+    state.focusOnEditor();
   };
 
   static handleDocumentClick = (e, state) => {
-    if (this.isNotFieldsModalFieldsButtonOrChild(e.target, state)) {
-      if (this.isModalDisplayed(state.fieldsModal)) {
-        this.hideModal(state.fieldsModal);
-      }
+    const isNotFldModalFldButtonOrAChild =
+      e.target != state.fieldsModal &&
+      !state.fieldsModal.contains(e.target) &&
+      !state.fieldsButton.contains(e.target) &&
+      e.target != state.fieldsButton;
+
+    const isNotOpModalOpButtonOrAChild =
+      e.target != state.operatorsModal &&
+      !state.operatorsModal.contains(e.target) &&
+      !state.operatorsButton.contains(e.target) &&
+      e.target != state.operatorsButton;
+
+    if (isNotFldModalFldButtonOrAChild && state.isFieldsModalDisplayed()) {
+      state.hideFieldsModal();
     }
 
-    if (this.isNotOpModalOpButtonOrChild(e.target, state)) {
-      if (this.isModalDisplayed(state.operatorsModal)) {
-        this.hideModal(state.operatorsModal);
-      }
+    if (isNotOpModalOpButtonOrAChild && state.isOperatorsModalDisplayed()) {
+      state.hideOperatorsModal();
     }
-  };
-
-  static isNotFieldsModalFieldsButtonOrChild = (targetElement, state) => {
-    return (
-      targetElement != state.fieldsModal &&
-      !state.fieldsModal.contains(targetElement) &&
-      !state.fieldsButton.contains(targetElement) &&
-      targetElement != state.fieldsButton
-    );
-  };
-
-  static isNotOpModalOpButtonOrChild = (targetElement, state) => {
-    return (
-      targetElement != state.operatorsModal &&
-      !state.operatorsModal.contains(targetElement) &&
-      !state.operatorsButton.contains(targetElement) &&
-      targetElement != state.operatorsButton
-    );
-  };
-
-  static isModalDisplayed = modal => {
-    return modal.style.left || modal.style.top;
-  };
-
-  static hideModal = modal => {
-    modal.style.left = '';
-    modal.style.top = '';
-  };
-
-  static showModal = (modal, posElement) => {
-    const pos = posElement.getBoundingClientRect();
-    modal.style.left = pos.x + 'px';
-    modal.style.top = pos.y + pos.height + 'px';
   };
 }
