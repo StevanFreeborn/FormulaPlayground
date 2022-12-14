@@ -20,6 +20,7 @@
 
 #editor {
   font-size: 12px;
+  height: 0;
 }
 
 .editor-menu-bar {
@@ -39,7 +40,7 @@
 .editor-menu-button {
   color: white;
   background-color: #4a87e3;
-  border:none;
+  border: none;
   border-radius: 3px;
   font-size: 13px;
   padding: 0 10px;
@@ -87,8 +88,8 @@
 }
 
 .field-token,
-.field-token > span.ͼl,
-.field-token > span.ͼc {
+.field-token>span.ͼl,
+.field-token>span.ͼc {
   font-weight: bold;
   color: #f08008;
 }
@@ -102,8 +103,8 @@
   color: #4040ff;
 }
 
-.ͼ1.cm-focused .field-token > span.cm-matchingBracket,
-.ͼ1.cm-focused .list-value-token > span.cm-matchingBracket {
+.ͼ1.cm-focused .field-token>span.cm-matchingBracket,
+.ͼ1.cm-focused .list-value-token>span.cm-matchingBracket {
   background-color: transparent;
 }
 
