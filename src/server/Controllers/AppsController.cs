@@ -16,7 +16,7 @@ public class AppsController : ControllerBase
     _onspringService = onspringService;
   }
 
-  [HttpGet(Name = "GetApps")]
+  [HttpGet]
   public async Task<IActionResult> GetApps([FromHeader(Name = "x-apikey")] string apiKey)
   {
     if (String.IsNullOrWhiteSpace(apiKey)) {

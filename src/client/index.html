@@ -80,7 +80,16 @@
               </div>
               <div id="editor" class="flex-grow-1">
               </div>
-              <div class="editor-footer"></div>
+              <div class="editor-footer">
+                <div class="d-flex flex-row">
+                  <button id="validateSyntaxButton" class="editor-menu-button me-1">Validate Syntax</button>
+                  <button id="runFormulaButton" class="editor-menu-button me-1">Run Formula</button>
+                  <div id="formulaResultContainer">
+                    <span>> </span>
+                    <span id="formulaResult"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

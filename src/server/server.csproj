@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Jint" Version="3.0.0-beta-2044" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
     <PackageReference Include="Onspring.API.SDK" Version="4.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />

@@ -21,6 +21,9 @@ const state = {
   logicalOperatorsList: document.getElementById('logicalOperatorsList'),
   functionsButton: document.getElementById('functionsButton'),
   editorView: Editor.setup(document.getElementById('editor')),
+  runFormulaButton: document.getElementById('runFormulaButton'),
+  validateSyntaxButton: document.getElementById('validateSyntaxButton'),
+  formulaResult: document.getElementById('formulaResult'),
   createOperatorListElement(operator) {
     const listElement = document.createElement('li');
     listElement.classList.add('container');
@@ -205,30 +208,25 @@ const state = {
     this.operatorsModal.style.top = '';
     this.operatorsModal.classList.add('visually-hidden');
   },
+  displayFormulaResult(result) {
+    this.formulaResult.innerHTML = result;
+  },
   setupEventListeners() {
     const eventHandler = new IndexEventHandler(this);
 
     document.addEventListener(Events.click, eventHandler.handleDocumentClick);
-    
     this.fieldsButton.addEventListener(Events.click, eventHandler.handleFieldsButtonClick);
-    
-    this.operatorsButton.addEventListener(Events.click, eventHandler.handleOperatorsButtonClick);
-    
+    this.operatorsButton.addEventListener(Events.click, eventHandler.handleOperatorsButtonClick);  
     this.apiKeyInput.addEventListener(Events.change, eventHandler.handleApiInputChange);
-    
     this.apiKeyInput.addEventListener(Events.input, eventHandler.handleApiInput);
-    
     this.appInput.addEventListener(Events.change, eventHandler.handleAppInputChange);
-    
     this.fieldsSearchBox.addEventListener(Events.input, eventHandler.handleFieldsSearchBoxInput);
-    
     this.fieldsList.addEventListener(Events.click, eventHandler.handleFieldsListClick);
-
     this.mathOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
-    
     this.comparisonOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
-    
     this.logicalOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
+    this.runFormulaButton.addEventListener(Events.click, eventHandler.handleRunFormulaButtonClick);
+    this.validateSyntaxButton.addEventListener(Events.click, eventHandler.handleValidateSyntaxButtonClick)
   }
 };
 

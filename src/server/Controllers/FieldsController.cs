@@ -17,7 +17,7 @@ public class FieldsController : ControllerBase
     _onspringService = onspringService;
   }
 
-  [HttpPost(Name = "GetFields")]
+  [HttpPost]
   public async Task<IActionResult> GetFields([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] GetFieldsRequest request)
   {
     if (String.IsNullOrWhiteSpace(apiKey)) {

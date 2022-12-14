@@ -1,5 +1,6 @@
 import AppService from '../services/appService.js';
 import FieldService from '../services/fieldService.js';
+import FormulaService from '../services/formulaService.js';
 
 export default class IndexEventHandler {
   constructor(indexState) {
@@ -131,4 +132,24 @@ export default class IndexEventHandler {
       this.state.hideOperatorsModal();
     }
   };
+
+  // TODO: Finish properly handling formula result
+  handleRunFormulaButtonClick = async e => {
+    const apiKey = this.state.apiKeyInput.value;
+    const appId = this.state.appInput.value
+    ? this.state.appInput.value
+    : 0;
+    const formula = this.state.editorView.state.doc.text.join("");
+    const response = await FormulaService.runFormula(apiKey, appId, formula);
+    const result = await response.json();
+    console.log(result);
+  }
+
+  // TODO: Finish properly handling validation
+  handleValidateSyntaxButtonClick = async e => {
+    const formula = this.state.editorView.state.doc.text.join("");
+    const response = await FormulaService.validateFormula(formula);
+    const result = await response.json();
+    console.log(result);
+  }
 }
