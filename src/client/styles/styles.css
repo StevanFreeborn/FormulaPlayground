@@ -57,6 +57,10 @@
   border: 1px solid #ced4da;
 }
 
+#fieldsSearchBox::placeholder {
+  font-style: italic;
+}
+
 #fieldsSearchBox.form-control:focus {
   box-shadow: 0 0 5px 0 #4a87e3;
 }
@@ -68,7 +72,6 @@
 
 #fieldsModal {
   z-index: 100;
-  width: 600px;
   height: 250px;
   border: 1px solid #acb0bb;
 }
@@ -76,6 +79,60 @@
 #operatorsModal {
   z-index: 100;
   border: 1px solid #acb0bb;
+}
+
+#functionsModal {
+  z-index: 100;
+  border: 1px solid #acb0bb;
+}
+
+.fn-type-btn {
+  width: 70px;
+  font-size: 13px;
+  margin: 0;
+  padding: 4.5px;
+  text-align: center;
+  border-color: black;
+}
+
+#functionsSearchBox::placeholder {
+  font-style: italic;
+}
+
+#functionsSearchBox.form-control:focus {
+  box-shadow: 0 0 5px 0 #4a87e3;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid #acb0bb;
+}
+
+#functionsTabsContainer>.nav-tabs>.nav-item>.nav-link {
+  border-radius: 0;
+  border-color: #acb0bb;
+  border-top-width: 3px;
+  border-right: 1px solid #acb0bb;
+}
+
+#functionsTabsContainer>.nav-tabs>.nav-item>.nav-link:hover {
+  background-color: #fddfbc;
+}
+
+#functionsTabsContainer>.nav-tabs>.nav-item:last-child>.nav-link {
+  border-right: 1px solid #acb0bb;
+}
+
+#functionsTabsContainer>.nav-tabs>.nav-item>.nav-link.active {
+  border-top: 3px solid #f7941d;
+  font-weight: bold;
+}
+
+#functionsTabsContainer>.nav-tabs>.nav-item>.nav-link.active:hover {
+  background-color: white;
+}
+
+#functionsTabsContainer .nav-link {
+  transition: none;
 }
 
 .field-name {

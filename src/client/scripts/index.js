@@ -20,6 +20,7 @@ const state = {
   comparisonOperatorsList: document.getElementById('comparisonOperatorsList'),
   logicalOperatorsList: document.getElementById('logicalOperatorsList'),
   functionsButton: document.getElementById('functionsButton'),
+  functionsModal: document.getElementById('functionsModal'),
   editorView: Editor.setup(document.getElementById('editor')),
   runFormulaButton: document.getElementById('runFormulaButton'),
   validateSyntaxButton: document.getElementById('validateSyntaxButton'),
@@ -32,14 +33,14 @@ const state = {
 
     const rowElement = document.createElement('div');
     rowElement.classList.add('row');
-    
+
     const symbolElement = document.createElement('div');
     symbolElement.classList.add('col-3');
     symbolElement.classList.add('text-center');
     symbolElement.innerHTML = operator.symbol;
-    
+
     const nameElement = document.createElement('div');
-    nameElement.classList.add('col-9')
+    nameElement.classList.add('col-9');
     nameElement.classList.add('text-start');
     nameElement.classList.add('text-nowrap');
     nameElement.innerHTML = operator.name;
@@ -208,6 +209,20 @@ const state = {
     this.operatorsModal.style.top = '';
     this.operatorsModal.classList.add('visually-hidden');
   },
+  isFunctionsModalDisplayed() {
+    return this.functionsModal.style.left || this.functionsModal.style.top;
+  },
+  showFunctionsModal() {
+    const pos = this.functionsButton.getBoundingClientRect();
+    this.functionsModal.style.left = pos.x + 'px';
+    this.functionsModal.style.top = pos.y + pos.height + 'px';
+    this.functionsModal.classList.remove('visually-hidden');
+  },
+  hideFunctionsModal() {
+    this.functionsModal.style.left = '';
+    this.functionsModal.style.top = '';
+    this.functionsModal.classList.add('visually-hidden');
+  },
   displayFormulaResult(result) {
     this.formulaResult.innerHTML = result;
   },
@@ -215,19 +230,59 @@ const state = {
     const eventHandler = new IndexEventHandler(this);
 
     document.addEventListener(Events.click, eventHandler.handleDocumentClick);
-    this.fieldsButton.addEventListener(Events.click, eventHandler.handleFieldsButtonClick);
-    this.operatorsButton.addEventListener(Events.click, eventHandler.handleOperatorsButtonClick);  
-    this.apiKeyInput.addEventListener(Events.change, eventHandler.handleApiInputChange);
-    this.apiKeyInput.addEventListener(Events.input, eventHandler.handleApiInput);
-    this.appInput.addEventListener(Events.change, eventHandler.handleAppInputChange);
-    this.fieldsSearchBox.addEventListener(Events.input, eventHandler.handleFieldsSearchBoxInput);
-    this.fieldsList.addEventListener(Events.click, eventHandler.handleFieldsListClick);
-    this.mathOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
-    this.comparisonOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
-    this.logicalOperatorsList.addEventListener(Events.click, eventHandler.handleOperatorListClick);
-    this.runFormulaButton.addEventListener(Events.click, eventHandler.handleRunFormulaButtonClick);
-    this.validateSyntaxButton.addEventListener(Events.click, eventHandler.handleValidateSyntaxButtonClick)
-  }
+    this.fieldsButton.addEventListener(
+      Events.click,
+      eventHandler.handleFieldsButtonClick
+    );
+    this.operatorsButton.addEventListener(
+      Events.click,
+      eventHandler.handleOperatorsButtonClick
+    );
+    this.apiKeyInput.addEventListener(
+      Events.change,
+      eventHandler.handleApiInputChange
+    );
+    this.apiKeyInput.addEventListener(
+      Events.input,
+      eventHandler.handleApiInput
+    );
+    this.appInput.addEventListener(
+      Events.change,
+      eventHandler.handleAppInputChange
+    );
+    this.fieldsSearchBox.addEventListener(
+      Events.input,
+      eventHandler.handleFieldsSearchBoxInput
+    );
+    this.fieldsList.addEventListener(
+      Events.click,
+      eventHandler.handleFieldsListClick
+    );
+    this.mathOperatorsList.addEventListener(
+      Events.click,
+      eventHandler.handleOperatorListClick
+    );
+    this.comparisonOperatorsList.addEventListener(
+      Events.click,
+      eventHandler.handleOperatorListClick
+    );
+    this.logicalOperatorsList.addEventListener(
+      Events.click,
+      eventHandler.handleOperatorListClick
+    );
+    this.functionsButton.addEventListener(
+      Events.click,
+      eventHandler.handleFunctionsButtonClick
+    );
+    this.runFormulaButton.addEventListener(
+      Events.click,
+      eventHandler.handleRunFormulaButtonClick
+    );
+    this.validateSyntaxButton.addEventListener(
+      Events.click,
+      eventHandler.handleValidateSyntaxButtonClick
+    );
+  },
 };
 
 state.setupOperatorsList();

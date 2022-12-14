@@ -108,6 +108,15 @@ export default class IndexEventHandler {
     this.state.focusOnEditor();
   };
 
+  handleFunctionsButtonClick = e => {
+    if (this.state.isFunctionsModalDisplayed()) {
+      this.state.hideFunctionsModal();
+      return;
+    }
+
+    this.state.showFunctionsModal();
+  };
+
   handleDocumentClick = e => {
     const isNotFldModalFldButtonOrAChild =
       e.target != this.state.fieldsModal &&
@@ -121,6 +130,12 @@ export default class IndexEventHandler {
       !this.state.operatorsButton.contains(e.target) &&
       e.target != this.state.operatorsButton;
 
+    const isNotFnModalFnButtonOrAChild =
+      e.target != this.state.functionsModal &&
+      !this.state.functionsModal.contains(e.target) &&
+      !this.state.functionsButton.contains(e.target) &&
+      e.target != this.state.functionsButton;
+
     if (isNotFldModalFldButtonOrAChild && this.state.isFieldsModalDisplayed()) {
       this.state.hideFieldsModal();
     }
@@ -131,25 +146,30 @@ export default class IndexEventHandler {
     ) {
       this.state.hideOperatorsModal();
     }
+
+    if (
+      isNotFnModalFnButtonOrAChild &&
+      this.state.isFunctionsModalDisplayed()
+    ) {
+      this.state.hideFunctionsModal();
+    }
   };
 
   // TODO: Finish properly handling formula result
   handleRunFormulaButtonClick = async e => {
     const apiKey = this.state.apiKeyInput.value;
-    const appId = this.state.appInput.value
-    ? this.state.appInput.value
-    : 0;
-    const formula = this.state.editorView.state.doc.text.join("");
+    const appId = this.state.appInput.value ? this.state.appInput.value : 0;
+    const formula = this.state.editorView.state.doc.text.join('');
     const response = await FormulaService.runFormula(apiKey, appId, formula);
     const result = await response.json();
     console.log(result);
-  }
+  };
 
   // TODO: Finish properly handling validation
   handleValidateSyntaxButtonClick = async e => {
-    const formula = this.state.editorView.state.doc.text.join("");
+    const formula = this.state.editorView.state.doc.text.join('');
     const response = await FormulaService.validateFormula(formula);
     const result = await response.json();
     console.log(result);
-  }
+  };
 }
