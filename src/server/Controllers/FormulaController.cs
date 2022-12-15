@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Jint;
 using Microsoft.AspNetCore.Mvc;
 using server.Dtos;
@@ -62,8 +61,7 @@ public class FormulaController : ControllerBase
         TimeZone = TimeZoneInfo.Utc,
       });
       var result = engine.Evaluate(request.Formula);
-      var response = JsonSerializer.Serialize(result.ToObject());
-      return Ok(response);
+      return Ok(result.ToObject());
     }
     catch (Exception e)
     {

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddCors(p => p.AddPolicy("corsPolicy", build =>
 }));
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

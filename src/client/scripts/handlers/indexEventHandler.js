@@ -168,6 +168,13 @@ export default class IndexEventHandler {
     }
   };
 
+  handleFunctionsListClick = e => {
+    const snippet = e.target.closest('li').getAttribute('data-snippet');
+    this.state.insertFunctionSnippet(snippet);
+    this.state.hideFunctionsModal();
+    this.state.focusOnEditor();
+  };
+
   // TODO: Finish properly handling formula result
   handleRunFormulaButtonClick = async e => {
     const apiKey = this.state.apiKeyInput.value;

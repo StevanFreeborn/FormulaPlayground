@@ -158,7 +158,9 @@ const state = {
     this.filterFieldsList(this.fieldsSearchBox.value);
   },
   hideFieldName(element, filterValue) {
-    const isMatch = element.innerText.toLowerCase().includes(filterValue.toLowerCase());
+    const isMatch = element.innerText
+      .toLowerCase()
+      .includes(filterValue.toLowerCase());
 
     if (isMatch) {
       element.style.display = '';
@@ -258,11 +260,6 @@ const state = {
 
     element.style.display = 'none';
   },
-  resetFunctionsList() {
-    while (this.functionsList.childElementCount > 0) {
-      this.functionsList.removeChild(this.functionsList.lastChild);
-    }
-  },
   filterFunctionsList(nameFilter, typeFilter) {
     const functionListElements = [
       ...this.functionsList.getElementsByTagName('li'),
@@ -271,6 +268,10 @@ const state = {
     functionListElements.forEach(functionListElement =>
       this.hideFunctionListElement(functionListElement, nameFilter, typeFilter)
     );
+  },
+  insertFunctionSnippet(snippet) {
+    const transaction = this.editorView.state.replaceSelection(snippet);
+    this.editorView.dispatch(transaction);
   },
   displayFormulaResult(result) {
     this.formulaResult.innerHTML = result;
@@ -332,6 +333,10 @@ const state = {
         Events.click,
         eventHandler.handleFunctionTabButtonClick
       )
+    );
+    this.functionsList.addEventListener(
+      Events.click,
+      eventHandler.handleFunctionsListClick
     );
     this.runFormulaButton.addEventListener(
       Events.click,

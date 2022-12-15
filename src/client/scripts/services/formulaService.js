@@ -19,7 +19,7 @@ export default class FormulaService {
     return await fetch(`${this.endpoint}/run`, {
       method: 'POST',
       headers: headers,
-      body: JSON.stringify({ appId: parseInt(appId), formula }),
+      body: JSON.stringify({ appId: parseInt(appId), formula: formula }),
     });
   };
 
