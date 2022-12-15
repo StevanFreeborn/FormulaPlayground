@@ -1,9 +1,11 @@
 import OperatorTypes from "./operatorTypes.js";
 import FunctionTypes from "./functionTypes.js";
 
+console.log(process.env.NODE_ENV);
+
 export const BASE_URL = process.env.NODE_ENV === 'development'
-? 'http://localhost:5085'
-: 'https://criminalmindsapi.azurewebsites.net';
+? 'https://localhost:44304'
+: '';
 
 export const API_KEY_HEADER_NAME = 'x-apikey';
 export const API_VERSION_HEADER_NAME = 'x-api-version';

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Jint;
 using Microsoft.AspNetCore.Mvc;
-using server.Models;
+using server.Dtos;
 using server.Services;
 
 namespace server.Controllers;
