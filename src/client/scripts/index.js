@@ -249,17 +249,9 @@ const state = {
     const elementType = element.getAttribute('data-type');
 
     const isNameMatch = elementText.includes(nameFilter.toLowerCase());
-    const isTypeMatch = elementType == typeFilter;
+    const isTypeMatch = elementType == typeFilter || typeFilter == 'all';
 
-    let isMatch;
-
-    if (typeFilter && typeFilter != 'all') {
-      isMatch = isTypeMatch && isNameMatch;
-    } else {
-      isMatch = isNameMatch;
-    }
-
-    if (isMatch) {
+    if (isNameMatch && isTypeMatch) {
       element.style.display = '';
       return;
     }
