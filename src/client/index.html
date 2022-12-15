@@ -42,17 +42,17 @@
       <div class="container-fluid d-flex flex-column flex-grow-1">
         <div class="row my-3">
           <div class="col">
-            <input id="apiKey" type="password" class="form-control shadow-none" placeholder="Api Key">
+            <input id="apiKey" type="password" class="form-control form-control-sm shadow-none" placeholder="Api Key">
             <div id="apiKeyError" class="text-danger"></div>
           </div>
           <div class="col">
-            <select id="app" class="form-select shadow-none visually-hidden">
+            <select id="app" class="form-select form-select-sm shadow-none visually-hidden">
               <option value="" selected>Select App</option>
             </select>
             <div id="appError" class="text-danger ps-1"></div>
           </div>
           <div class="col">
-            <input id="record" type="number" class="form-control shadow-none visually-hidden" placeholder="Record Id"
+            <input id="record" type="number" class="form-control form-control-sm shadow-none visually-hidden" placeholder="Record Id"
               min="1">
           </div>
         </div>
@@ -87,7 +87,7 @@
                   <button id="validateSyntaxButton" class="editor-menu-button me-1">Validate Syntax</button>
                   <button id="runFormulaButton" class="editor-menu-button me-1">Run Formula</button>
                   <div id="formulaResultContainer">
-                    <span>> </span>
+                    <span>Result: </span>
                     <span id="formulaResult"></span>
                   </div>
                 </div>
@@ -179,35 +179,33 @@
       <div id="functionsTabsContainer">
         <ul id="functionTabs" class="nav nav-tabs px-2" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link link-dark fn-type-btn active" id="all-tab" data-bs-toggle="tab"
-              data-bs-target="#all-tab-pane" type="button" role="tab">All</button>
+            <button class="nav-link link-dark fn-type-btn active" id="allTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="all" type="button" role="tab">All</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link link-dark fn-type-btn" id="date-tab" data-bs-toggle="tab"
-              data-bs-target="#all-tab-pane" type="button" role="tab">Date</button>
+            <button class="nav-link link-dark fn-type-btn" id="dateTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="date" type="button" role="tab">Date</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link link-dark fn-type-btn" id="logical-tab" data-bs-toggle="tab"
-              data-bs-target="#all-tab-pane" type="button" role="tab">Logical</button>
+            <button class="nav-link link-dark fn-type-btn" id="logicalTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="logical" type="button" role="tab">Logical</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link link-dark fn-type-btn" id="number-tab" data-bs-toggle="tab"
-              data-bs-target="#all-tab-pane" type="button" role="tab">Number</button>
+            <button class="nav-link link-dark fn-type-btn" id="numberTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="number" type="button" role="tab">Number</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link link-dark fn-type-btn" id="number-tab" data-bs-toggle="tab"
-              data-bs-target="#all-tab-pane" type="button" role="tab">Number</button>
+            <button class="nav-link link-dark fn-type-btn" id="textTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="text" type="button" role="tab">text</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link link-dark fn-type-btn" id="other-tab" data-bs-toggle="tab"
-              data-bs-target="#all-tab-pane" type="button" role="tab">Other</button>
+            <button class="nav-link link-dark fn-type-btn" id="otherTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="other" type="button" role="tab">Other</button>
           </li>
         </ul>
         <div class="tab-content" id="#tabContent">
-          <div class="tab-pane show active" id="all-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-            <!-- TODO: Add list of functions -->
-            <ul>
-              <li>Placeholder</li>
+          <div class="tab-pane p-3 show active" id="all-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <ul id="functionsList" class="list-unstyled m-0">
             </ul>
           </div>
         </div>

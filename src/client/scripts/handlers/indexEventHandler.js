@@ -117,6 +117,19 @@ export default class IndexEventHandler {
     this.state.showFunctionsModal();
   };
 
+  handleFnSearchBoxInput = e => {
+    const nameFilter = e.currentTarget.value;
+    const activeTab = this.state.getActiveFunctionTab();
+    const typeFilter = activeTab.getAttribute('data-type');
+    this.state.filterFunctionsList(nameFilter, typeFilter);
+  };
+
+  handleFunctionTabButtonClick = e => {
+    const typeFilter = e.currentTarget.getAttribute('data-type');
+    const nameFilter = this.state.functionsSearchBox.value;
+    this.state.filterFunctionsList(nameFilter, typeFilter);
+  };
+
   handleDocumentClick = e => {
     const isNotFldModalFldButtonOrAChild =
       e.target != this.state.fieldsModal &&

@@ -103,6 +103,11 @@
   box-shadow: 0 0 5px 0 #4a87e3;
 }
 
+#all-tab-pane {
+  max-height: 300px;
+  overflow: auto;
+}
+
 .nav-tabs {
   border-bottom: 1px solid #acb0bb;
 }
@@ -110,8 +115,6 @@
 #functionsTabsContainer>.nav-tabs>.nav-item>.nav-link {
   border-radius: 0;
   border-color: #acb0bb;
-  border-top-width: 3px;
-  border-right: 1px solid #acb0bb;
 }
 
 #functionsTabsContainer>.nav-tabs>.nav-item>.nav-link:hover {
@@ -123,7 +126,9 @@
 }
 
 #functionsTabsContainer>.nav-tabs>.nav-item>.nav-link.active {
-  border-top: 3px solid #f7941d;
+  -webkit-box-shadow: inset 0px 3px 0px 0px #f7941d;
+  -moz-box-shadow: inset 0px 3px 0px 0px #f7941d;
+  box-shadow: inset 0px 3px 0px 0px #f7941d;
   font-weight: bold;
 }
 
@@ -180,4 +185,9 @@
 
 .operator-name {
   align-self: flex-start;
+}
+
+.function:hover {
+  background-color: #fddfbc;
+  cursor: pointer
 }

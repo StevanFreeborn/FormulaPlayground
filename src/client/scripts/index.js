@@ -1,7 +1,7 @@
 import Editor from './editor.js';
 import Events from './events.js';
 import IndexEventHandler from './handlers/indexEventHandler.js';
-import { OPERATORS } from './constants.js';
+import { CUSTOM_FUNCTIONS, OPERATORS } from './constants.js';
 import OperatorTypes from './operatorTypes.js';
 
 const state = {
@@ -21,6 +21,9 @@ const state = {
   logicalOperatorsList: document.getElementById('logicalOperatorsList'),
   functionsButton: document.getElementById('functionsButton'),
   functionsModal: document.getElementById('functionsModal'),
+  functionsSearchBox: document.getElementById('functionsSearchBox'),
+  functionTabButtons: document.getElementsByClassName('fn-type-btn'),
+  functionsList: document.getElementById('functionsList'),
   editorView: Editor.setup(document.getElementById('editor')),
   runFormulaButton: document.getElementById('runFormulaButton'),
   validateSyntaxButton: document.getElementById('validateSyntaxButton'),
@@ -81,6 +84,21 @@ const state = {
       }
     });
   },
+  createFunctionListElement(fn) {
+    const listElement = document.createElement('li');
+    listElement.classList.add('function');
+    listElement.innerHTML = fn.name;
+    listElement.setAttribute('data-type', fn.type);
+    listElement.setAttribute('data-snippet', fn.snippet);
+    return listElement;
+  },
+  addFunctionListElement(fn) {
+    const listElement = this.createFunctionListElement(fn);
+    this.functionsList.append(listElement);
+  },
+  setupFunctionsList() {
+    CUSTOM_FUNCTIONS.forEach(fn => this.addFunctionListElement(fn));
+  },
   showApiKeyError(message) {
     this.apiKeyError.innerText = message;
   },
@@ -140,7 +158,7 @@ const state = {
     this.filterFieldsList(this.fieldsSearchBox.value);
   },
   hideFieldName(element, filterValue) {
-    const isMatch = element.innerText.toLowerCase().includes(filterValue);
+    const isMatch = element.innerText.toLowerCase().includes(filterValue.toLowerCase());
 
     if (isMatch) {
       element.style.display = '';
@@ -223,6 +241,45 @@ const state = {
     this.functionsModal.style.top = '';
     this.functionsModal.classList.add('visually-hidden');
   },
+  getActiveFunctionTab() {
+    return document.querySelector('.fn-type-btn.active');
+  },
+  hideFunctionListElement(element, nameFilter, typeFilter) {
+    const elementText = element.innerText.toLowerCase();
+    const elementType = element.getAttribute('data-type');
+
+    const isNameMatch = elementText.includes(nameFilter.toLowerCase());
+    const isTypeMatch = elementType == typeFilter;
+
+    let isMatch;
+
+    if (typeFilter && typeFilter != 'all') {
+      isMatch = isTypeMatch && isNameMatch;
+    } else {
+      isMatch = isNameMatch;
+    }
+
+    if (isMatch) {
+      element.style.display = '';
+      return;
+    }
+
+    element.style.display = 'none';
+  },
+  resetFunctionsList() {
+    while (this.functionsList.childElementCount > 0) {
+      this.functionsList.removeChild(this.functionsList.lastChild);
+    }
+  },
+  filterFunctionsList(nameFilter, typeFilter) {
+    const functionListElements = [
+      ...this.functionsList.getElementsByTagName('li'),
+    ];
+
+    functionListElements.forEach(functionListElement =>
+      this.hideFunctionListElement(functionListElement, nameFilter, typeFilter)
+    );
+  },
   displayFormulaResult(result) {
     this.formulaResult.innerHTML = result;
   },
@@ -274,6 +331,16 @@ const state = {
       Events.click,
       eventHandler.handleFunctionsButtonClick
     );
+    this.functionsSearchBox.addEventListener(
+      Events.input,
+      eventHandler.handleFnSearchBoxInput
+    );
+    [...this.functionTabButtons].forEach(button =>
+      button.addEventListener(
+        Events.click,
+        eventHandler.handleFunctionTabButtonClick
+      )
+    );
     this.runFormulaButton.addEventListener(
       Events.click,
       eventHandler.handleRunFormulaButtonClick
@@ -286,4 +353,5 @@ const state = {
 };
 
 state.setupOperatorsList();
+state.setupFunctionsList();
 state.setupEventListeners();

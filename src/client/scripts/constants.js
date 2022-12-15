@@ -26,8 +26,10 @@ export const OPERATORS = [
   { name: 'OR', symbol: '||', type: OperatorTypes.logical}
 ];
 export const CUSTOM_FUNCTIONS = [
-  { name: 'Sum', type: FunctionTypes.number},
-  { name: 'Average', type: FunctionTypes.number},
-  { name: 'Max', type: FunctionTypes.number},
-  { name: 'Min', type: FunctionTypes.number},
+  { name: 'Sum', type: FunctionTypes.number, snippet: 'Sum(reference_or_array)'},
+  { name: 'Average', type: FunctionTypes.number, snippet: 'Average(reference_or_array)'},
+  { name: 'Max', type: FunctionTypes.number, snippet: 'Max(reference_or_array)'},
+  { name: 'Min', type: FunctionTypes.number, snippet: 'Min(reference_or_array)'},
+  { name: 'Round', type: FunctionTypes.number, snippet: 'Round(number, number_of_digits)'},
+  { name: 'RoundUp', type: FunctionTypes.number, snippet: 'RoundUp(number, number_of_digits)'},
 ];
