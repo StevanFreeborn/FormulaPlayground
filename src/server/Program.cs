@@ -4,6 +4,7 @@ using server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IOnspringService, OnspringService>();
+builder.Services.AddScoped<IFormulaService, JintFormulaService>();
 
 builder.Services.AddCors(p => p.AddPolicy("corsPolicy", build =>
 {

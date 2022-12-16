@@ -175,21 +175,27 @@ export default class IndexEventHandler {
     this.state.focusOnEditor();
   };
 
-  // TODO: Finish properly handling formula result
+  // TODO: Make better way to display output.
   handleRunFormulaButtonClick = async e => {
     const apiKey = this.state.apiKeyInput.value;
     const appId = this.state.appInput.value ? this.state.appInput.value : 0;
     const formula = this.state.editorView.state.doc.toJSON().join('');
     const response = await FormulaService.runFormula(apiKey, appId, formula);
-    const result = await response.json();
-    console.log(result);
+    const responseBody = await response.json();
+
+    if (response.ok == false) {
+      this.state.formulaResult.innerText = responseBody.error;
+      return;
+    }
+
+    this.state.formulaResult.innerText = responseBody.result;
   };
 
-  // TODO: Finish properly handling validation
+  // TODO: Alert to custom modal
   handleValidateSyntaxButtonClick = async e => {
     const formula = this.state.editorView.state.doc.text.join('');
     const response = await FormulaService.validateFormula(formula);
     const result = await response.json();
-    console.log(result);
+    alert(result.message);
   };
 }

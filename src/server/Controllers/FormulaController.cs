@@ -1,79 +1,78 @@
-using Esprima;
-using Jint;
-using Jint.Runtime;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using server.Dtos;
 using server.Services;
-using Jint.Native.Json;
-using Jint.Native;
-using Jint.Native.Error;
 
 namespace server.Controllers;
 
-// TODO: Implement running formula
-// TODO: Implement validating formula
-// TODO: Extract formula engine to a service or separate file
 [ApiController]
 [Route("api/formulas")]
 public class FormulaController : ControllerBase
 {
   private readonly ILogger<AppsController> _logger;
   private readonly IOnspringService _onspringService;
+  private readonly IFormulaService _formulaService;
 
-  public FormulaController(ILogger<AppsController> logger, IOnspringService onspringService)
+  public FormulaController(ILogger<AppsController> logger, IOnspringService onspringService, IFormulaService formulaService)
   {
     _logger = logger;
     _onspringService = onspringService;
+    _formulaService = formulaService;
   }
 
   [HttpPost("validate")]
-  public IActionResult ValidateFormula([FromBody] ValidateFormulaRequest request)
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
+  public ActionResult<ValidateFormulaResult> ValidateFormula([FromBody] ValidateFormulaRequest request)
   {
+    var response = new ValidateFormulaResult();
+    // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
     try
     {
-      var engine = new Engine(new Options
+      var validationResult = _formulaService.ValidateFormula(request.Formula);
+      
+      if (validationResult.IsValid is false) 
       {
-        TimeZone = TimeZoneInfo.Utc,
-      });
+        response.Message = validationResult.Exception.Message;
+        return BadRequest(response);
+      }
 
-      engine.Execute(request.Formula);
-      return Ok(new { result = "The formula syntax is valid" });
-    }
-    catch (JavaScriptException je)
-    {
-      return BadRequest(new { result = "The formula syntax is invalid.", message = je.ToString() });
+      response.Message = "The formula syntax is valid";
+      return Ok(response);
     }
     catch (Exception e)
     {
       Console.WriteLine(e);
-      return StatusCode(500, new { error = "We're sorry we were unable to validate the formula.", message = e.Message });
+      response.Message = "We're sorry we were unable to validate the formula.";
+      return StatusCode(500, response);
     }
   }
 
   [HttpPost("run")]
-  public IActionResult RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] RunFormulaRequest request)
+  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
+  public ActionResult<RunFormulaResult> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] RunFormulaRequest request)
   {
+    var response = new RunFormulaResult();
+    // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
     try
     {
-      var engine = new Engine(cfg => cfg.AllowClr().LocalTimeZone(TimeZoneInfo.Utc));
-      var parserOptions = new ParserOptions
+      var runResult = _formulaService.RunFormula(request.Formula);
+      response.Result = runResult.Value;
+      
+      if (runResult.IsValid is false)
       {
-        Tolerant = true,
-        AdaptRegexp = true,
-      };
+        response.Error = runResult.Exception.Message;
+        return BadRequest(response);
+      }
 
-      var result = engine.Evaluate(request.Formula, parserOptions);
-
-      return Ok(new { result = result is JsError ? result.ToString() : result.ToObject() });
-    }
-    catch(Exception e) when (e is JavaScriptException || e is ParserException)
-    {
-      return Ok(new { result = e.Message });
+      return Ok(response);
     }
     catch (Exception e)
     {
       Console.WriteLine(e);
-      return StatusCode(500, new { error = "Failed to run formula." });
+      response.Error = "Failed to run formula.";
+      return StatusCode(500, response);
     }
   }
 }
