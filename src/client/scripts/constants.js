@@ -1,8 +1,6 @@
 import OperatorTypes from "./operatorTypes.js";
 import FunctionTypes from "./functionTypes.js";
 
-console.log(process.env.NODE_ENV);
-
 export const BASE_URL = process.env.NODE_ENV === 'development'
 ? 'https://localhost:44304'
 : '';

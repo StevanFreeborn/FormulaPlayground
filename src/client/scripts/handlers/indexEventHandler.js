@@ -179,7 +179,7 @@ export default class IndexEventHandler {
   handleRunFormulaButtonClick = async e => {
     const apiKey = this.state.apiKeyInput.value;
     const appId = this.state.appInput.value ? this.state.appInput.value : 0;
-    const formula = this.state.editorView.state.doc.text.join('');
+    const formula = this.state.editorView.state.doc.toJSON().join('');
     const response = await FormulaService.runFormula(apiKey, appId, formula);
     const result = await response.json();
     console.log(result);
