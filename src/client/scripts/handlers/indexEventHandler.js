@@ -188,7 +188,7 @@ export default class IndexEventHandler {
       return;
     }
 
-    this.state.formulaResult.innerText = responseBody.result;
+    this.state.formulaResult.innerText = JSON.parse(responseBody.result);
   };
 
   handleValidateSyntaxButtonClick = async e => {

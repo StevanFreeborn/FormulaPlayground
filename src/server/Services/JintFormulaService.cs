@@ -1,6 +1,7 @@
 using server.Models;
 using Jint;
 using Jint.Runtime;
+using Jint.Native.Json;
 using Esprima;
 
 namespace server.Services;
@@ -10,6 +11,8 @@ public class JintFormulaService : IFormulaService
   private readonly Engine _engine;
   private readonly ParserOptions _parserOptions;
 
+  private readonly JsonSerializer _serializer;
+
   public JintFormulaService()
   {
     _engine = new Engine(cfg => cfg.AllowClr().LocalTimeZone(TimeZoneInfo.Utc));
@@ -18,6 +21,7 @@ public class JintFormulaService : IFormulaService
       Tolerant = true,
       AdaptRegexp = true,
     };
+    _serializer = new JsonSerializer(_engine);
   }
 
   public FormulaRunResult RunFormula(string formula)
@@ -26,7 +30,9 @@ public class JintFormulaService : IFormulaService
 
     try
     {
-      result.Value = _engine.Evaluate(formula, _parserOptions).ToObject();
+      var engineResult = _engine.Evaluate(formula, _parserOptions);
+      var serializedResult = _serializer.Serialize(engineResult);
+      result.Value = serializedResult.ToObject();
     }
     catch(Exception e) when (e is JavaScriptException || e is ParserException)
     {
