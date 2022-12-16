@@ -191,11 +191,20 @@ export default class IndexEventHandler {
     this.state.formulaResult.innerText = responseBody.result;
   };
 
-  // TODO: Alert to custom modal
   handleValidateSyntaxButtonClick = async e => {
     const formula = this.state.editorView.state.doc.text.join('');
     const response = await FormulaService.validateFormula(formula);
     const result = await response.json();
-    alert(result.message);
+    
+    this.state.resetValidationModalStyles();
+    this.state.validationModalBody.innerText = result.message;
+
+    if (response.ok) {
+      this.state.setupValidModalHeader();
+    } else {
+      this.state.setupInvalidModalHeader();
+    }
+
+    this.state.validationModal.show();
   };
 }

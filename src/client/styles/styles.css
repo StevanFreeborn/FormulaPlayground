@@ -191,3 +191,35 @@
   background-color: #fddfbc;
   cursor: pointer
 }
+
+.border-valid {
+  border-color: #2fcc66;
+}
+
+.icon-valid {
+  color: #2fcc66;
+}
+
+.border-invalid {
+  border-color: #e74c3c;
+}
+
+.icon-invalid {
+  color: #e74c3c;
+}
+
+.close-btn {
+  color: #7f7f7f;
+  background: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.close-btn:hover {
+  color: #4a87e3
+}
+
+#validationModalTitle {
+  font-size: 14px;
+}
