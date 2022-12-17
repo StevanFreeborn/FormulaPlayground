@@ -59,7 +59,7 @@ public class FormulaController : ControllerBase
     {
       var runResult = _formulaService.RunFormula(request.Formula);
       response.Result = runResult.Value;
-      
+
       if (runResult.IsValid is false)
       {
         response.Error = runResult.Exception.Message;
@@ -75,4 +75,23 @@ public class FormulaController : ControllerBase
       return StatusCode(500, response);
     }
   }
+
+  private static string ObjectToString(object obj)
+  {
+    switch (obj)
+    {
+      case null:
+        return null;
+      case string s:
+        return s;
+      case DateTime time:
+        var dt = DateTime.SpecifyKind(time, DateTimeKind.Unspecified);
+        return dt.ToLongDateString();
+      case object[] objArray:
+        return string.Join(", ", objArray.Where(a => a != null).Select(ObjectToString));
+    }
+
+    return obj.ToString();
+  }
 }
+

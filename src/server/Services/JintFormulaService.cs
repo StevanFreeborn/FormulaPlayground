@@ -30,9 +30,8 @@ public class JintFormulaService : IFormulaService
 
     try
     {
-      var engineResult = _engine.Evaluate(formula, _parserOptions);
-      var serializedResult = _serializer.Serialize(engineResult);
-      result.Value = serializedResult.ToObject();
+      var engineResult = _engine.Evaluate(formula, _parserOptions).ToObject();
+      result.Value = FormulaProcessor.GetResultAsString(engineResult);
     }
     catch(Exception e) when (e is JavaScriptException || e is ParserException)
     {
