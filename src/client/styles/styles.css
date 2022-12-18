@@ -151,7 +151,8 @@
 
 .field-token,
 .field-token>span.ͼl,
-.field-token>span.ͼc {
+.field-token>span.ͼc,
+.field-token>span.ͼi {
   font-weight: bold;
   color: #f08008;
 }
