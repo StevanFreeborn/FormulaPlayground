@@ -10,7 +10,7 @@ import {
 export default class FormulaService {
   static endpoint = `${BASE_URL}/api/formulas`;
 
-  static runFormula = async (apiKey, appId, formula) => {
+  static runFormula = async (apiKey, appId, formula, timezone) => {
     const headers = {};
     headers[API_KEY_HEADER_NAME] = apiKey;
     headers[API_VERSION_HEADER_NAME] = API_VERSION_HEADER_VALUE;
@@ -19,7 +19,11 @@ export default class FormulaService {
     return await fetch(`${this.endpoint}/run`, {
       method: 'POST',
       headers: headers,
-      body: JSON.stringify({ appId: parseInt(appId), formula: formula }),
+      body: JSON.stringify({
+        appId: parseInt(appId),
+        formula: formula,
+        timezone: timezone,
+      }),
     });
   };
 
@@ -30,7 +34,7 @@ export default class FormulaService {
     return await fetch(`${this.endpoint}/validate`, {
       method: 'POST',
       headers: headers,
-      body: JSON.stringify({ formula }),
+      body: JSON.stringify({ formula: formula }),
     });
   }
 }

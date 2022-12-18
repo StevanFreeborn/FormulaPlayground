@@ -57,7 +57,7 @@ public class FormulaController : ControllerBase
     // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
     try
     {
-      var runResult = _formulaService.RunFormula(request.Formula);
+      var runResult = _formulaService.RunFormula(request.Formula, request.Timezone);
       response.Result = runResult.Value;
 
       if (runResult.IsValid is false)

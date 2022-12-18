@@ -5,6 +5,7 @@ import { CUSTOM_FUNCTIONS, OPERATORS } from './constants.js';
 import OperatorTypes from './operatorTypes.js';
 
 const state = {
+  timezoneInput: document.getElementById('timezone'),
   apiKeyInput: document.getElementById('apiKey'),
   apiKeyError: document.getElementById('apiKeyError'),
   appInput: document.getElementById('app'),

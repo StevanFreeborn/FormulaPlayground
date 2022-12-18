@@ -180,7 +180,8 @@ export default class IndexEventHandler {
     const apiKey = this.state.apiKeyInput.value;
     const appId = this.state.appInput.value ? this.state.appInput.value : 0;
     const formula = this.state.editorView.state.doc.toJSON().join('');
-    const response = await FormulaService.runFormula(apiKey, appId, formula);
+    const timezone = this.state.timezoneInput.value;
+    const response = await FormulaService.runFormula(apiKey, appId, formula, timezone);
     const responseBody = await response.json();
 
     if (response.ok == false) {

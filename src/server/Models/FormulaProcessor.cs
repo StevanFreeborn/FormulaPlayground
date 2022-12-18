@@ -2,13 +2,13 @@ namespace server.Models;
 
 public class FormulaProcessor
 {
-  public static string GetResultAsString(object obj)
+  public static string GetResultAsString(object obj, TimeZoneInfo timezone)
   {
-    var objectAsString = ConvertObjectToString(obj);
+    var objectAsString = ConvertObjectToString(obj, timezone);
     return objectAsString;
   }
 
-  private static string ConvertObjectToString(object obj)
+  private static string ConvertObjectToString(object obj, TimeZoneInfo timezone)
   {
     if (obj is null) {
       return null;
@@ -18,14 +18,14 @@ public class FormulaProcessor
       return obj as string;
     }
 
-    if (obj is DateTime?) {
-      var date = obj as DateTime?;
-      return date.Value.ToLongDateString();
+    if (obj is DateTime date) {
+      date = TimeZoneInfo.ConvertTimeFromUtc(date, timezone);
+      return date.ToString();
     }
 
     if (obj is object[]) {
       var array = obj as object[];
-      return string.Join(", ", array.Where(element => element != null).Select(ConvertObjectToString));
+      return string.Join(", ", array.Where(element => element != null).Select(element => ConvertObjectToString(element, timezone)));
     }
 
     return obj.ToString();
