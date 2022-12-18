@@ -6,8 +6,12 @@ public class FormulaContext
 {
   public TimeZoneInfo InstanceTimezone { get; set; } = TimeZoneInfo.Utc;
 
-  public List<Field> Fields { get; set; }
-  public List<RecordFieldValue> FieldValues { get; set; }
+  public List<Field> Fields { get; set; } = new List<Field>();
+  public List<RecordFieldValue> FieldValues { get; set; } = new List<RecordFieldValue>();
+
+  public FormulaContext()
+  {
+  }
 
   public FormulaContext(List<Field> fields, List<RecordFieldValue> fieldValues, TimeZoneInfo timezone)
   {

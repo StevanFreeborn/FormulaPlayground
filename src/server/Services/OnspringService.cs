@@ -100,11 +100,22 @@ public class OnspringService : IOnspringService
 
   public async Task<FormulaContext> GetFormulaContext(string apiKey, string timezone, int appId, int recordId)
   {
-    var fields = await GetFields(apiKey, appId);
-    var fieldValues = await GetRecordFieldValues(apiKey, appId, recordId);
-    var instanceTimezone = GetInstanceTimezone(timezone);
+    var context = new FormulaContext();
 
-    return new FormulaContext(fields, fieldValues, instanceTimezone);
+    context.InstanceTimezone = GetInstanceTimezone(timezone);
+
+    // want to be able to run scripts with the engine without requiring
+    // the context always to be informed by what is in onspring
+    if (String.IsNullOrWhiteSpace(apiKey) is false && appId > 0 && recordId > 0)
+    {
+      var fields = await GetFields(apiKey, appId);
+      var fieldValues = await GetRecordFieldValues(apiKey, appId, recordId);
+
+      context.Fields.AddRange(fields);
+      context.FieldValues.AddRange(fieldValues);
+    }
+
+    return context;
   }
 
   private TimeZoneInfo GetInstanceTimezone(string timezone)
