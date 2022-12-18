@@ -30,19 +30,4 @@ public class FormulaProcessor
 
     return obj.ToString();
   }
-
-  public static DateTime GetResultAsDateTime()
-  {
-    throw new NotImplementedException();
-  }
-
-  public static decimal GetResultAsNumber()
-  {
-    throw new NotImplementedException();
-  }
-
-  public static string GetResultAsListValue()
-  {
-    throw new NotImplementedException();
-  }
 }
