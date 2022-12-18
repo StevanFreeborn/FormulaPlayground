@@ -51,13 +51,14 @@ public class FormulaController : ControllerBase
   [HttpPost("run")]
   [ProducesResponseType(StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
-  public ActionResult<RunFormulaResult> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] RunFormulaRequest request)
+  public async Task<ActionResult<RunFormulaResult>> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] RunFormulaRequest request)
   {
     var response = new RunFormulaResult();
     // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
     try
     {
-      var runResult = _formulaService.RunFormula(request.Formula, request.Timezone);
+      var formulaContext = await _onspringService.GetFormulaContext(apiKey, request.Timezone, request.AppId, request.RecordId);
+      var runResult = _formulaService.RunFormula(request.Formula, formulaContext);
       response.Result = runResult.Value;
 
       if (runResult.IsValid is false)

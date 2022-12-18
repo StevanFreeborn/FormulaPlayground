@@ -10,7 +10,7 @@ import {
 export default class FormulaService {
   static endpoint = `${BASE_URL}/api/formulas`;
 
-  static runFormula = async (apiKey, appId, formula, timezone) => {
+  static runFormula = async (apiKey, appId, recordId, formula, timezone) => {
     const headers = {};
     headers[API_KEY_HEADER_NAME] = apiKey;
     headers[API_VERSION_HEADER_NAME] = API_VERSION_HEADER_VALUE;
@@ -21,6 +21,7 @@ export default class FormulaService {
       headers: headers,
       body: JSON.stringify({
         appId: parseInt(appId),
+        recordId: parseInt(recordId),
         formula: formula,
         timezone: timezone,
       }),

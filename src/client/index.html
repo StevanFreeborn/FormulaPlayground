@@ -42,6 +42,10 @@
       <div class="container-fluid d-flex flex-column flex-grow-1">
         <div class="row my-3 gy-1">
           <div class="col-sm-12 col-md-3">
+            <input id="apiKey" type="password" class="form-control form-control-sm shadow-none" placeholder="Api Key">
+            <div id="apiKeyError" class="text-danger"></div>
+          </div>
+          <div class="col-sm-12 col-md-3">
             <select id="timezone" class="form-select form-select-sm shadow-none">
               <option value="" selected>Select Timezone</option>
               <option value="Morocco Standard Time">(GMT) Casablanca</option>
@@ -133,10 +137,6 @@
               <option value="Samoa Standard Time">(GMT-11:00) Midway Island, Samoa</option>
               <option value="Dateline Standard Time">(GMT-12:00) International Date Line West</option>
             </select>
-          </div>
-          <div class="col-sm-12 col-md-3">
-            <input id="apiKey" type="password" class="form-control form-control-sm shadow-none" placeholder="Api Key">
-            <div id="apiKeyError" class="text-danger"></div>
           </div>
           <div class="col-sm-12 col-md-3">
             <select id="app" class="form-select form-select-sm shadow-none visually-hidden">

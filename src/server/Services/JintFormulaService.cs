@@ -24,15 +24,14 @@ public class JintFormulaService : IFormulaService
     _serializer = new JsonSerializer(_engine);
   }
 
-  public FormulaRunResult RunFormula(string formula, string timezone)
+  public FormulaRunResult RunFormula(string formula, FormulaContext formulaContext)
   {
     var result = new FormulaRunResult();
 
     try
     {
-      var instanceTimezone = TimeZoneInfo.FindSystemTimeZoneById(timezone);
       var engineResult = _engine.Evaluate(formula, _parserOptions).ToObject();
-      result.Value = FormulaProcessor.GetResultAsString(engineResult, instanceTimezone);
+      result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
     catch(Exception e) when (e is JavaScriptException || e is ParserException)
     {

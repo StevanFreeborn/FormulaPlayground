@@ -1,6 +1,7 @@
 using Onspring.API.SDK;
 using Onspring.API.SDK.Enums;
 using Onspring.API.SDK.Models;
+using server.Models;
 using System.Text.Json;
 
 namespace server.Services;
@@ -8,6 +9,7 @@ namespace server.Services;
 public class OnspringService : IOnspringService
 {
   private readonly string _baseUrl = "https://api.onspring.com";
+
   private readonly ILogger<OnspringService> _logger;
 
   public OnspringService(ILogger<OnspringService> logger)
@@ -47,7 +49,6 @@ public class OnspringService : IOnspringService
 
   public async Task<List<Field>> GetFields(string apiKey, int appId)
   {
-
     var onspringClient = new OnspringClient(_baseUrl, apiKey);
 
     var pagingRequest = new PagingRequest(1, 50);
@@ -81,5 +82,38 @@ public class OnspringService : IOnspringService
       field.Type != FieldType.SurveyReference);
 
     return fields;
+  }
+
+  private async Task<List<RecordFieldValue>> GetRecordFieldValues(string apiKey, int appId, int recordId)
+  {
+    var onspringClient = new OnspringClient(_baseUrl, apiKey);
+    var recordRequest = new GetRecordRequest(appId, recordId);
+
+    var response = await onspringClient.GetRecordAsync(recordRequest);
+
+    if (response.IsSuccessful is false) {
+      return new List<RecordFieldValue>();
+    }
+
+    return response.Value.FieldData;
+  }
+
+  public async Task<FormulaContext> GetFormulaContext(string apiKey, string timezone, int appId, int recordId)
+  {
+    var fields = await GetFields(apiKey, appId);
+    var fieldValues = await GetRecordFieldValues(apiKey, appId, recordId);
+    var instanceTimezone = GetInstanceTimezone(timezone);
+
+    return new FormulaContext(fields, fieldValues, instanceTimezone);
+  }
+
+  private TimeZoneInfo GetInstanceTimezone(string timezone)
+  {
+    if (String.IsNullOrWhiteSpace(timezone))
+    {
+      return TimeZoneInfo.Utc;
+    }
+
+    return TimeZoneInfo.FindSystemTimeZoneById(timezone);
   }
 }
