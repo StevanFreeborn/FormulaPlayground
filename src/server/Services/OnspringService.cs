@@ -84,20 +84,6 @@ public class OnspringService : IOnspringService
     return fields;
   }
 
-  private async Task<List<RecordFieldValue>> GetRecordFieldValues(string apiKey, int appId, int recordId)
-  {
-    var onspringClient = new OnspringClient(_baseUrl, apiKey);
-    var recordRequest = new GetRecordRequest(appId, recordId);
-
-    var response = await onspringClient.GetRecordAsync(recordRequest);
-
-    if (response.IsSuccessful is false) {
-      return new List<RecordFieldValue>();
-    }
-
-    return response.Value.FieldData;
-  }
-
   public async Task<FormulaContext> GetFormulaContext(string apiKey, string timezone, int appId, int recordId)
   {
     var context = new FormulaContext();
@@ -116,6 +102,20 @@ public class OnspringService : IOnspringService
     }
 
     return context;
+  }
+
+  private async Task<List<RecordFieldValue>> GetRecordFieldValues(string apiKey, int appId, int recordId)
+  {
+    var onspringClient = new OnspringClient(_baseUrl, apiKey);
+    var recordRequest = new GetRecordRequest(appId, recordId);
+
+    var response = await onspringClient.GetRecordAsync(recordRequest);
+
+    if (response.IsSuccessful is false) {
+      return new List<RecordFieldValue>();
+    }
+
+    return response.Value.FieldData;
   }
 
   private TimeZoneInfo GetInstanceTimezone(string timezone)
