@@ -10,7 +10,6 @@ public class JintFormulaService : IFormulaService
 {
   private readonly Engine _engine;
   private readonly ParserOptions _parserOptions;
-
   private readonly JsonSerializer _serializer;
 
   public JintFormulaService()
@@ -30,6 +29,7 @@ public class JintFormulaService : IFormulaService
 
     try
     {
+      var parsedFormula = FormulaParser.ParseFormula(formula);
       var engineResult = _engine.Evaluate(formula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }

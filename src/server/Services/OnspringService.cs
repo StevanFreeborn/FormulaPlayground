@@ -9,7 +9,6 @@ namespace server.Services;
 public class OnspringService : IOnspringService
 {
   private readonly string _baseUrl = "https://api.onspring.com";
-
   private readonly ILogger<OnspringService> _logger;
 
   public OnspringService(ILogger<OnspringService> logger)
