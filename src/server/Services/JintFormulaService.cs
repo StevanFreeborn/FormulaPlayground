@@ -29,7 +29,7 @@ public class JintFormulaService : IFormulaService
 
     try
     {
-      var parsedFormula = FormulaParser.ParseFormula(formula);
+      var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
       var engineResult = _engine.Evaluate(formula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
