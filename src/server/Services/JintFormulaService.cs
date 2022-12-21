@@ -29,7 +29,8 @@ public class JintFormulaService : IFormulaService
 
     try
     {
-      var parsedFormula = FormulaParser.ParseFormula(formula, _engine, formulaContext);
+      var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
+      SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
       var engineResult = _engine.Evaluate(parsedFormula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
@@ -39,6 +40,14 @@ public class JintFormulaService : IFormulaService
     }
 
     return result;
+  }
+
+  private void SetFieldVariableValues(Engine engine, Dictionary<string, object> fieldVariableToValueMap)
+  {
+    foreach(KeyValuePair<string, object> entry in fieldVariableToValueMap)
+    {
+      engine.SetValue(entry.Key, entry.Value);
+    }
   }
 
   public FormulaValidationResult ValidateFormula(string formula)

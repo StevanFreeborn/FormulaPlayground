@@ -74,11 +74,11 @@ public class OnspringService : IOnspringService
     } while (currentPage <= totalPages);
 
     // TODO: Investigate other field types that potentially need to be filtered out
-    fields.FindAll(field =>
-      field.Type != FieldType.Attachment ||
-      field.Type != FieldType.Image ||
-      field.Type != FieldType.Reference ||
-      field.Type != FieldType.SurveyReference);
+    fields = fields.FindAll(field =>
+      field.Type is not FieldType.Attachment &&
+      field.Type is not FieldType.Image &&
+      field.Type is not FieldType.Reference &&
+      field.Type is not FieldType.SurveyReference);
 
     return fields;
   }

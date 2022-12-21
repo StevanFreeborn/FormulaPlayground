@@ -9,6 +9,8 @@ public class FormulaContext
   public List<Field> Fields { get; set; } = new List<Field>();
   public List<RecordFieldValue> FieldValues { get; set; } = new List<RecordFieldValue>();
 
+  public Dictionary<string, object> FieldVariableToValueMap { get; set; } = new Dictionary<string, object>();
+
   public FormulaContext()
   {
   }
