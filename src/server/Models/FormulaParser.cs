@@ -24,11 +24,38 @@ public class FormulaParser
     {
       var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
-      var fieldId = GetFieldIdFromFieldsContext(fieldName, context);
-      var variableValue = GetRecordFieldValueFromContext(fieldId, context).GetValue();
+      var field = GetFieldFromFieldsContext(fieldName, context);
+      var variableValue = GetRecordFieldValueFromContext(field, context);
+      if (variableValue is Guid?) 
+      {
+        var variableValueAsGuid = variableValue as Guid?;
+        variableValue = GetListValueName(field, variableValueAsGuid);
+      }
+      if (variableValue is List<Guid>)
+      {
+        var variableValueAsList = variableValue as List<Guid>;
+        variableValue = GetMultiSelectListAsString(field, variableValueAsList);
+      }
       dict.Add(fieldVariable, variableValue);
     }
     return dict;
+  }
+
+  private static string GetMultiSelectListAsString(Field field, List<Guid> fieldValue)
+  {
+    var listNames = new List<string>();
+    foreach(var value in fieldValue)
+    {
+      var listName = GetListValueName(field, value);
+      listNames.Add(listName);
+    }
+    return String.Join(", ", listNames);
+  }
+
+  private static string GetListValueName(Field field, Guid? listValueId)
+  {
+    var listField = field as ListField;
+    return listField.Values.FirstOrDefault(v => v.Id == listValueId).Name;
   }
 
   private static string ReplaceFieldTokensWithValidVariableNames(string formula, List<string> fieldTokens)
@@ -41,15 +68,15 @@ public class FormulaParser
     return formula;
   }
 
-  private static RecordFieldValue GetRecordFieldValueFromContext(int fieldId, FormulaContext context)
+  private static object GetRecordFieldValueFromContext(Field field, FormulaContext context)
   {
-    return context.FieldValues.FirstOrDefault(fv => fv.FieldId == fieldId);
+    return context.FieldValues.FirstOrDefault(fv => fv.FieldId == field.Id).GetValue();
   }
 
-  private static int GetFieldIdFromFieldsContext(string fieldName, FormulaContext context)
+  private static Field GetFieldFromFieldsContext(string fieldName, FormulaContext context)
   {
     var field = context.Fields.First(f => f.Name == fieldName);
-    return field.Id;
+    return field;
   }
 
   private static string ConvertFieldTokenToValidVariableName(string fieldToken)

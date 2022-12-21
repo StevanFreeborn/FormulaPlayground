@@ -186,12 +186,14 @@ export default class IndexEventHandler {
     const responseBody = await response.json();
 
     if (response.ok == false) {
-      this.state.formulaResult.innerText = responseBody.error;
+      this.state.resetValidationModalStyles();
+      this.state.validationModalBody.innerText = responseBody.error;
+      this.state.setupRunErrorModalHeader();
+      this.state.validationModal.show();
       return;
     }
-    
-    const formulaResultAsObject = responseBody.result;
-    this.state.formulaResult.innerText = formulaResultAsObject;
+
+    this.state.formulaResult.innerText = responseBody.result;
   };
 
   handleValidateSyntaxButtonClick = async e => {
