@@ -29,8 +29,8 @@ public class JintFormulaService : IFormulaService
 
     try
     {
-      var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
-      var engineResult = _engine.Evaluate(formula, _parserOptions).ToObject();
+      var parsedFormula = FormulaParser.ParseFormula(formula, _engine, formulaContext);
+      var engineResult = _engine.Evaluate(parsedFormula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
     catch(Exception e) when (e is JavaScriptException || e is ParserException)
