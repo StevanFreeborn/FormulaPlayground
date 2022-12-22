@@ -177,12 +177,8 @@ export default class IndexEventHandler {
 
   // TODO: Make better way to display output.
   handleRunFormulaButtonClick = async e => {
-    const apiKey = this.state.apiKeyInput.value;
-    const appId = this.state.appInput.value ? this.state.appInput.value : 0;
-    const recordId = this.state.recordInput.value ? this.state.recordInput.value : 0;
-    const formula = this.state.editorView.state.doc.toJSON().join('');
-    const timezone = this.state.timezoneInput.value;
-    const response = await FormulaService.runFormula(apiKey, appId, recordId, formula, timezone);
+    const request = this.state.getFormulaRequest();
+    const response = await FormulaService.runFormula(request);
     const responseBody = await response.json();
 
     if (response.ok == false) {
@@ -197,8 +193,8 @@ export default class IndexEventHandler {
   };
 
   handleValidateSyntaxButtonClick = async e => {
-    const formula = this.state.editorView.state.doc.text.join('');
-    const response = await FormulaService.validateFormula(formula);
+    const request = this.state.getFormulaRequest();
+    const response = await FormulaService.validateFormula(request);
     const result = await response.json();
     
     this.state.resetValidationModalStyles();

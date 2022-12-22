@@ -330,6 +330,15 @@ const state = {
     this.validationModalTitleIcon.classList.add('icon-valid');
     this.validationModalTitle.innerText = validHeaderTitle;
   },
+  getFormulaRequest() {
+    return {
+      apiKey: this.apiKeyInput.value,
+      appId: this.appInput.value ? this.state.appInput.value : 0,
+      recordId: this.recordInput.value ? this.state.recordInput.value : 0,
+      formula: this.editorView.state.doc.toJSON().join(''),
+      timezone: this.timezoneInput.value,
+    }
+  },
   setupEventListeners() {
     const eventHandler = new IndexEventHandler(this);
 

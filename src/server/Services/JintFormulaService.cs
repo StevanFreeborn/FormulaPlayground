@@ -34,34 +34,34 @@ public class JintFormulaService : IFormulaService
       var engineResult = _engine.Evaluate(parsedFormula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
-    catch(Exception e) when (e is JavaScriptException || e is ParserException)
+    catch (Exception e) when (e is JavaScriptException || e is ParserException)
     {
       result.Exception = e;
     }
-
     return result;
   }
 
-  private void SetFieldVariableValues(Engine engine, Dictionary<string, object> fieldVariableToValueMap)
-  {
-    foreach(KeyValuePair<string, object> entry in fieldVariableToValueMap)
-    {
-      engine.SetValue(entry.Key, entry.Value);
-    }
-  }
-
-  public FormulaValidationResult ValidateFormula(string formula)
+  public FormulaValidationResult ValidateFormula(string formula, FormulaContext formulaContext)
   {
     var result = new FormulaValidationResult();
     try
     {
-      _engine.Execute(formula);
+      var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
+      SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
+      _engine.Execute(parsedFormula);
     }
     catch (Exception e) when (e is JavaScriptException || e is ParserException)
     {
       result.Exception = e;
     }
-
     return result;
+  }
+
+  private void SetFieldVariableValues(Engine engine, Dictionary<string, object> fieldVariableToValueMap)
+  {
+    foreach (KeyValuePair<string, object> entry in fieldVariableToValueMap)
+    {
+      engine.SetValue(entry.Key, entry.Value);
+    }
   }
 }
