@@ -29,22 +29,13 @@ public class JintFormulaService : IFormulaService
 
     try
     {
-      var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
-      SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
+      var parsedFormula = GetParsedFormula(formula, formulaContext);
       var engineResult = _engine.Evaluate(parsedFormula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
     catch (Exception e) when (e is JavaScriptException || e is ParserException || e is AggregateException)
     {
-      if (e is AggregateException)
-      {
-        var aggregateException = e as AggregateException;
-        result.Exceptions.AddRange(aggregateException.InnerExceptions);
-      }
-      else
-      {
-        result.Exceptions.Add(e);
-      }
+      HandleFormulaException(e, result);
     }
     return result;
   }
@@ -54,23 +45,34 @@ public class JintFormulaService : IFormulaService
     var result = new FormulaValidationResult();
     try
     {
-      var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
-      SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
+      var parsedFormula = GetParsedFormula(formula, formulaContext);
       _engine.Execute(parsedFormula);
     }
     catch (Exception e) when (e is JavaScriptException || e is ParserException || e is AggregateException)
     {
-      if (e is AggregateException)
-      {
-        var aggregateException = e as AggregateException;
-        result.Exceptions.AddRange(aggregateException.InnerExceptions);
-      }
-      else
-      {
-        result.Exceptions.Add(e);
-      }
+      HandleFormulaException(e, result);
     }
     return result;
+  }
+
+  private void HandleFormulaException(Exception e, FormulaResultBase result)
+  {
+    if (e is AggregateException)
+    {
+      var aggregateException = e as AggregateException;
+      result.Exceptions.AddRange(aggregateException.InnerExceptions);
+    }
+    else
+    {
+      result.Exceptions.Add(e);
+    }
+  }
+
+  private string GetParsedFormula(string formula, FormulaContext formulaContext)
+  {
+    var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
+    SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
+    return parsedFormula;
   }
 
   private void SetFieldVariableValues(Engine engine, Dictionary<string, object> fieldVariableToValueMap)
