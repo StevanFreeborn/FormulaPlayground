@@ -282,7 +282,8 @@ const state = {
   displayFormulaResult(result) {
     this.formulaResult.innerHTML = result;
   },
-  resetValidationModalStyles() {
+  resetValidationModal() {
+    this.validationModalBody.innerHTML = '';
     this.validationModalHeader.classList.remove('border-invalid');
     this.validationModalHeader.classList.remove('border-valid');
     this.validationModalTitleIcon.classList.remove('icon-invalid');

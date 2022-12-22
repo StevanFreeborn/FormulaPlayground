@@ -182,8 +182,14 @@ export default class IndexEventHandler {
     const responseBody = await response.json();
 
     if (response.ok == false) {
-      this.state.resetValidationModalStyles();
-      this.state.validationModalBody.innerText = responseBody.error;
+      this.state.resetValidationModal();
+
+      responseBody.errors.forEach(error => {
+        var errorElement = document.createElement('div');
+        errorElement.innerText = error;
+        this.state.validationModalBody.append(errorElement);
+      });
+            
       this.state.setupRunErrorModalHeader();
       this.state.validationModal.show();
       return;
@@ -197,8 +203,13 @@ export default class IndexEventHandler {
     const response = await FormulaService.validateFormula(request);
     const result = await response.json();
     
-    this.state.resetValidationModalStyles();
-    this.state.validationModalBody.innerText = result.message;
+    this.state.resetValidationModal();
+
+    result.messages.forEach(message => {
+      var messageElement = document.createElement('div');
+      messageElement.innerText = message;
+      this.state.validationModalBody.append(messageElement);
+    });
 
     if (response.ok) {
       this.state.setupValidModalHeader();

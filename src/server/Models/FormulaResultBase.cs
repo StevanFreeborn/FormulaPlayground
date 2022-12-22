@@ -1,5 +1,5 @@
 public class FormulaResultBase
 {
-  public Exception Exception { get; set; }
-  public bool IsValid => Exception is null;
+  public List<Exception> Exceptions { get; set; } = new List<Exception>();
+  public bool IsValid => Exceptions.Count == 0;
 }

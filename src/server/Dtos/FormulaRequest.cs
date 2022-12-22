@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace server.Dtos;
 
-public class FormulaRequestBase
+public class FormulaRequest
 {
   [JsonPropertyName("appId")]
   public int AppId { get; set; }

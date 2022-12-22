@@ -89,6 +89,7 @@ public class FormulaParser
 
   private static void ValidateFieldTokens(List<string> fieldTokens, List<Field> fields)
   {
+    var exceptions = new List<Exception>();
     foreach (var fieldToken in fieldTokens)
     {
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
@@ -96,8 +97,13 @@ public class FormulaParser
       
       if (field is null)
       {
-        throw new ParserException($"'{fieldName}' was not recongized as a valid field.");
+        var exception = new ParserException($"'{fieldName}' was not recongized as a valid field.");
+        exceptions.Add(exception);
       }
+    }
+    if (exceptions.Count > 0)
+    {
+      throw new AggregateException("field token errors", exceptions);
     }
   }
 

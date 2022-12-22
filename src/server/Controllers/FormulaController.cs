@@ -23,7 +23,7 @@ public class FormulaController : ControllerBase
   [HttpPost("validate")]
   [ProducesResponseType(StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
-  public async Task<ActionResult<ValidateFormulaResult>> ValidateFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] ValidateFormulaRequest request)
+  public async Task<ActionResult<ValidateFormulaResult>> ValidateFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] FormulaRequest request)
   {
     var response = new ValidateFormulaResult();
     // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
@@ -34,17 +34,18 @@ public class FormulaController : ControllerBase
       
       if (validationResult.IsValid is false) 
       {
-        response.Message = validationResult.Exception.Message;
+        var messages = validationResult.Exceptions.Select(e => e.Message).ToList();
+        response.Messages.AddRange(messages);
         return BadRequest(response);
       }
 
-      response.Message = "The formula syntax is valid";
+      response.Messages.Add("The formula syntax is valid");
       return Ok(response);
     }
     catch (Exception e)
     {
       Console.WriteLine(e);
-      response.Message = "We're sorry we were unable to validate the formula.";
+      response.Messages.Add("We're sorry we were unable to validate the formula.");
       return StatusCode(500, response);
     }
   }
@@ -52,7 +53,7 @@ public class FormulaController : ControllerBase
   [HttpPost("run")]
   [ProducesResponseType(StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
-  public async Task<ActionResult<RunFormulaResult>> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] RunFormulaRequest request)
+  public async Task<ActionResult<RunFormulaResult>> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] FormulaRequest request)
   {
     var response = new RunFormulaResult();
     // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
@@ -64,7 +65,8 @@ public class FormulaController : ControllerBase
 
       if (runResult.IsValid is false)
       {
-        response.Error = runResult.Exception.Message;
+        var errors = runResult.Exceptions.Select(e => e.Message).ToList();
+        response.Errors.AddRange(errors);
         return BadRequest(response);
       }
 
@@ -73,27 +75,9 @@ public class FormulaController : ControllerBase
     catch (Exception e)
     {
       Console.WriteLine(e);
-      response.Error = "Failed to run formula.";
+      response.Errors.Add("Failed to run formula.");
       return StatusCode(500, response);
     }
-  }
-
-  private static string ObjectToString(object obj)
-  {
-    switch (obj)
-    {
-      case null:
-        return null;
-      case string s:
-        return s;
-      case DateTime time:
-        var dt = DateTime.SpecifyKind(time, DateTimeKind.Unspecified);
-        return dt.ToLongDateString();
-      case object[] objArray:
-        return string.Join(", ", objArray.Where(a => a != null).Select(ObjectToString));
-    }
-
-    return obj.ToString();
   }
 }
 

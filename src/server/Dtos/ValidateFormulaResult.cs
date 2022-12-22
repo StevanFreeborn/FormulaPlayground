@@ -4,6 +4,6 @@ namespace server.Dtos;
 
 public class ValidateFormulaResult
 {
-  [JsonPropertyName("message")]
-  public string Message { get; set; }
+  [JsonPropertyName("messages")]
+  public List<string> Messages { get; set; } = new List<string>();
 }

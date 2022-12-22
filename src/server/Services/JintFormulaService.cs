@@ -34,9 +34,17 @@ public class JintFormulaService : IFormulaService
       var engineResult = _engine.Evaluate(parsedFormula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
-    catch (Exception e) when (e is JavaScriptException || e is ParserException)
+    catch (Exception e) when (e is JavaScriptException || e is ParserException || e is AggregateException)
     {
-      result.Exception = e;
+      if (e is AggregateException)
+      {
+        var aggregateException = e as AggregateException;
+        result.Exceptions.AddRange(aggregateException.InnerExceptions);
+      }
+      else
+      {
+        result.Exceptions.Add(e);
+      }
     }
     return result;
   }
@@ -50,9 +58,17 @@ public class JintFormulaService : IFormulaService
       SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
       _engine.Execute(parsedFormula);
     }
-    catch (Exception e) when (e is JavaScriptException || e is ParserException)
+    catch (Exception e) when (e is JavaScriptException || e is ParserException || e is AggregateException)
     {
-      result.Exception = e;
+      if (e is AggregateException)
+      {
+        var aggregateException = e as AggregateException;
+        result.Exceptions.AddRange(aggregateException.InnerExceptions);
+      }
+      else
+      {
+        result.Exceptions.Add(e);
+      }
     }
     return result;
   }
