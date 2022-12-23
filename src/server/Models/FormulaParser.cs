@@ -8,12 +8,27 @@ namespace server.Models;
 
 public class FormulaParser
 {
-  public static string ParseFormula(string formula, FormulaContext formulaContext)
+  private static readonly string fieldTokenStart = "{:";
+  private static readonly string fieldTokenEnd = "}";
+  private static readonly Regex fieldTokenRegex = new Regex(@"\{:(.+?)\}");
+  private static readonly string listTokenStart = "[:";
+  private static readonly string listTokenEnd = "]";
+  private static readonly Regex listTokenRegex = new Regex(@"\[:(.+?)\]");
+  private static readonly Regex invalidNameCharactersRegex = new Regex(@"(\s|\+|-|\*|/|=|>|<|>=|<=|&|\||%|!|\^|\(|\))");
+
+  public static List<string> GetFieldTokens(string formula)
+  {
+    return fieldTokenRegex.Matches(formula).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
+  }
+
+  public static List<string> GetListTokens(string formula)
+  {
+    return listTokenRegex.Matches(formula).Select(listTokenMatch => listTokenMatch.Value).ToList();
+  }
+
+  public static void ValidateTokens(List<string> fieldTokens, List<string> listTokens, FormulaContext formulaContext)
   {
     var exceptions = new List<Exception>();
-    var parsedFormula = formula;
-    var fieldTokens = GetFieldTokens(formula);
-    var listTokens = GetListTokens(formula);
     try
     {
       ValidateFieldTokens(fieldTokens, formulaContext.Fields);
@@ -36,27 +51,32 @@ public class FormulaParser
     {
       throw new AggregateException("formula parsing errors", exceptions);
     }
-
-    parsedFormula = ReplaceFieldTokensWithValidVariableNames(parsedFormula, fieldTokens);
-    formulaContext.FieldVariableToValueMap = GetFieldVariableToValueMap(fieldTokens, formulaContext);
-
-    return parsedFormula;
   }
 
-  private static void ValidateTokens()
+  public static string ReplaceTokensWithValidVariableNames(string formula, List<string> fieldTokens, List<string> listTokens)
   {
-    throw new NotImplementedException();
+    foreach (var fieldToken in fieldTokens)
+    {
+      var validFieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
+      formula = formula.Replace(fieldToken, validFieldVariable);
+    }
+    foreach (var listToken in listTokens)
+    {
+      var validListVariable = ConvertListFieldTokenToValidVariableName(listToken);
+      formula = formula.Replace(listToken, validListVariable);
+    }
+    return formula;
   }
 
-  private static Dictionary<string, object> GetFieldVariableToValueMap(List<string> fieldTokens, FormulaContext context)
+  public static Dictionary<string, object> GetVariableToValueMap(List<string> fieldTokens, List<string> listTokens, FormulaContext context)
   {
     var dict = new Dictionary<string, object>();
     foreach (var fieldToken in fieldTokens)
     {
       var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
-      var field = GetFieldFromFieldsContext(fieldName, context);
-      var variableValue = GetRecordFieldValueFromContext(field, context);
+      var field = context.Fields.First(f => f.Name == fieldName);
+      var variableValue = context.FieldValues.FirstOrDefault(fv => fv.FieldId == field.Id).GetValue();
       if (variableValue is Guid?)
       {
         var variableValueAsGuid = variableValue as Guid?;
@@ -69,6 +89,13 @@ public class FormulaParser
       }
       dict.Add(fieldVariable, variableValue);
     }
+    foreach (var listToken in fieldTokens)
+    {
+      var listVariable = ConvertListFieldTokenToValidVariableName(listToken);
+      var listName = GetListNameFromListToken(listToken);
+      dict.Add(listVariable, listName);
+    }
+
     return dict;
   }
 
@@ -89,33 +116,18 @@ public class FormulaParser
     return listField.Values.FirstOrDefault(v => v.Id == listValueId).Name;
   }
 
-  private static string ReplaceFieldTokensWithValidVariableNames(string formula, List<string> fieldTokens)
-  {
-    foreach (var fieldToken in fieldTokens)
-    {
-      var validFieldName = ConvertFieldTokenToValidVariableName(fieldToken);
-      formula = formula.Replace(fieldToken, validFieldName);
-    }
-    return formula;
-  }
-
-  private static object GetRecordFieldValueFromContext(Field field, FormulaContext context)
-  {
-    return context.FieldValues.FirstOrDefault(fv => fv.FieldId == field.Id).GetValue();
-  }
-
-  private static Field GetFieldFromFieldsContext(string fieldName, FormulaContext context)
-  {
-    var field = context.Fields.First(f => f.Name == fieldName);
-    return field;
-  }
-
   private static string ConvertFieldTokenToValidVariableName(string fieldToken)
   {
     var fieldName = GetFieldNameFromFieldToken(fieldToken);
-    var invalidFieldNameCharactersRegex = new Regex(@"(\s|\+|-|\*|/|=|>|<|>=|<=|&|\||%|!|\^|\(|\))");
-    var validFieldName = invalidFieldNameCharactersRegex.Replace(fieldName, "_");
+    var validFieldName = invalidNameCharactersRegex.Replace(fieldName, "_");
     return "__" + validFieldName + "_";
+  }
+
+  private static string ConvertListFieldTokenToValidVariableName(string listToken)
+  {
+    var listName = GetListNameFromListToken(listToken);
+    var validListName = invalidNameCharactersRegex.Replace(listName, "$");
+    return "$$" + validListName + "$";
   }
 
   private static void ValidateFieldTokens(List<string> fieldTokens, List<Field> fields)
@@ -163,23 +175,15 @@ public class FormulaParser
 
   private static string GetListNameFromListToken(string listToken)
   {
-    return listToken.Substring(2, listToken.Length - 3);
+    var startOffset = listTokenStart.Length;
+    var lengthOffset = listTokenStart.Length + listTokenEnd.Length;
+    return listToken.Substring(startOffset, listToken.Length - lengthOffset);
   }
 
   private static string GetFieldNameFromFieldToken(string fieldToken)
   {
-    return fieldToken.Substring(2, fieldToken.Length - 3);
-  }
-
-  private static List<string> GetListTokens(string formula)
-  {
-    var listTokenRegex = new Regex(@"\[:(.+?)\]");
-    return listTokenRegex.Matches(formula).Select(listTokenMatch => listTokenMatch.Value).ToList();
-  }
-
-  private static List<string> GetFieldTokens(string formula)
-  {
-    var fieldTokenRegex = new Regex(@"\{:(.+?)\}");
-    return fieldTokenRegex.Matches(formula).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
+    var startOffset = fieldTokenStart.Length;
+    var lengthOffset = fieldTokenStart.Length + fieldTokenEnd.Length;
+    return fieldToken.Substring(startOffset, fieldToken.Length - lengthOffset);
   }
 }

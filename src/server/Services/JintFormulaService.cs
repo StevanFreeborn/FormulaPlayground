@@ -10,7 +10,6 @@ public class JintFormulaService : IFormulaService
 {
   private readonly Engine _engine;
   private readonly ParserOptions _parserOptions;
-  private readonly JsonSerializer _serializer;
 
   public JintFormulaService()
   {
@@ -20,7 +19,6 @@ public class JintFormulaService : IFormulaService
       Tolerant = true,
       AdaptRegexp = true,
     };
-    _serializer = new JsonSerializer(_engine);
   }
 
   public FormulaRunResult RunFormula(string formula, FormulaContext formulaContext)
@@ -55,6 +53,17 @@ public class JintFormulaService : IFormulaService
     return result;
   }
 
+  private string GetParsedFormula(string formula, FormulaContext formulaContext)
+  {
+    var fieldTokens = FormulaParser.GetFieldTokens(formula);
+    var listTokens = FormulaParser.GetListTokens(formula);
+    FormulaParser.ValidateTokens(fieldTokens, listTokens, formulaContext);
+    var parsedFormula = FormulaParser.ReplaceTokensWithValidVariableNames(formula, fieldTokens, listTokens);
+    var tokenVariableToValueMap = FormulaParser.GetVariableToValueMap(fieldTokens, listTokens, formulaContext);
+    SetTokenVariableValues(tokenVariableToValueMap);
+    return parsedFormula;
+  }
+
   private void HandleFormulaException(Exception e, FormulaResultBase result)
   {
     if (e is AggregateException)
@@ -68,18 +77,11 @@ public class JintFormulaService : IFormulaService
     }
   }
 
-  private string GetParsedFormula(string formula, FormulaContext formulaContext)
+  private void SetTokenVariableValues(Dictionary<string, object> tokenVariableToValueMap)
   {
-    var parsedFormula = FormulaParser.ParseFormula(formula, formulaContext);
-    SetFieldVariableValues(_engine, formulaContext.FieldVariableToValueMap);
-    return parsedFormula;
-  }
-
-  private void SetFieldVariableValues(Engine engine, Dictionary<string, object> fieldVariableToValueMap)
-  {
-    foreach (KeyValuePair<string, object> entry in fieldVariableToValueMap)
+    foreach (KeyValuePair<string, object> entry in tokenVariableToValueMap)
     {
-      engine.SetValue(entry.Key, entry.Value);
+      _engine.SetValue(entry.Key, entry.Value);
     }
   }
 }
