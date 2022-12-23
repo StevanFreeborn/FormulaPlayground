@@ -334,8 +334,8 @@ const state = {
   getFormulaRequest() {
     return {
       apiKey: this.apiKeyInput.value,
-      appId: this.appInput.value ? this.state.appInput.value : 0,
-      recordId: this.recordInput.value ? this.state.recordInput.value : 0,
+      appId: this.appInput.value ? this.appInput.value : 0,
+      recordId: this.recordInput.value ? this.recordInput.value : 0,
       formula: this.editorView.state.doc.toJSON().join(''),
       timezone: this.timezoneInput.value,
     }

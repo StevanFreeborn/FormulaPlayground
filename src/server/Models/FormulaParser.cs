@@ -89,7 +89,7 @@ public class FormulaParser
       }
       dict.Add(fieldVariable, variableValue);
     }
-    foreach (var listToken in fieldTokens)
+    foreach (var listToken in listTokens)
     {
       var listVariable = ConvertListFieldTokenToValidVariableName(listToken);
       var listName = GetListNameFromListToken(listToken);
