@@ -10,8 +10,14 @@ public class Sum : FunctionBase
     {
       return null;
     }
-    var numbers = new List<double>();
     var args = FlattenArgumentsArray(arguments);
+    var numbers = GetArgsAsDoubles(args);
+    return numbers.Sum();
+  }
+
+  private static List<double> GetArgsAsDoubles(List<object> args)
+  {
+    var numbers = new List<double>();
     foreach (var arg in args)
     {
       if (arg is double argAsDouble)
@@ -26,8 +32,7 @@ public class Sum : FunctionBase
         }
       }
     }
-
-    return numbers.Sum();
+    return numbers;
   }
 
   private static List<object> FlattenArgumentsArray(object[] arguments)
