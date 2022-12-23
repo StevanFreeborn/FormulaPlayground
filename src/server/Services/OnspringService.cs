@@ -75,10 +75,12 @@ public class OnspringService : IOnspringService
 
     // TODO: Investigate other field types that potentially need to be filtered out
     fields = fields.FindAll(field =>
-      field.Type is not FieldType.Attachment &&
-      field.Type is not FieldType.Image &&
-      field.Type is not FieldType.Reference &&
-      field.Type is not FieldType.SurveyReference);
+      field.Type is FieldType.Number ||
+      field.Type is FieldType.AutoNumber ||
+      field.Type is FieldType.Date ||
+      field.Type is FieldType.Text ||
+      field.Type is FieldType.List ||
+      field.Type is FieldType.Formula);
 
     return fields;
   }
