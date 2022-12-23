@@ -3,6 +3,8 @@ using Jint;
 using Jint.Runtime;
 using Jint.Native.Json;
 using Esprima;
+using System.Reflection;
+using server.Models.Functions;
 
 namespace server.Services;
 
@@ -14,6 +16,7 @@ public class JintFormulaService : IFormulaService
   public JintFormulaService()
   {
     _engine = new Engine(cfg => cfg.AllowClr().LocalTimeZone(TimeZoneInfo.Utc));
+    SetFunctions();
     _parserOptions = new ParserOptions
     {
       Tolerant = true,
@@ -82,6 +85,23 @@ public class JintFormulaService : IFormulaService
     foreach (KeyValuePair<string, object> entry in tokenVariableToValueMap)
     {
       _engine.SetValue(entry.Key, entry.Value);
+    }
+  }
+
+  private void SetFunctions()
+  {
+    var functionType = typeof(FunctionBase);
+    var functions = Assembly
+    .GetAssembly(functionType)
+    .GetTypes()
+    .Where(type => type.IsSubclassOf(functionType))
+    .ToList();
+
+    foreach(var function in functions)
+    {
+      var instance = Activator.CreateInstance(function) as FunctionBase;
+      var nameFunctionPair = instance.GetNameFunctionPair();
+      _engine.SetValue(nameFunctionPair.Key, nameFunctionPair.Value);
     }
   }
 }
