@@ -3,7 +3,7 @@ import FunctionTypes from "./functionTypes.js";
 
 export const BASE_URL = process.env.NODE_ENV === 'development'
 ? 'https://localhost:44304'
-: '';
+: 'https://formulaplayground.azurewebsites.net/';
 
 export const API_KEY_HEADER_NAME = 'x-apikey';
 export const API_VERSION_HEADER_NAME = 'x-api-version';
