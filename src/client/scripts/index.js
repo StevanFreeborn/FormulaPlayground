@@ -103,7 +103,9 @@ const state = {
     this.functionsList.append(listElement);
   },
   setupFunctionsList() {
-    CUSTOM_FUNCTIONS.forEach(fn => this.addFunctionListElement(fn));
+    CUSTOM_FUNCTIONS
+    .sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+    .forEach(fn => this.addFunctionListElement(fn));
   },
   showApiKeyError(message) {
     this.apiKeyError.innerText = message;

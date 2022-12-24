@@ -2,9 +2,9 @@ using Jint.Runtime;
 
 namespace server.Models.Functions;
 
-public class Round : FunctionBase
+public class RoundUp : FunctionBase
 {
-  protected override string Name => "Round";
+  protected override string Name => "RoundUp";
 
   protected override object Function(params object[] arguments)
   {
@@ -24,9 +24,10 @@ public class Round : FunctionBase
       int.TryParse(precision.ToString(), out int precisionAsInt) is false
       )
     {
-      throw new JavaScriptException("Round() takes a number and a number of digits.");
+      throw new JavaScriptException("RoundUp() takes a number and a number of digits.");
     }
 
-    return Math.Round(numberAsDouble, precisionAsInt);
+    var multiplier = Math.Pow(10, precisionAsInt);
+    return Math.Ceiling(numberAsDouble * multiplier) / multiplier;
   }
 }

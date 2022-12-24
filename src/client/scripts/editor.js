@@ -7,11 +7,6 @@ import { fieldViewPlugin } from './viewPlugins/fieldViewPlugin';
 import { listViewPlugin } from './viewPlugins/listViewPlugin';
 import { customFunctionViewPlugin } from './viewPlugins/customFunctionsViewPlugin';
 
-const fixedHeightEditor = EditorView.theme({
-  '&': { maxHeight: '100%' },
-  '.cm-scroller': { overflow: 'auto' },
-});
-
 export default class Editor {
   static setup = element => {
     const tabSize = new Compartment();
@@ -26,7 +21,6 @@ export default class Editor {
         listViewPlugin,
         customFunctionViewPlugin,
         tabSize.of(EditorState.tabSize.of(4)),
-        fixedHeightEditor,
       ],
     });
 

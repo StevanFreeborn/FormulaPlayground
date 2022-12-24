@@ -5,7 +5,7 @@ const customFunctionDecoration = Decoration.mark({ class: 'custom-function' });
 
 const customFunctionNames = CUSTOM_FUNCTIONS
 .map(fn => fn.name)
-.sort((a, b) => a - b)
+.sort((a,b) => b.length - a.length)
 .join('|');
 
 const customFunctionRegex = new RegExp(customFunctionNames, 'g');
