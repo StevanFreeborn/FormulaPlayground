@@ -1,8 +1,8 @@
 namespace server.Models.Functions;
 
-public class Sum : FunctionBase
+public class Average : FunctionBase
 {
-  protected override string Name => "Sum";
+  protected override string Name => "Average";
 
   protected override object Function(params object[] arguments)
   {
@@ -12,6 +12,6 @@ public class Sum : FunctionBase
     }
     var args = ArgumentHelper.FlattenArgumentsArray(arguments);
     var numbers = ArgumentHelper.GetArgsAsDoubles(args);
-    return numbers.Sum();
+    return numbers.Average();
   }
 }
