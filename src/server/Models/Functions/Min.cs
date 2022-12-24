@@ -6,12 +6,12 @@ public class Min : FunctionBase
 
   protected override object Function(params object[] arguments)
   {
-    if (arguments == null)
+    var args = ArgumentHelper.FlattenArgumentsArray(arguments);
+    var numbers = ArgumentHelper.GetArgsAsDoubles(args);
+    if (numbers.Count == 0)
     {
       return null;
     }
-    var args = ArgumentHelper.FlattenArgumentsArray(arguments);
-    var numbers = ArgumentHelper.GetArgsAsDoubles(args);
     return numbers.Min();
   }
 }
