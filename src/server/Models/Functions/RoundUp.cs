@@ -1,4 +1,4 @@
-using Jint.Runtime;
+using Esprima;
 
 namespace server.Models.Functions;
 
@@ -24,7 +24,7 @@ public class RoundUp : FunctionBase
       int.TryParse(precision.ToString(), out int precisionAsInt) is false
       )
     {
-      throw new JavaScriptException("RoundUp() takes a number and a number of digits.");
+      throw new ParserException("RoundUp() takes a number and a number of digits.");
     }
 
     var multiplier = Math.Pow(10, precisionAsInt);

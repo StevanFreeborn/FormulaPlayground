@@ -1,4 +1,4 @@
-using Jint.Runtime;
+using Esprima;
 
 namespace server.Models.Functions;
 
@@ -24,7 +24,7 @@ public class Round : FunctionBase
       int.TryParse(precision.ToString(), out int precisionAsInt) is false
       )
     {
-      throw new JavaScriptException("Round() takes a number and a number of digits.");
+      throw new ParserException("Round() takes a number and a number of digits.");
     }
 
     return Math.Round(numberAsDouble, precisionAsInt);

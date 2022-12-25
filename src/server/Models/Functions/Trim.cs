@@ -1,7 +1,6 @@
 using System.Globalization;
+using Esprima;
 using Jint;
-using Jint.Runtime;
-using Jint.Runtime.Interop;
 
 namespace server.Models.Functions;
 
@@ -21,7 +20,7 @@ public class Trim : FunctionBase
 
     if (TryParseToType<string>(text, out string textAsString) is false)
     {
-      throw new JavaScriptException("Trim() takes a string.");
+      throw new ParserException("Trim() takes a string.");
     }
 
     return textAsString.Trim();
@@ -30,10 +29,9 @@ public class Trim : FunctionBase
   private bool TryParseToType<T>(object arg, out T argAsType) where T : class
   {
     var engine = new Engine();
-    var type = typeof(T);
     object converted;
 
-    if (engine.ClrTypeConverter.TryConvert(arg, type, CultureInfo.InvariantCulture, out converted))
+    if (engine.ClrTypeConverter.TryConvert(arg, typeof(T), CultureInfo.InvariantCulture, out converted))
     {
       argAsType = converted as T;
       return true;
