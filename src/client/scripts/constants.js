@@ -32,4 +32,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'Min', type: FunctionTypes.number, snippet: 'Min(reference_or_array)'},
   { name: 'Round', type: FunctionTypes.number, snippet: 'Round(number, number_of_digits)'},
   { name: 'RoundUp', type: FunctionTypes.number, snippet: 'RoundUp(number, number_of_digits)'},
+  { name: 'Trim', type: FunctionTypes.text, snippet: 'Trim(text)'},
 ];
