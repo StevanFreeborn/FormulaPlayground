@@ -33,4 +33,6 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'Round', type: FunctionTypes.number, snippet: 'Round(number, number_of_digits)'},
   { name: 'RoundUp', type: FunctionTypes.number, snippet: 'RoundUp(number, number_of_digits)'},
   { name: 'Trim', type: FunctionTypes.text, snippet: 'Trim(text)'},
+  { name: 'Len', type: FunctionTypes.text, snippet: 'Len(text)'},
+  { name: 'Join', type: FunctionTypes.text, snippet: 'Join([value1, value2, ...], "separator")'},
 ];

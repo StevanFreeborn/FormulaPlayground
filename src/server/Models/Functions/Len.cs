@@ -2,9 +2,9 @@ using Esprima;
 
 namespace server.Models.Functions;
 
-public class Trim : FunctionBase
+public class Len : FunctionBase
 {
-  protected override string Name => "Trim";
+  protected override string Name => "Len";
 
   protected override object Function(params object[] arguments)
   {
@@ -18,9 +18,9 @@ public class Trim : FunctionBase
 
     if (ArgumentHelper.TryParseToType(text, out string textAsString) is false)
     {
-      throw new ParserException("Trim() takes a string.");
+      throw new ParserException("Len() takes a string.");
     }
 
-    return textAsString.Trim();
+    return textAsString.Length;
   }
 }

@@ -1,3 +1,6 @@
+using System.Globalization;
+using Jint;
+
 namespace server.Models.Functions;
 
 public class ArgumentHelper
@@ -41,5 +44,20 @@ public class ArgumentHelper
       }
     }
     return args;
+  }
+
+  public static bool TryParseToType<T>(object arg, out T argAsType) where T : class
+  {
+    var engine = new Engine();
+    object converted;
+
+    if (engine.ClrTypeConverter.TryConvert(arg, typeof(T), CultureInfo.InvariantCulture, out converted))
+    {
+      argAsType = converted as T;
+      return true;
+    };
+
+    argAsType = default(T);
+    return false;
   }
 }
