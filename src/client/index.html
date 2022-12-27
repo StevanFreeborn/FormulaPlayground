@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100 overflow-hidden">
+<html lang="en" class="h-100">
 
 <head>
   <meta charset="UTF-8">
@@ -12,11 +12,11 @@
   <link rel="stylesheet" href="styles/codeMirror.css">
   <link rel=stylesheet href="styles/styles.css">
 </head>
-<!-- comment -->
+
 <body class="h-100">
-  <div class="d-flex flex-column min-vh-100 mh-100">
+  <div class="d-flex flex-column min-vh-100">
     <header>
-      <div class="container-fluid">
+      <div class="">
         <nav class="navbar navbar-expand-sm navbar-light">
           <div class="container-fluid">
             <a class="navbar-brand" href="/">Formula Playground</a>
@@ -38,57 +38,163 @@
       </div>
     </header>
 
-    <main class="d-flex flex-column flex-grow-1 overflow-auto">
-      <div class="container-fluid d-flex flex-column flex-grow-1 overflow-auto">
-        <div class="row  my-3">
-          <div class="col">
-            <input id="apiKey" type="password" class="form-control shadow-none" placeholder="Api Key">
+    <main class="d-flex flex-column flex-grow-1">
+      <div class="container-fluid d-flex flex-column flex-grow-1">
+        <div class="row my-3 gy-1">
+          <div class="col-sm-12 col-md-3">
+            <input id="apiKey" type="password" class="form-control form-control-sm shadow-none" placeholder="Api Key">
+            <div id="apiKeyError" class="text-danger"></div>
           </div>
-          <div class="col">
-            <select id="appId" class="form-select shadow-none">
-              <option value="" selected>Select App</option>
+          <div class="col-sm-12 col-md-3">
+            <select id="timezone" class="form-select form-select-sm shadow-none">
+              <option value="" selected>Select Timezone</option>
+              <option value="Morocco Standard Time">(GMT) Casablanca</option>
+              <option value="GMT Standard Time">(GMT) Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London</option>
+              <option value="Greenwich Standard Time">(GMT) Monrovia, Reykjavik</option>
+              <option value="W. Europe Standard Time">(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna</option>
+              <option value="Central Europe Standard Time">(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague</option>
+              <option value="Romance Standard Time">(GMT+01:00) Brussels, Copenhagen, Madrid, Paris</option>
+              <option value="Central European Standard Time">(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb</option>
+              <option value="W. Central Africa Standard Time">(GMT+01:00) West Central Africa</option>
+              <option value="Jordan Standard Time">(GMT+02:00) Amman</option>
+              <option value="GTB Standard Time">(GMT+02:00) Athens, Bucharest, Istanbul</option>
+              <option value="Middle East Standard Time">(GMT+02:00) Beirut</option>
+              <option value="Egypt Standard Time">(GMT+02:00) Cairo</option>
+              <option value="South Africa Standard Time">(GMT+02:00) Harare, Pretoria</option>
+              <option value="FLE Standard Time">(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius</option>
+              <option value="Israel Standard Time">(GMT+02:00) Jerusalem</option>
+              <option value="E. Europe Standard Time">(GMT+02:00) Minsk</option>
+              <option value="Namibia Standard Time">(GMT+02:00) Windhoek</option>
+              <option value="Arabic Standard Time">(GMT+03:00) Baghdad</option>
+              <option value="Arab Standard Time">(GMT+03:00) Kuwait, Riyadh</option>
+              <option value="Russian Standard Time">(GMT+03:00) Moscow, St. Petersburg, Volgograd</option>
+              <option value="E. Africa Standard Time">(GMT+03:00) Nairobi</option>
+              <option value="Georgian Standard Time">(GMT+03:00) Tbilisi</option>
+              <option value="Iran Standard Time">(GMT+03:30) Tehran</option>
+              <option value="Arabian Standard Time">(GMT+04:00) Abu Dhabi, Muscat</option>
+              <option value="Azerbaijan Standard Time">(GMT+04:00) Baku</option>
+              <option value="Mauritius Standard Time">(GMT+04:00) Port Louis</option>
+              <option value="Caucasus Standard Time">(GMT+04:00) Yerevan</option>
+              <option value="Afghanistan Standard Time">(GMT+04:30) Kabul</option>
+              <option value="Ekaterinburg Standard Time">(GMT+05:00) Ekaterinburg</option>
+              <option value="Pakistan Standard Time">(GMT+05:00) Islamabad, Karachi</option>
+              <option value="West Asia Standard Time">(GMT+05:00) Tashkent</option>
+              <option value="India Standard Time">(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
+              <option value="Sri Lanka Standard Time">(GMT+05:30) Sri Jayawardenepura</option>
+              <option value="Nepal Standard Time">(GMT+05:45) Kathmandu</option>
+              <option value="N. Central Asia Standard Time">(GMT+06:00) Almaty, Novosibirsk</option>
+              <option value="Central Asia Standard Time">(GMT+06:00) Astana, Dhaka</option>
+              <option value="Myanmar Standard Time">(GMT+06:30) Yangon (Rangoon)</option>
+              <option value="SE Asia Standard Time">(GMT+07:00) Bangkok, Hanoi, Jakarta</option>
+              <option value="North Asia Standard Time">(GMT+07:00) Krasnoyarsk</option>
+              <option value="China Standard Time">(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi</option>
+              <option value="North Asia East Standard Time">(GMT+08:00) Irkutsk, Ulaan Bataar</option>
+              <option value="Singapore Standard Time">(GMT+08:00) Kuala Lumpur, Singapore</option>
+              <option value="W. Australia Standard Time">(GMT+08:00) Perth</option>
+              <option value="Taipei Standard Time">(GMT+08:00) Taipei</option>
+              <option value="Tokyo Standard Time">(GMT+09:00) Osaka, Sapporo, Tokyo</option>
+              <option value="Korea Standard Time">(GMT+09:00) Seoul</option>
+              <option value="Yakutsk Standard Time">(GMT+09:00) Yakutsk</option>
+              <option value="Cen. Australia Standard Time">(GMT+09:30) Adelaide</option>
+              <option value="AUS Central Standard Time">(GMT+09:30) Darwin</option>
+              <option value="E. Australia Standard Time">(GMT+10:00) Brisbane</option>
+              <option value="AUS Eastern Standard Time">(GMT+10:00) Canberra, Melbourne, Sydney</option>
+              <option value="West Pacific Standard Time">(GMT+10:00) Guam, Port Moresby</option>
+              <option value="Tasmania Standard Time">(GMT+10:00) Hobart</option>
+              <option value="Vladivostok Standard Time">(GMT+10:00) Vladivostok</option>
+              <option value="Central Pacific Standard Time">(GMT+11:00) Magadan, Solomon Is., New Caledonia</option>
+              <option value="New Zealand Standard Time">(GMT+12:00) Auckland, Wellington</option>
+              <option value="Fiji Standard Time">(GMT+12:00) Fiji, Kamchatka, Marshall Is.</option>
+              <option value="Tonga Standard Time">(GMT+13:00) Nuku'alofa</option>
+              <option value="Azores Standard Time">(GMT-01:00) Azores</option>
+              <option value="Cape Verde Standard Time">(GMT-01:00) Cape Verde Is.</option>
+              <option value="Mid-Atlantic Standard Time">(GMT-02:00) Mid-Atlantic</option>
+              <option value="E. South America Standard Time">(GMT-03:00) Brasilia</option>
+              <option value="Argentina Standard Time">(GMT-03:00) Buenos Aires</option>
+              <option value="SA Eastern Standard Time">(GMT-03:00) Georgetown</option>
+              <option value="Greenland Standard Time">(GMT-03:00) Greenland</option>
+              <option value="Montevideo Standard Time">(GMT-03:00) Montevideo</option>
+              <option value="Newfoundland Standard Time">(GMT-03:30) Newfoundland</option>
+              <option value="Atlantic Standard Time">(GMT-04:00) Atlantic Time (Canada)</option>
+              <option value="SA Western Standard Time">(GMT-04:00) La Paz</option>
+              <option value="Central Brazilian Standard Time">(GMT-04:00) Manaus</option>
+              <option value="Pacific SA Standard Time">(GMT-04:00) Santiago</option>
+              <option value="Venezuela Standard Time">(GMT-04:30) Caracas</option>
+              <option value="SA Pacific Standard Time">(GMT-05:00) Bogota, Lima, Quito, Rio Branco</option>
+              <option value="Eastern Standard Time">(GMT-05:00) Eastern Time (US & Canada)</option>
+              <option value="US Eastern Standard Time">(GMT-05:00) Indiana (East)</option>
+              <option value="Central America Standard Time">(GMT-06:00) Central America</option>
+              <option value="Central Standard Time">(GMT-06:00) Central Time (US & Canada)</option>
+              <option value="Central Standard Time (Mexico)">(GMT-06:00) Guadalajara, Mexico City, Monterrey</option>
+              <option value="Canada Central Standard Time">(GMT-06:00) Saskatchewan</option>
+              <option value="US Mountain Standard Time">(GMT-07:00) Arizona</option>
+              <option value="Mountain Standard Time (Mexico)">(GMT-07:00) Chihuahua, La Paz, Mazatlan</option>
+              <option value="Mountain Standard Time">(GMT-07:00) Mountain Time (US & Canada)</option>
+              <option value="Pacific Standard Time">(GMT-08:00) Pacific Time (US & Canada)</option>
+              <option value="Pacific Standard Time (Mexico)">(GMT-08:00) Tijuana, Baja California</option>
+              <option value="Alaskan Standard Time">(GMT-09:00) Alaska</option>
+              <option value="Hawaiian Standard Time">(GMT-10:00) Hawaii</option>
+              <option value="Samoa Standard Time">(GMT-11:00) Midway Island, Samoa</option>
+              <option value="Dateline Standard Time">(GMT-12:00) International Date Line West</option>
             </select>
           </div>
-          <div class="col">
-            <input id="recordId" type="number" class="form-control shadow-none" placeholder="Record Id" min="1">
+          <div class="col-sm-12 col-md-3">
+            <select id="app" class="form-select form-select-sm shadow-none visually-hidden">
+              <option value="" selected>Select App</option>
+            </select>
+            <div id="appError" class="text-danger ps-1"></div>
+          </div>
+          <div class="col-sm-12 col-md-3">
+            <input id="record" type="number" class="form-control form-control-sm shadow-none visually-hidden" placeholder="Record Id"
+              min="1">
           </div>
         </div>
-        <div class="row flex-grow-1 overflow-auto">
-          <div class="col d-flex flex-column flex-grow-1 mh-100 overflow-auto">
-            <div class="editor-container d-flex flex-column flex-grow-1 mh-100 overflow-auto">
+        <div class="row flex-grow-1">
+          <div class="col d-flex flex-column flex-grow-1">
+            <div class="editor-container d-flex flex-column flex-grow-1">
               <div class="editor-menu-bar d-flex flex-row">
                 <div class="d-flex flex-row justify-content-between">
-                  <button class="editor-menu-button">Fields <svg
+                  <button id='fieldsButton' class="editor-menu-button">Fields <svg xmlns="http://www.w3.org/2000/svg"
+                      width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                      <path
+                        d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                    </svg></button>
+                  <button id="operatorsButton" class="editor-menu-button">Operators <svg
                       xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-caret-down-fill" viewBox="0 0 16 16">
                       <path
                         d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
                     </svg></button>
-                  <button class="editor-menu-button">Operators <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                      height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                      <path
-                        d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-                    </svg></button>
-                  <button class="editor-menu-button">Functions <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                      height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                  <button id="functionsButton" class="editor-menu-button">Functions <svg
+                      xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-caret-down-fill" viewBox="0 0 16 16">
                       <path
                         d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
                     </svg></button>
                 </div>
               </div>
-              <div id="editor" class="mh-100 flex-grow-1 overflow-auto">
+              <div id="editor" class="flex-grow-1">
               </div>
-              <div class="editor-footer"></div>
+              <div class="editor-footer">
+                <div class="d-flex flex-row">
+                  <button id="validateSyntaxButton" class="editor-menu-button me-1">Validate Syntax</button>
+                  <button id="runFormulaButton" class="editor-menu-button me-1">Run Formula</button>
+                  <div id="formulaResultContainer">
+                    <span>Result: </span>
+                    <span id="formulaResult"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <footer class="container-fluid mt-auto">
+    <footer class="mt-auto">
       <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center py-2 mt-4 border-top">
         <div class="col-md-4 d-flex align-items-center">
-          <span class="fs-6">Code by Stevan - 2022</span>
+          <span class="fs-6">Formula Playground - 2022</span>
         </div>
         <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li class="nav-item">
@@ -133,11 +239,101 @@
         </ul>
       </div>
     </footer>
+
+    <div id="fieldsModal"
+      class="me-3 visually-hidden position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
+      <div id="fieldsSearchBoxContainer" class="p-2">
+        <input id="fieldsSearchBox" class="form-control form-control-sm" type="text" placeholder="Filter">
+      </div>
+      <div id="fieldsListContainer" class="overflow-auto">
+        <ul id="fieldsList" class="list-unstyled px-3 m-0">
+          <li id="fieldsPlaceHolder">No fields yet retrieved.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="operatorsModal"
+      class="visually-hidden position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
+      <div id="operatorsListContainer" class="overflow-auto py-2">
+        <ul id="mathOperatorsList" class="list-group">
+        </ul>
+        <ul id="comparisonOperatorsList" class="list-group">
+        </ul>
+        <ul id="logicalOperatorsList" class="list-group">
+        </ul>
+      </div>
+    </div>
+
+    <div id="functionsModal"
+      class="me-3 visually-hidden position-absolute bg-white rounded-1 d-flex flex-column overflow-hidden">
+      <div id="functionsSearchBoxContainer" class="p-2">
+        <input id="functionsSearchBox" class="form-control form-control-sm" type="text" placeholder="Filter Functions">
+      </div>
+      <div id="functionsTabsContainer">
+        <ul id="functionTabs" class="nav nav-tabs px-2" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link link-dark fn-type-btn active" id="allTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="all" type="button" role="tab">All</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link link-dark fn-type-btn" id="dateTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="date" type="button" role="tab">Date</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link link-dark fn-type-btn" id="logicalTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="logical" type="button" role="tab">Logical</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link link-dark fn-type-btn" id="numberTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="number" type="button" role="tab">Number</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link link-dark fn-type-btn" id="textTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="text" type="button" role="tab">Text</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link link-dark fn-type-btn" id="otherTabButton" data-bs-toggle="tab"
+              data-bs-target="#all-tab-pane" data-type="other" type="button" role="tab">Other</button>
+          </li>
+        </ul>
+        <div class="tab-content" id="#tabContent">
+          <div class="tab-pane p-3 show active" id="all-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <ul id="functionsList" class="list-unstyled m-0">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="validationModal" class="modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0">
+          <div id="validationModalHeader" class="modal-header px-3 py-2">
+            <div id="validationTitleContainer" class="d-flex align-items-center">
+              <span id="validationModalTitleIcon" class="me-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              </svg></span>
+              <h1 id="validationModalTitle" class="modal-title fs-5">Modal title</h1>
+            </div>
+            <button type="button" class="close-btn" data-bs-dismiss="modal"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                <path
+                  d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+              </svg></button>
+          </div>
+          <div id="validationModalBody" class="modal-body px-3 py-2">
+          </div>
+          <div id="validationModalFooter" class="modal-footer p-1">
+            <button type="button" class="editor-menu-button" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
-  <script src="scripts/bundled/editor.js"></script>
   <script src="scripts/bundled/index.js"></script>
 </body>
 
