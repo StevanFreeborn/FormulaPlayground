@@ -39,4 +39,6 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'Right', type: FunctionTypes.text, snippet: 'Right(text, number_of_characters)'},
   { name: 'If', type: FunctionTypes.logical, snippet: 'if (logical_test) {\n  value_if_true\n} else {\n  value_if_false\n}' },
   { name: 'And', type: FunctionTypes.logical, snippet: 'And(logical1, logical2, ...)' },
+  { name: 'CurrentMonth', type: FunctionTypes.date, snippet: 'CurrentMonth()' },
+  { name: 'CurrentYear', type: FunctionTypes.date, snippet: 'CurrentYear()' },
 ];
