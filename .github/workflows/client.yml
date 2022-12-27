@@ -1,4 +1,4 @@
-name: client ci/cd
+name: Build and Deploy Static Web App
 
 on:
   push:
