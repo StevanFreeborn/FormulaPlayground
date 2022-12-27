@@ -15,7 +15,13 @@ public class JintFormulaService : IFormulaService
 
   public JintFormulaService()
   {
-    _engine = new Engine(cfg => cfg.AllowClr().LocalTimeZone(TimeZoneInfo.Utc));
+    var modulesPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Models\Functions\Scripts";
+    _engine = new Engine(cfg => 
+    cfg
+    .AllowClr()
+    .LocalTimeZone(TimeZoneInfo.Utc)
+    .EnableModules(modulesPath));
+    _engine.ImportModule("./Date.js");
     SetFunctions();
     _parserOptions = new ParserOptions
     {
@@ -27,7 +33,7 @@ public class JintFormulaService : IFormulaService
   public FormulaRunResult RunFormula(string formula, FormulaContext formulaContext)
   {
     var result = new FormulaRunResult();
-
+    
     try
     {
       var parsedFormula = GetParsedFormula(formula, formulaContext);

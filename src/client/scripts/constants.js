@@ -41,4 +41,6 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'And', type: FunctionTypes.logical, snippet: 'And(logical1, logical2, ...)' },
   { name: 'CurrentMonth', type: FunctionTypes.date, snippet: 'CurrentMonth()' },
   { name: 'CurrentYear', type: FunctionTypes.date, snippet: 'CurrentYear()' },
+  { name: 'Date', type: FunctionTypes.date, snippet: 'Date(year, month, day)' },
+  
 ];
