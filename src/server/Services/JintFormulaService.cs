@@ -1,7 +1,6 @@
 using server.Models;
 using Jint;
 using Jint.Runtime;
-using Jint.Native.Json;
 using Esprima;
 using System.Reflection;
 using server.Models.Functions;
@@ -15,7 +14,7 @@ public class JintFormulaService : IFormulaService
 
   public JintFormulaService()
   {
-    var modulesPath = System.AppDomain.CurrentDomain.BaseDirectory + @"\Models\Functions\Scripts";
+    var modulesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models", "Functions", "Scripts");
     _engine = new Engine(cfg => 
     cfg
     .AllowClr()
