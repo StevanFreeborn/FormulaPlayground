@@ -10,16 +10,9 @@ public class ArgumentHelper
     var numbers = new List<double>();
     foreach (var arg in args)
     {
-      if (arg is double argAsDouble)
+      if (TryParseToType(arg, out double argAsDouble))
       {
         numbers.Add(argAsDouble);
-      }
-      if (arg is string argAsString)
-      {
-        if (double.TryParse(argAsString, out double number))
-        {
-          numbers.Add(number);
-        }
       }
     }
     return numbers;
@@ -46,14 +39,14 @@ public class ArgumentHelper
     return args;
   }
 
-  public static bool TryParseToType<T>(object arg, out T argAsType) where T : class
+  public static bool TryParseToType<T>(object arg, out T argAsType)
   {
     var engine = new Engine();
     object converted;
 
     if (engine.ClrTypeConverter.TryConvert(arg, typeof(T), CultureInfo.InvariantCulture, out converted))
     {
-      argAsType = converted as T;
+      argAsType = (T) converted;
       return true;
     };
 
