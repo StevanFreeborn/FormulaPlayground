@@ -33,7 +33,7 @@ public class DateAdd : FunctionBase
       case FormatOptions.w:
         return dateAsDateTime.AddDays(numberAsInt * 7);
       case FormatOptions.wd:
-        while (numberAsInt != 0) 
+        while (numberAsInt != 0)
         {
           // handle number being negative or positive
           var modifier = Math.Sign(numberAsInt);
