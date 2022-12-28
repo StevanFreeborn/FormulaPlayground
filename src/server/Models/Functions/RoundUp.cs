@@ -22,7 +22,7 @@ public class RoundUp : FunctionBase
     if (
       Double.TryParse(number.ToString(), out double numberAsDouble) is false ||
       int.TryParse(precision.ToString(), out int precisionAsInt) is false
-      )
+    )
     {
       throw new ParserException("RoundUp() takes a number and a number of digits.");
     }

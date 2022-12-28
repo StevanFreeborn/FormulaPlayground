@@ -16,7 +16,7 @@ public class Left : FunctionBase
     if (
       ArgumentHelper.TryParseToType(text, out string textAsString) is false ||
       ArgumentHelper.TryParseToType(numOfChars, out int numOfCharsAsInt) is false
-      )
+    )
     {
       throw new ParserException("Left() takes a string and a number.");
     }

@@ -16,7 +16,7 @@ public class Right : FunctionBase
     if (
       ArgumentHelper.TryParseToType(text, out string textAsString) is false ||
       ArgumentHelper.TryParseToType(numOfChars, out int numOfCharsAsInt) is false
-      )
+    )
     {
       throw new ParserException("Right() takes a string and a number.");
     }

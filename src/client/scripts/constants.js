@@ -42,5 +42,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'CurrentMonth', type: FunctionTypes.date, snippet: 'CurrentMonth()' },
   { name: 'CurrentYear', type: FunctionTypes.date, snippet: 'CurrentYear()' },
   { name: 'Date', type: FunctionTypes.date, snippet: 'Date(year, month, day)' },
-  
+  { name: 'DateAdd', type: FunctionTypes.date, snippet: 'DateAdd(date, number, format)' },
 ];
