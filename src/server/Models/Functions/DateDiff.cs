@@ -35,9 +35,9 @@ public class DateDiff : FunctionBase
     switch (formatAsFormatOption)
     {
       case FormatOptions.y:
-        return new { };
+        return GetYears(startAsDateTime, endAsDateTime, difference.TotalDays);
       case FormatOptions.M:
-        return new { };
+        return GetMonths(startAsDateTime, endAsDateTime, difference.TotalDays);
       case FormatOptions.w:
         return GetWholeNumber(difference.TotalDays / 7);
       case FormatOptions.wd:
@@ -52,6 +52,64 @@ public class DateDiff : FunctionBase
       default:
         return GetWholeNumber(difference.TotalSeconds);
     }
+  }
+
+  // this feels like a brute force solution
+  // TODO: Research how others have solved this calculation
+  private int GetYears(DateTime startDate, DateTime endDate, double TotalDays)
+  {
+    // if passed in total days is negative
+    // then call method again with the dates inverted
+    // so that logic in do while loop is correct
+    if (TotalDays < 0)
+    {
+      return GetYears(endDate, startDate, TotalDays);
+    }
+
+    int years = 0;
+
+    do
+    {
+      startDate = startDate.AddYears(1);
+
+      if (startDate > endDate)
+      {
+        // return year count with proper sign according
+        // to passed in total days.
+        return years * Math.Sign(TotalDays);
+      }
+
+      years++;
+    } while (true);
+  }
+
+  // this feels like a brute force solution
+  // TODO: Research how others have solved this calculation
+  private int GetMonths(DateTime startDate, DateTime endDate, double TotalDays)
+  {
+    // if passed in total days is negative
+    // then call method again with the dates inverted
+    // so that logic in do while loop is correct
+    if (TotalDays < 0)
+    {
+      return GetMonths(endDate, startDate, TotalDays);
+    }
+
+    int months = 0;
+
+    do
+    {
+      startDate = startDate.AddMonths(1);
+
+      if (startDate > endDate)
+      {
+        // return month count with proper sign according
+        // to passed in total days.
+        return months * Math.Sign(TotalDays);
+      }
+
+      months++;
+    } while (true);
   }
 
   private int GetWorkDays(DateTime startDate, double TotalDays)
