@@ -1,8 +1,9 @@
 using Esprima;
+using server.Enums;
 
 namespace server.Models.Functions;
 
-public class DateAdd : FunctionBase
+public partial class DateAdd : FunctionBase
 {
   protected override string Name => "DateAdd";
 
@@ -57,18 +58,6 @@ public class DateAdd : FunctionBase
       default:
         return dateAsDateTime.AddSeconds(numberAsInt);
     }
-  }
-
-  private enum FormatOptions
-  {
-    y,
-    M,
-    w,
-    wd,
-    d,
-    h,
-    m,
-    s,
   }
 }
 
