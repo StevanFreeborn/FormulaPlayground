@@ -73,14 +73,14 @@ public class OnspringService : IOnspringService
       totalPages = response.Value.TotalPages;
     } while (currentPage <= totalPages);
 
-    // TODO: Investigate other field types that potentially need to be filtered out
     fields = fields.FindAll(field =>
       field.Type is FieldType.Number ||
       field.Type is FieldType.AutoNumber ||
       field.Type is FieldType.Date ||
       field.Type is FieldType.Text ||
       field.Type is FieldType.List ||
-      field.Type is FieldType.Formula);
+      field.Type is FieldType.Formula ||
+      field.Type is FieldType.TimeSpan);
 
     return fields;
   }

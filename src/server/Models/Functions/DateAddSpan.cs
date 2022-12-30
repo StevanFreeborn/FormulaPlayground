@@ -1,3 +1,7 @@
+using Esprima;
+using Onspring.API.SDK.Enums;
+using Onspring.API.SDK.Models;
+
 namespace server.Models.Functions;
 
 public class DateAddSpan : FunctionBase
@@ -9,7 +13,31 @@ public class DateAddSpan : FunctionBase
     var date = ArgumentHelper.GetArgByIndex(arguments, 0);
     var timespan = ArgumentHelper.GetArgByIndex(arguments, 1);
     
+    if (
+      ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false ||
+      ArgumentHelper.TryParseToType(timespan, out TimeSpanData timespanAsTimeSpanData) is false
+    )
+    {
+      throw new ParserException("DateAddSpan() takes a date, a timespan.");
+    }
 
-    throw new NotImplementedException();
+    switch (timespanAsTimeSpanData.Increment)
+    {
+      case TimeSpanIncrement.Years:
+        return dateAsDateTime.AddYears((int) timespanAsTimeSpanData.Quantity);
+      case TimeSpanIncrement.Months:
+        return dateAsDateTime.AddMonths((int) timespanAsTimeSpanData.Quantity);
+      case TimeSpanIncrement.Weeks:
+        return dateAsDateTime.AddDays((double) timespanAsTimeSpanData.Quantity * 7);
+      case TimeSpanIncrement.Days:
+        return dateAsDateTime.AddDays((double) timespanAsTimeSpanData.Quantity);
+      case TimeSpanIncrement.Hours:
+        return dateAsDateTime.AddHours((double) timespanAsTimeSpanData.Quantity);
+      case TimeSpanIncrement.Minutes:
+        return dateAsDateTime.AddMinutes((double) timespanAsTimeSpanData.Quantity);
+      case TimeSpanIncrement.Seconds:
+      default:
+        return dateAsDateTime.AddSeconds((double) timespanAsTimeSpanData.Quantity);
+    }
   }
 }

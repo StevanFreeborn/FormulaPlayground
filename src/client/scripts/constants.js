@@ -43,4 +43,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'CurrentYear', type: FunctionTypes.date, snippet: 'CurrentYear()' },
   { name: 'Date', type: FunctionTypes.date, snippet: 'Date(year, month, day)' },
   { name: 'DateAdd', type: FunctionTypes.date, snippet: 'DateAdd(date, number, format)' },
+  { name: 'DateAddSpan', type: FunctionTypes.date, snippet: 'DateAddSpan(date, Time Span Field)' },
 ];

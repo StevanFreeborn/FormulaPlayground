@@ -87,6 +87,7 @@ public class FormulaParser
         var variableValueAsList = variableValue as List<Guid>;
         variableValue = GetMultiSelectListAsString(field, variableValueAsList);
       }
+      
       dict.Add(fieldVariable, variableValue);
     }
     foreach (var listToken in listTokens)
