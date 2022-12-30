@@ -14,11 +14,17 @@ public class DateAddSpan : FunctionBase
     var timespan = ArgumentHelper.GetArgByIndex(arguments, 1);
     
     if (
-      ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false ||
-      ArgumentHelper.TryParseToType(timespan, out TimeSpanData timespanAsTimeSpanData) is false
+      ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false
     )
     {
       throw new ParserException("DateAddSpan() takes a date, a timespan.");
+    }
+
+    if (
+      ArgumentHelper.TryParseToType(timespan, out TimeSpanData timespanAsTimeSpanData) is false
+    )
+    {
+      throw new ParserException("The second parameter to DateAddSpan() does not appear to be a timespan.");
     }
 
     switch (timespanAsTimeSpanData.Increment)
