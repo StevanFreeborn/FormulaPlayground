@@ -56,6 +56,7 @@ public class DateDiff : FunctionBase
 
   // this feels like a brute force solution
   // TODO: Research how others have solved this calculation
+  // BUG: doesn't account for the fact that month lengths vary so the loop might end up being off by one.
   private int GetYears(DateTime startDate, DateTime endDate, double TotalDays)
   {
     // if passed in total days is negative
@@ -85,6 +86,7 @@ public class DateDiff : FunctionBase
 
   // this feels like a brute force solution
   // TODO: Research how others have solved this calculation
+  // BUG: doesn't account for the fact that month lengths vary so the loop might end up being off by one.
   private int GetMonths(DateTime startDate, DateTime endDate, double TotalDays)
   {
     // if passed in total days is negative
