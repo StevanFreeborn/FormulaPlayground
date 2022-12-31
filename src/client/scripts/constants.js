@@ -45,4 +45,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'DateAdd', type: FunctionTypes.date, snippet: 'DateAdd(date, number, format)' },
   { name: 'DateAddSpan', type: FunctionTypes.date, snippet: 'DateAddSpan(date, Time Span Field)' },
   { name: 'DateDiff', type: FunctionTypes.date, snippet: 'DateDiff(end_date, start_date, format)' },
+  { name: 'DateSubtractSpan', type: FunctionTypes.date, snippet: 'DateSubtractSpan(date, Time Span Field)' },
 ];

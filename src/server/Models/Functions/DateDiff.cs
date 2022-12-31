@@ -35,7 +35,8 @@ public class DateDiff : FunctionBase
     switch (formatAsFormatOption)
     {
       case FormatOptions.y:
-        return GetYears(startAsDateTime, endAsDateTime, difference.TotalDays);
+        var years = GetMonths(startAsDateTime, endAsDateTime, difference.TotalDays) / 12;
+        return GetWholeNumber(years);
       case FormatOptions.M:
         return GetMonths(startAsDateTime, endAsDateTime, difference.TotalDays);
       case FormatOptions.w:
@@ -54,64 +55,55 @@ public class DateDiff : FunctionBase
     }
   }
 
-  // this feels like a brute force solution
-  // TODO: Research how others have solved this calculation
-  // BUG: doesn't account for the fact that month lengths vary so the loop might end up being off by one.
-  private int GetYears(DateTime startDate, DateTime endDate, double TotalDays)
-  {
-    // if passed in total days is negative
-    // then call method again with the dates inverted
-    // so that logic in do while loop is correct
-    if (TotalDays < 0)
-    {
-      return GetYears(endDate, startDate, TotalDays);
-    }
-
-    int years = 0;
-
-    do
-    {
-      startDate = startDate.AddYears(1);
-
-      if (startDate > endDate)
-      {
-        // return year count with proper sign according
-        // to passed in total days.
-        return years * Math.Sign(TotalDays);
-      }
-
-      years++;
-    } while (true);
-  }
-
-  // this feels like a brute force solution
-  // TODO: Research how others have solved this calculation
-  // BUG: doesn't account for the fact that month lengths vary so the loop might end up being off by one.
   private int GetMonths(DateTime startDate, DateTime endDate, double TotalDays)
   {
-    // if passed in total days is negative
+    // if difference in dates total days is negative
     // then call method again with the dates inverted
     // so that logic in do while loop is correct
-    if (TotalDays < 0)
+    var diff = endDate - startDate;
+
+    if (diff.TotalDays < 0)
     {
       return GetMonths(endDate, startDate, TotalDays);
     }
 
-    int months = 0;
+    var months = 0;
+    var originalStartDateDay = startDate.Day;
 
-    do
+    while (startDate < endDate)
     {
       startDate = startDate.AddMonths(1);
+      var daysInMonth = DateTime.DaysInMonth(startDate.Year, startDate.Month);
 
-      if (startDate > endDate)
+      // account for the original start date's day
+      // of month possibly being greater than the 
+      // number of days in the current start date's 
+      // month so on each loop make sure to correct 
+      // for when this occurs.
+      // i.e. 12/30/2022 -> 1/30/2023 -> 2/28/2023 -> 3/30/2023
+      if (startDate.Day != originalStartDateDay)
       {
-        // return month count with proper sign according
-        // to passed in total days.
-        return months * Math.Sign(TotalDays);
+        var offset = daysInMonth < originalStartDateDay
+        ? daysInMonth - startDate.Day
+        : originalStartDateDay - startDate.Day;
+        startDate.AddDays(offset);
       }
 
-      months++;
-    } while (true);
+      var isSameYearAndMonth = startDate.Year == endDate.Year && startDate.Month == endDate.Month;
+      var isEndDateDayAfterOrginalStartDateDay = endDate.Day >= originalStartDateDay;
+      var isEndDateAfterCurrentStartDate = endDate.Date > startDate.Date;
+
+      if (
+        isSameYearAndMonth is false && (isEndDateDayAfterOrginalStartDateDay is true || isEndDateAfterCurrentStartDate is true)
+      )
+      {
+        months++;
+      }
+    }
+
+    // return month count with proper sign according
+    // to passed in total days.
+    return months * Math.Sign(TotalDays);
   }
 
   private int GetWorkDays(DateTime startDate, double TotalDays)
