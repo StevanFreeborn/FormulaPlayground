@@ -47,4 +47,7 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'DateDiff', type: FunctionTypes.date, snippet: 'DateDiff(end_date, start_date, format)' },
   { name: 'DateSubtractSpan', type: FunctionTypes.date, snippet: 'DateSubtractSpan(date, Time Span Field)' },
   { name: 'DaysSince', type: FunctionTypes.date, snippet: 'DaysSince(date)' },
+  { name: 'DaysSinceIsGreaterThan', type: FunctionTypes.date, snippet: 'DaysSinceIsGreaterThan(date, number_of_days)' },
+  { name: 'DaysUntil', type: FunctionTypes.date, snippet: 'DaysUntil(date)' },
+  { name: 'DaysUntilIsGreaterThan', type: FunctionTypes.date, snippet: 'DaysUntilIsGreaterThan(date, number_of_days)' },
 ];

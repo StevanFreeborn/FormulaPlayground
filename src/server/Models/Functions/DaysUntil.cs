@@ -1,23 +1,22 @@
 using Esprima;
+using server.Models.Functions;
 
-namespace server.Models.Functions;
-
-public class DaysSince : FunctionBase
+public class DaysUntil : FunctionBase
 {
-  protected override string Name => "DaysSince";
+  protected override string Name => "DaysUntil";
 
   protected override object Function(params object[] arguments)
   {
     var date = ArgumentHelper.GetArgByIndex(arguments, 0);
-    
+
     if (
       ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false
     )
     {
-      throw new ParserException("DaysSince() takes a single date.");
+      throw new ParserException("DaysUntil() takes a single date.");
     }
-    
-    var diff = DateTime.UtcNow - dateAsDateTime;
+
+    var diff = dateAsDateTime - DateTime.UtcNow;
 
     if (diff.TotalDays < 0)
     {
