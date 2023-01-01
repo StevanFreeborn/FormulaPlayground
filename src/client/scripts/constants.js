@@ -51,4 +51,8 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'DaysUntil', type: FunctionTypes.date, snippet: 'DaysUntil(date)' },
   { name: 'DaysUntilIsGreaterThan', type: FunctionTypes.date, snippet: 'DaysUntilIsGreaterThan(date, number_of_days)' },
   { name: 'FullYearsSince', type: FunctionTypes.date, snippet: 'FullYearsSince(date)' },
+  { name: 'GetDayOfMonth', type: FunctionTypes.date, snippet: 'GetDayOfMonth(date)' },
+  { name: 'GetDayOfWeek', type: FunctionTypes.date, snippet: 'GetDayOfWeek(date)'},
+  { name: 'GetDayOfYear', type: FunctionTypes.date, snippet: 'GetDayOfYear(date)'},
+  { name: 'GetMonth', type: FunctionTypes.date, snippet: 'GetMonth(date)' },
 ];
