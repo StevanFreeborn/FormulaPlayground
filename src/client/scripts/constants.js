@@ -55,4 +55,6 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'GetDayOfWeek', type: FunctionTypes.date, snippet: 'GetDayOfWeek(date)'},
   { name: 'GetDayOfYear', type: FunctionTypes.date, snippet: 'GetDayOfYear(date)'},
   { name: 'GetMonth', type: FunctionTypes.date, snippet: 'GetMonth(date)' },
+  { name: 'GetWeekOfMonth', type: FunctionTypes.date, snippet: 'GetWeekOfMonth(date)' },
+  { name: 'GetWeekOfYear', type: FunctionTypes.date, snippet: 'GetWeekOfYear(date)' },
 ];
