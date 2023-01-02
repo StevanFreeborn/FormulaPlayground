@@ -17,8 +17,6 @@ public class GetWeekOfYear : FunctionBase
       throw new ParserException("GetWeekOfYear() takes a single date.");
     }
 
-    var formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
-    var calendar = formatInfo.Calendar;
-    return calendar.GetWeekOfYear(dateAsDateTime, CalendarWeekRule.FirstDay, formatInfo.FirstDayOfWeek);
+    return DateHelper.GetWeekOfYear(dateAsDateTime);
   }
 }

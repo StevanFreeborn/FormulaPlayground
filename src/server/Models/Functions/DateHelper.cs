@@ -1,5 +1,14 @@
+using System.Globalization;
+
 public class DateHelper
 {
+  public static int GetWeekOfYear(DateTime date)
+  {
+    var formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
+    var calendar = formatInfo.Calendar;
+    return calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, formatInfo.FirstDayOfWeek);
+  }
+
   public static int GetYears(DateTime startDate, DateTime endDate, double totalDays)
   {
     var years = GetMonths(startDate, endDate, totalDays) / 12;
