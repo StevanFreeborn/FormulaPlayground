@@ -2,6 +2,16 @@ using System.Globalization;
 
 public class DateHelper
 {
+  public static int GetWeekOfMonth(DateTime date)
+  {
+    var dayOfMonth = date.Day;
+		var firstOfMonth = new DateTime(date.Year, date.Month, 1); 
+    var weekOfYear = GetWeekOfYear(date);
+		var firstWeekOfYear = GetWeekOfYear(date);
+		var diff = weekOfYear - firstWeekOfYear;
+    return diff + 1;  
+  }
+
   public static int GetWeekOfYear(DateTime date)
   {
     var formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
