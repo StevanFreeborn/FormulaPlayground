@@ -58,4 +58,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'GetWeekOfMonth', type: FunctionTypes.date, snippet: 'GetWeekOfMonth(date)' },
   { name: 'GetWeekOfYear', type: FunctionTypes.date, snippet: 'GetWeekOfYear(date)' },
   { name: 'GetYear', type: FunctionTypes.date, snippet: 'GetYear(date)' },
+  { name: 'IsAfterToday', type: FunctionTypes.date, snippet: 'IsAfterToday(date)' },
 ];
