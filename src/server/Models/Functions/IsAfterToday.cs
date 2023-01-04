@@ -16,6 +16,6 @@ public class IsAfterToday : FunctionBase
       throw new ParserException("IsAfterToday() takes a single date.");
     }
 
-    return dateAsDateTime > DateTime.UtcNow;
+    return dateAsDateTime > DateTime.UtcNow.Date.AddDays(1);
   }
 }

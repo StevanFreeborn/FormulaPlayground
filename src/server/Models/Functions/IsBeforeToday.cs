@@ -16,6 +16,6 @@ public class IsBeforeToday : FunctionBase
       throw new ParserException("IsBeforeToday() takes a single date.");
     }
 
-    return dateAsDateTime < DateTime.UtcNow;
+    return dateAsDateTime < DateTime.UtcNow.Date;
   }
 }
