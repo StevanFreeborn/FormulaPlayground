@@ -63,4 +63,7 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'IsCurrentMonth', type: FunctionTypes.date, snippet: 'IsCurrentMonth(date)' },
   { name: 'IsCurrentWeek', type: FunctionTypes.date, snippet: 'IsCurrentWeek(date)' },
   { name: 'IsCurrentYear', type: FunctionTypes.date, snippet: 'IsCurrentYear(date)' },
+  { name: 'IsOnOrAfterToday', type: FunctionTypes.date, snippet: 'IsOnOrAfterToday(date)' },
+  { name: 'IsOnOrBeforeToday', type: FunctionTypes.date, snippet: 'IsOnOrBeforeToday(date)' },
+  { name: 'IsToday', type: FunctionTypes.date, snippet: 'IsToday(date)' },
 ];
