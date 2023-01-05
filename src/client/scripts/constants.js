@@ -66,4 +66,6 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'IsOnOrAfterToday', type: FunctionTypes.date, snippet: 'IsOnOrAfterToday(date)' },
   { name: 'IsOnOrBeforeToday', type: FunctionTypes.date, snippet: 'IsOnOrBeforeToday(date)' },
   { name: 'IsToday', type: FunctionTypes.date, snippet: 'IsToday(date)' },
+  { name: 'IsWithinNextDays', type: FunctionTypes.date, snippet: 'IsWithinNextDays(date, number_of_days)' },
+  { name: 'IsWithinPriorDays', type: FunctionTypes.date, snippet: 'IsWithinPriorDays(date, number_of_days)' },
 ];

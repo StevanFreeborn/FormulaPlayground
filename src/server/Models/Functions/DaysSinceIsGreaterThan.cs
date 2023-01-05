@@ -13,7 +13,7 @@ public class DaysSinceIsGreaterThan : FunctionBase
 
     if (
       ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false ||
-      ArgumentHelper.TryParseToType(number, out Double numberAsDouble) is false
+      ArgumentHelper.TryParseToType(number, out int numberAsInt) is false
     )
     {
       throw new ParserException("DaysSinceIsGreaterThan() takes a date and a number.");
@@ -22,6 +22,6 @@ public class DaysSinceIsGreaterThan : FunctionBase
     var diff = DateTime.UtcNow - dateAsDateTime;
     var totalDays = (int) diff.TotalDays;
 
-    return totalDays > numberAsDouble;
+    return totalDays > numberAsInt;
   }
 }
