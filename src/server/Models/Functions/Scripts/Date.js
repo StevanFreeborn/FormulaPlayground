@@ -60,7 +60,7 @@ Date = (function (JSDate) {
   newDate.now = JSDate.now;
   newDate.parse = JSDate.parse;
   JSDate.prototype.toString = function () {
-    return FormatDate(this, arguments.length > 0 ? arguments[0] : undefined);
+    return FormatDate(this, arguments.length > 0 ? arguments[0] : "");
   };
 
   return newDate;

@@ -68,4 +68,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'IsToday', type: FunctionTypes.date, snippet: 'IsToday(date)' },
   { name: 'IsWithinNextDays', type: FunctionTypes.date, snippet: 'IsWithinNextDays(date, number_of_days)' },
   { name: 'IsWithinPriorDays', type: FunctionTypes.date, snippet: 'IsWithinPriorDays(date, number_of_days)' },
+  { name: 'FormatDate', type: FunctionTypes.date, snippet: 'FormatDate(date, customFormat)'},
 ];

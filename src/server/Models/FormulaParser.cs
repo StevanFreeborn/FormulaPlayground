@@ -10,7 +10,7 @@ public class FormulaParser
 {
   private static readonly string fieldTokenStart = "{:";
   private static readonly string fieldTokenEnd = "}";
-  private static readonly Regex fieldTokenRegex = new Regex(@"\{:(.+?)\}");
+  private static readonly Regex fieldTokenRegex = new Regex(@"^[^""']?\{:(.+?)\}");
   private static readonly string listTokenStart = "[:";
   private static readonly string listTokenEnd = "]";
   private static readonly Regex listTokenRegex = new Regex(@"\[:(.+?)\]");
