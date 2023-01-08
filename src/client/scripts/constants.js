@@ -70,4 +70,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'IsWithinPriorDays', type: FunctionTypes.date, snippet: 'IsWithinPriorDays(date, number_of_days)' },
   { name: 'FormatDate', type: FunctionTypes.date, snippet: 'FormatDate(date, customFormat)'},
   { name: 'GetNextAnnualDate', type: FunctionTypes.date, snippet: 'GetNextAnnualDate(date) OR (month, day)' },
+  { name: 'GetNextFutureDateByDays', type: FunctionTypes.date, snippet: 'GetNextFutureDateByDays(date, number_of_days)' },
 ];
