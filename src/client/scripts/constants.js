@@ -71,4 +71,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'FormatDate', type: FunctionTypes.date, snippet: 'FormatDate(date, customFormat)'},
   { name: 'GetNextAnnualDate', type: FunctionTypes.date, snippet: 'GetNextAnnualDate(date) OR (month, day)' },
   { name: 'GetNextFutureDateByDays', type: FunctionTypes.date, snippet: 'GetNextFutureDateByDays(date, number_of_days)' },
+  { name: 'GetNextFutureDateBySpan', type: FunctionTypes.date, snippet: 'GetNextFutureDateBySpan(date, Time Span Field)' },
 ];

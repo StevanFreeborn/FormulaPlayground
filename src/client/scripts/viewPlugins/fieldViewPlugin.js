@@ -3,7 +3,7 @@ import { Decoration, MatchDecorator, ViewPlugin } from '@codemirror/view';
 const fieldDecoration = Decoration.mark({ class: 'field-token' });
 
 const fieldDecorator = new MatchDecorator({
-  regexp: /^[^"']?{:.+}/g,
+  regexp: /(?<!"|')\{:.+?\}(?!"|')/g,
   decoration: m => fieldDecoration,
 });
 
