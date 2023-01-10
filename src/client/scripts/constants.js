@@ -73,4 +73,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'GetNextFutureDateByDays', type: FunctionTypes.date, snippet: 'GetNextFutureDateByDays(date, number_of_days)' },
   { name: 'GetNextFutureDateBySpan', type: FunctionTypes.date, snippet: 'GetNextFutureDateBySpan(date, Time Span Field)' },
   { name: 'GetNextMonthlyDate', type: FunctionTypes.date, snippet: 'GetNextMonthlyDate(date) OR (day)' },
+  { name: 'Workdays', type: FunctionTypes.date, snippet: 'Workdays(start_date, end_date)' },
 ];

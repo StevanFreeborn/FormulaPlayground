@@ -80,7 +80,7 @@ public class DateHelper
   {
     // no requirement for start date to actually be before end date
     // so total days might be negative
-    var absDaysAsInt = (int)Math.Abs(totalDays);
+    var absDaysAsInt = (int) Math.Abs(totalDays);
 
     // prob not most efficient approach...but could be extended to account for 
     // holidays which might be useful.
