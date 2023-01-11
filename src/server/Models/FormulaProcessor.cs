@@ -20,7 +20,7 @@ public class FormulaProcessor
 
     if (obj is DateTime date) {
       date = TimeZoneInfo.ConvertTimeFromUtc(date, timezone);
-      return date.ToString();
+      return date.ToString("M/d/yyyy h:mm tt");
     }
 
     if (obj is object[]) {
