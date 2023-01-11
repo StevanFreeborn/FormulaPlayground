@@ -41,11 +41,8 @@
     <main class="d-flex flex-column flex-grow-1">
       <div class="container-fluid d-flex flex-column flex-grow-1">
         <div class="row my-3 gy-1">
-          <div class="col-sm-12 col-md-3">
-            <input id="apiKey" type="password" class="form-control form-control-sm shadow-none" placeholder="Api Key">
-            <div id="apiKeyError" class="text-danger"></div>
-          </div>
-          <div class="col-sm-12 col-md-3">
+          <div id="timezoneContainer" class="col-sm-12 col-md-3">
+            <label for="timezone" class="form-label fw-bold">Timezone</label>
             <select id="timezone" class="form-select form-select-sm shadow-none">
               <option value="" selected>Select Timezone</option>
               <option value="Morocco Standard Time">(GMT) Casablanca</option>
@@ -138,14 +135,21 @@
               <option value="Dateline Standard Time">(GMT-12:00) International Date Line West</option>
             </select>
           </div>
-          <div class="col-sm-12 col-md-3">
-            <select id="app" class="form-select form-select-sm shadow-none visually-hidden">
+          <div id="apiKeyContainer" class="col-sm-12 col-md-3">
+            <label for="apiKey" class="form-label fw-bold">Api Key</label>
+            <input id="apiKey" type="password" class="form-control form-control-sm shadow-none" placeholder="Api Key">
+            <div id="apiKeyError" class="text-danger"></div>
+          </div>
+          <div id="appContainer" class="col-sm-12 col-md-3 visually-hidden">
+            <label for="app" class="form-label fw-bold">App/Survey</label>
+            <select id="app" class="form-select form-select-sm shadow-none">
               <option value="" selected>Select App</option>
             </select>
             <div id="appError" class="text-danger ps-1"></div>
           </div>
-          <div class="col-sm-12 col-md-3">
-            <input id="record" type="number" class="form-control form-control-sm shadow-none visually-hidden" placeholder="Record Id"
+          <div id="recordContainer" class="col-sm-12 col-md-3 visually-hidden">
+            <label for="record" class="form-label fw-bold">Record</label>
+            <input id="record" type="number" class="form-control form-control-sm shadow-none" placeholder="Record Id"
               min="1">
           </div>
         </div>
