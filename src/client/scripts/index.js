@@ -8,8 +8,10 @@ const state = {
   timezoneInput: document.getElementById('timezone'),
   apiKeyInput: document.getElementById('apiKey'),
   apiKeyError: document.getElementById('apiKeyError'),
+  appContainer: document.getElementById('appContainer'),
   appInput: document.getElementById('app'),
   appError: document.getElementById('appError'),
+  recordContainer: document.getElementById('recordContainer'),
   recordInput: document.getElementById('record'),
   fieldsButton: document.getElementById('fieldsButton'),
   fieldsModal: document.getElementById('fieldsModal'),
@@ -113,12 +115,6 @@ const state = {
   resetApiKeyError() {
     this.apiKeyError.innerText = '';
   },
-  resetAppInput() {
-    this.appInput.selectedIndex = 0;
-    while (this.appInput.childElementCount > 1) {
-      this.appInput.removeChild(state.appInput.lastChild);
-    }
-  },
   addAppOption(app) {
     const option = document.createElement('option');
     option.id = app.id;
@@ -130,7 +126,17 @@ const state = {
     apps.forEach(app => this.addAppOption(app));
   },
   showAppInput() {
-    this.appInput.classList.remove('visually-hidden');
+    this.appContainer.classList.remove('visually-hidden');
+  },
+  hideAppInput() {
+    this.appContainer.classList.add('visually-hidden');
+  },
+  resetAppInput() {
+    this.hideAppInput();
+    this.appInput.selectedIndex = 0;
+    while (this.appInput.childElementCount > 1) {
+      this.appInput.removeChild(state.appInput.lastChild);
+    }
   },
   showAppError(message) {
     this.appError.innerText = message;
@@ -139,13 +145,13 @@ const state = {
     this.appError.innerText = '';
   },
   showRecordInput() {
-    state.recordInput.classList.remove('visually-hidden');
+    state.recordContainer.classList.remove('visually-hidden');
   },
   hideRecordInput() {
-    this.recordInput.classList.add('visually-hidden');
+    this.recordContainer.classList.add('visually-hidden');
   },
   resetRecordInput() {
-    this.recordInput.classList.add('visually-hidden');
+    this.hideRecordInput();
     this.recordInput.value = '';
   },
   isFieldsModalDisplayed() {

@@ -53,4 +53,9 @@ public class ArgumentHelper
     argAsType = default(T);
     return false;
   }
+
+  public static object GetArgByIndex(object[] args, int index)
+  {
+    return args.Length <= index ? null : args[index];
+  }
 }

@@ -21,7 +21,7 @@ public class Join : FunctionBase
     if (
       ArgumentHelper.TryParseToType(separator, out string separatorAsString) is false ||
       ArgumentHelper.TryParseToType(stringsToJoin, out object[] stringsToJoinAsArray) is false
-      )
+    )
     {
       throw new ParserException("Join() takes a list of values and a separator.");
     }

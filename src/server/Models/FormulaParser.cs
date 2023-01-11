@@ -10,7 +10,7 @@ public class FormulaParser
 {
   private static readonly string fieldTokenStart = "{:";
   private static readonly string fieldTokenEnd = "}";
-  private static readonly Regex fieldTokenRegex = new Regex(@"\{:(.+?)\}");
+  private static readonly Regex fieldTokenRegex = new Regex(@"(?<!""|')\{:(.+?)\}(?!""|')");
   private static readonly string listTokenStart = "[:";
   private static readonly string listTokenEnd = "]";
   private static readonly Regex listTokenRegex = new Regex(@"\[:(.+?)\]");
@@ -87,6 +87,7 @@ public class FormulaParser
         var variableValueAsList = variableValue as List<Guid>;
         variableValue = GetMultiSelectListAsString(field, variableValueAsList);
       }
+      
       dict.Add(fieldVariable, variableValue);
     }
     foreach (var listToken in listTokens)

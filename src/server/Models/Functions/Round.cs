@@ -22,7 +22,7 @@ public class Round : FunctionBase
     if (
       Double.TryParse(number.ToString(), out double numberAsDouble) is false ||
       int.TryParse(precision.ToString(), out int precisionAsInt) is false
-      )
+    )
     {
       throw new ParserException("Round() takes a number and a number of digits.");
     }
