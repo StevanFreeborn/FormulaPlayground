@@ -75,4 +75,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'GetNextMonthlyDate', type: FunctionTypes.date, snippet: 'GetNextMonthlyDate(date) OR (day)' },
   { name: 'Workdays', type: FunctionTypes.date, snippet: 'Workdays(start_date, end_date)' },
   { name: 'WorkdaysSince', type: FunctionTypes.date, snippet: 'WorkdaysSince(date)' },
+  { name: 'WorkdaysUntil', type: FunctionTypes.date, snippet: 'WorkdaysUntil(date)' },
 ];
