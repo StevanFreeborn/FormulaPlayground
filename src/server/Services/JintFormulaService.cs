@@ -14,13 +14,11 @@ public class JintFormulaService : IFormulaService
 
   public JintFormulaService()
   {
-    var modulesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models", "Functions", "Scripts");
     _engine = new Engine(cfg => 
     cfg
     .AllowClr()
-    .LocalTimeZone(TimeZoneInfo.Utc)
-    .EnableModules(modulesPath));
-    _engine.ImportModule("./Date.js");
+    .LocalTimeZone(TimeZoneInfo.Utc));
+    LoadScripts();
     SetFunctions();
     _parserOptions = new ParserOptions
     {
@@ -107,6 +105,17 @@ public class JintFormulaService : IFormulaService
       var instance = Activator.CreateInstance(function) as FunctionBase;
       var nameFunctionPair = instance.GetNameFunctionPair();
       _engine.SetValue(nameFunctionPair.Key, nameFunctionPair.Value);
+    }
+  }
+
+  private void LoadScripts()
+  {
+    var scriptsDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models", "Functions", "Scripts");
+    var scriptFiles = Directory.EnumerateFiles(scriptsDirectory);
+    foreach (var scriptFile in scriptFiles)
+    {
+      var script = File.ReadAllText(scriptFile);
+      _engine.Execute(script);
     }
   }
 }
