@@ -53,11 +53,11 @@ public class FormulaParser
     }
   }
 
-  public static string ReplaceTokensWithValidVariableNames(string formula, List<string> fieldTokens, List<string> listTokens, FormulaContext context)
+  public static string ReplaceTokensWithValidVariableNames(string formula, List<string> fieldTokens, List<string> listTokens)
   {
     foreach (var fieldToken in fieldTokens)
     {
-      var validFieldVariable = ConvertFieldTokenToValidVariableName(fieldToken, context);
+      var validFieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
       formula = formula.Replace(fieldToken, validFieldVariable);
     }
     foreach (var listToken in listTokens)
@@ -73,7 +73,7 @@ public class FormulaParser
     var dict = new Dictionary<string, object>();
     foreach (var fieldToken in fieldTokens)
     {
-      var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken, context);
+      var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
       var field = context.Fields.First(f => f.Name == fieldName);
       var variableValue = context.FieldValues.FirstOrDefault(fv => fv.FieldId == field.Id).GetValue();
@@ -123,12 +123,11 @@ public class FormulaParser
     return listField.Values.FirstOrDefault(v => v.Id == listValueId).Name;
   }
 
-  private static string ConvertFieldTokenToValidVariableName(string fieldToken, FormulaContext context)
+  private static string ConvertFieldTokenToValidVariableName(string fieldToken)
   {
     var fieldName = GetFieldNameFromFieldToken(fieldToken);
-    var field = context.Fields.FirstOrDefault(field => field.Name == fieldName);
     var validFieldName = invalidNameCharactersRegex.Replace(fieldName, "_");
-    return "__" + validFieldName + "_" + field.Id;
+    return "__" + validFieldName + "_";
   }
 
   private static string ConvertListTokenToValidVariableName(string listToken)
