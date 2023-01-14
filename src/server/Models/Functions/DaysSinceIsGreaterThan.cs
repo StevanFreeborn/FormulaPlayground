@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class DaysSinceIsGreaterThan : FunctionBase
 {
+  public DaysSinceIsGreaterThan(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "DaysSinceIsGreaterThan";
 
   protected override object Function(params object[] arguments)

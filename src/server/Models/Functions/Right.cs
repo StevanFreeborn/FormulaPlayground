@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class Right : FunctionBase
 {
+  public Right(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Right";
 
   protected override object Function(params object[] arguments)

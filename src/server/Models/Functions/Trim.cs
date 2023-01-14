@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class Trim : FunctionBase
 {
+  public Trim(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Trim";
 
   protected override object Function(params object[] arguments)

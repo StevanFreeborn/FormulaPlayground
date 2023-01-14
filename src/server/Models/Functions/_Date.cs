@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class _Date : FunctionBase
 {
+  public _Date(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "_Date";
 
   protected override object Function(params object[] arguments)

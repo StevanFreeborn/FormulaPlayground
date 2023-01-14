@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class GetNextMonthlyDate : FunctionBase
 {
+  public GetNextMonthlyDate(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetNextMonthlyDate";
 
   protected override object Function(params object[] arguments)

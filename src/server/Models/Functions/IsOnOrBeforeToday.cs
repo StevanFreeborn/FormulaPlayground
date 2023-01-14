@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class IsOnOrBeforeToday : FunctionBase
 {
+  public IsOnOrBeforeToday(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "IsOnOrBeforeToday";
 
   protected override object Function(params object[] arguments)

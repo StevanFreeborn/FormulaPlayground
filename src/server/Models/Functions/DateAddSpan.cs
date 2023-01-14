@@ -6,6 +6,10 @@ namespace server.Models.Functions;
 
 public class DateAddSpan : FunctionBase
 {
+  public DateAddSpan(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "DateAddSpan";
 
   protected override object Function(params object[] arguments)

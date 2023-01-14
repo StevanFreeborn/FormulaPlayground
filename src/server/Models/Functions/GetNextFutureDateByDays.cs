@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class GetNextFutureDateByDays : FunctionBase
 {
+  public GetNextFutureDateByDays(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetNextFutureDateByDays";
 
   protected override object Function(params object[] arguments)

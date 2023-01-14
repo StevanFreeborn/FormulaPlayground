@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class Join : FunctionBase
 {
+  public Join(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Join";
 
   protected override object Function(params object[] arguments)

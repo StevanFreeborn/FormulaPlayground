@@ -2,6 +2,10 @@ namespace server.Models.Functions;
 
 public class Min : FunctionBase
 {
+  public Min(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Min";
 
   protected override object Function(params object[] arguments)

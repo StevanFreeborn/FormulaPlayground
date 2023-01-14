@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class IsCurrentWeek : FunctionBase
 {
+  public IsCurrentWeek(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "IsCurrentWeek";
 
   protected override object Function(params object[] arguments)

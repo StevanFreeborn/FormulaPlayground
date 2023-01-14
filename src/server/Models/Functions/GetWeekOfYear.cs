@@ -1,9 +1,13 @@
-using System.Globalization;
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class GetWeekOfYear : FunctionBase
 {
+  public GetWeekOfYear(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetWeekOfYear";
 
   protected override object Function(params object[] arguments)

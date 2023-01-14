@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class DaysUntilIsGreaterThan : FunctionBase
 {
+  public DaysUntilIsGreaterThan(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "DaysUntilIsGreaterThan";
 
   protected override object Function(params object[] arguments)

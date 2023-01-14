@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class GetDayOfYear : FunctionBase
 {
+  public GetDayOfYear(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetDayOfYear";
 
   protected override object Function(params object[] arguments)

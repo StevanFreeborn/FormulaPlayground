@@ -5,6 +5,10 @@ namespace server.Models.Functions;
 
 public partial class DateAdd : FunctionBase
 {
+  public DateAdd(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "DateAdd";
 
   protected override object Function(params object[] arguments)

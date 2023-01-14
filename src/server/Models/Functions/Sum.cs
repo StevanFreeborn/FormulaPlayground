@@ -2,6 +2,10 @@ namespace server.Models.Functions;
 
 public class Sum : FunctionBase
 {
+  public Sum(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Sum";
 
   protected override object Function(params object[] arguments)

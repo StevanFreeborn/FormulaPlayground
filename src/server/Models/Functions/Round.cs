@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class Round : FunctionBase
 {
+  public Round(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Round";
 
   protected override object Function(params object[] arguments)

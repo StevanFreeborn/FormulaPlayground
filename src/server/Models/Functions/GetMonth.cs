@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class GetMonth : FunctionBase
 {
+  public GetMonth(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetMonth";
 
   protected override object Function(params object[] arguments)

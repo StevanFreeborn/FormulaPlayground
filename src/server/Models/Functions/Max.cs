@@ -2,6 +2,10 @@ namespace server.Models.Functions;
 
 public class Max : FunctionBase
 {
+  public Max(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Max";
 
   protected override object Function(params object[] arguments)

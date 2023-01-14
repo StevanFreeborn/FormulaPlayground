@@ -2,6 +2,10 @@ namespace server.Models.Functions;
 
 public class Average : FunctionBase
 {
+  public Average(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Average";
 
   protected override object Function(params object[] arguments)

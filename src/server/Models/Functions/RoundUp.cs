@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class RoundUp : FunctionBase
 {
+  public RoundUp(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "RoundUp";
 
   protected override object Function(params object[] arguments)

@@ -5,6 +5,10 @@ namespace server.Models.Functions;
 
 public class DateDiff : FunctionBase
 {
+  public DateDiff(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "DateDiff";
 
   protected override object Function(params object[] arguments)

@@ -18,8 +18,6 @@ public class JintFormulaService : IFormulaService
     cfg
     .AllowClr()
     .LocalTimeZone(TimeZoneInfo.Utc));
-    LoadScripts();
-    SetFunctions();
     _parserOptions = new ParserOptions
     {
       Tolerant = true,
@@ -61,10 +59,12 @@ public class JintFormulaService : IFormulaService
 
   private string GetParsedFormula(string formula, FormulaContext formulaContext)
   {
+    LoadScripts();
+    SetFunctions(formulaContext);
     var fieldTokens = FormulaParser.GetFieldTokens(formula);
     var listTokens = FormulaParser.GetListTokens(formula);
     FormulaParser.ValidateTokens(fieldTokens, listTokens, formulaContext);
-    var parsedFormula = FormulaParser.ReplaceTokensWithValidVariableNames(formula, fieldTokens, listTokens);
+    var parsedFormula = FormulaParser.ReplaceTokensWithValidVariableNames(formula, fieldTokens, listTokens, formulaContext);
     var tokenVariableToValueMap = FormulaParser.GetVariableToValueMap(fieldTokens, listTokens, formulaContext);
     SetTokenVariableValues(tokenVariableToValueMap);
     return parsedFormula;
@@ -91,7 +91,7 @@ public class JintFormulaService : IFormulaService
     }
   }
 
-  private void SetFunctions()
+  private void SetFunctions(FormulaContext context)
   {
     var functionType = typeof(FunctionBase);
     var functions = Assembly
@@ -102,7 +102,7 @@ public class JintFormulaService : IFormulaService
 
     foreach(var function in functions)
     {
-      var instance = Activator.CreateInstance(function) as FunctionBase;
+      var instance = Activator.CreateInstance(function, context) as FunctionBase;
       var nameFunctionPair = instance.GetNameFunctionPair();
       _engine.SetValue(nameFunctionPair.Key, nameFunctionPair.Value);
     }

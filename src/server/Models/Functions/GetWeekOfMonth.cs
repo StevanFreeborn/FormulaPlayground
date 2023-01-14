@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class GetWeekOfMonth : FunctionBase
 {
+  public GetWeekOfMonth(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetWeekOfMonth";
 
   protected override object Function(params object[] arguments)

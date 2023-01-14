@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 public class Len : FunctionBase
 {
+  public Len(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Len";
 
   protected override object Function(params object[] arguments)

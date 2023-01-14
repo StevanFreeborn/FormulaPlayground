@@ -1,4 +1,5 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class FormatDate : FunctionBase
@@ -25,6 +26,10 @@ public class FormatDate : FunctionBase
     { "{:t}", "t" },
     { "{:tt}", "tt" },
   };
+
+  public FormatDate(FormulaContext context) : base(context)
+  {
+  }
 
   protected override string Name => "FormatDate";
 

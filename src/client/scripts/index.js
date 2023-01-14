@@ -344,7 +344,7 @@ const state = {
       apiKey: this.apiKeyInput.value,
       appId: this.appInput.value ? this.appInput.value : 0,
       recordId: this.recordInput.value ? this.recordInput.value : 0,
-      formula: this.editorView.state.doc.toJSON().join(''),
+      formula: this.editorView.state.doc.toJSON().join('\n'),
       timezone: this.timezoneInput.value,
     }
   },

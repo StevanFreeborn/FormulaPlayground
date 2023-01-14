@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class IsToday : FunctionBase
 {
+  public IsToday(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "IsToday";
 
   protected override object Function(params object[] arguments)

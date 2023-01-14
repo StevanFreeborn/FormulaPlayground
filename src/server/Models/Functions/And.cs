@@ -4,6 +4,10 @@ namespace server.Models.Functions;
 
 class And : FunctionBase
 {
+  public And(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "And";
 
   protected override object Function(params object[] arguments)

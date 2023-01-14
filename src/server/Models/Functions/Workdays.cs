@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class Workdays : FunctionBase
 {
+  public Workdays(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "Workdays";
 
   protected override object Function(params object[] arguments)

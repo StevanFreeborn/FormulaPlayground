@@ -1,10 +1,15 @@
 using Esprima;
 using Onspring.API.SDK.Enums;
 using Onspring.API.SDK.Models;
+using server.Models;
 using server.Models.Functions;
 
 public class GetNextFutureDateBySpan : FunctionBase
 {
+  public GetNextFutureDateBySpan(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "GetNextFutureDateBySpan";
 
   protected override object Function(params object[] arguments)

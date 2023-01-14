@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class IsCurrentYear : FunctionBase
 {
+  public IsCurrentYear(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "IsCurrentYear";
 
   protected override object Function(params object[] arguments)

@@ -1,8 +1,13 @@
 using Esprima;
+using server.Models;
 using server.Models.Functions;
 
 public class IsWithinNextDays : FunctionBase
 {
+  public IsWithinNextDays(FormulaContext context) : base(context)
+  {
+  }
+
   protected override string Name => "IsWithinNextDays";
 
   protected override object Function(params object[] arguments)
