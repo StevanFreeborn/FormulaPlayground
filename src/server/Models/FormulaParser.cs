@@ -16,22 +16,42 @@ public class FormulaParser
   private static readonly Regex listTokenRegex = new Regex(@"\[:(.+?)\]");
   private static readonly Regex invalidNameCharactersRegex = new Regex(@"(\s|\+|-|\*|/|=|>|<|>=|<=|&|\||%|!|\^|\(|\))");
 
+  private static readonly Regex funcRegex = new Regex(@"(?:ListNum)\(.*\)");
+
+  public static List<string> GetFunctionParameterFieldTokens(string formula)
+  {
+    var funcMatches = funcRegex.Matches(formula).Select(funcMatch => funcMatch.Value).ToList();
+    var fieldTokens = new List<string>();
+
+    foreach (var funcMatch in funcMatches)
+    {
+      var fieldTokenMatches = fieldTokenRegex.Matches(funcMatch).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
+      fieldTokens.AddRange(fieldTokenMatches);
+    }
+
+    return fieldTokens.Distinct().ToList();
+  }
+
   public static List<string> GetFieldTokens(string formula)
   {
-    return fieldTokenRegex.Matches(formula).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
+    return fieldTokenRegex.Matches(formula).Select(fieldTokenMatch => fieldTokenMatch.Value).Distinct().ToList();
   }
 
   public static List<string> GetListTokens(string formula)
   {
-    return listTokenRegex.Matches(formula).Select(listTokenMatch => listTokenMatch.Value).ToList();
+    return listTokenRegex.Matches(formula).Select(listTokenMatch => listTokenMatch.Value).Distinct().ToList();
   }
 
-  public static void ValidateTokens(List<string> fieldTokens, List<string> listTokens, FormulaContext formulaContext)
+  public static void ValidateTokens(List<string> functionFieldTokens, List<string> fieldTokens, List<string> listTokens, FormulaContext formulaContext)
   {
     var exceptions = new List<Exception>();
+    var combinedFieldTokens = new List<string>();
+    combinedFieldTokens.AddRange(functionFieldTokens);
+    combinedFieldTokens.AddRange(fieldTokens);
+    var uniqueFieldTokens = combinedFieldTokens.Distinct().ToList();
     try
     {
-      ValidateFieldTokens(fieldTokens, formulaContext.Fields);
+      ValidateFieldTokens(uniqueFieldTokens, formulaContext.Fields);
     }
     catch (Exception e) when (e is AggregateException)
     {
@@ -53,8 +73,13 @@ public class FormulaParser
     }
   }
 
-  public static string ReplaceTokensWithValidVariableNames(string formula, List<string> fieldTokens, List<string> listTokens)
+  public static string ReplaceTokensWithValidVariableNames(string formula, List<string> functionFieldTokens, List<string> fieldTokens, List<string> listTokens)
   {
+    foreach (var functionFieldToken in functionFieldTokens)
+    {
+      var validFieldParameterVariable = ConvertFunctionFieldTokenToValidVariableName(functionFieldToken);
+      formula = formula.Replace(functionFieldToken, validFieldParameterVariable);
+    }
     foreach (var fieldToken in fieldTokens)
     {
       var validFieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
@@ -68,9 +93,17 @@ public class FormulaParser
     return formula;
   }
 
-  public static Dictionary<string, object> GetVariableToValueMap(List<string> fieldTokens, List<string> listTokens, FormulaContext context)
+  public static Dictionary<string, object> GetVariableToValueMap(List<string> functionFieldTokens, List<string> fieldTokens, List<string> listTokens, FormulaContext context)
   {
     var dict = new Dictionary<string, object>();
+    foreach (var functionFieldToken in functionFieldTokens)
+    {
+      var functionFieldVariable = ConvertFunctionFieldTokenToValidVariableName(functionFieldToken);
+      var fieldName = GetFieldNameFromFieldToken(functionFieldToken);
+      var field = context.Fields.First(f => f.Name == fieldName);
+      var variableValue = field.Id;
+      dict.Add(functionFieldVariable, variableValue);
+    }
     foreach (var fieldToken in fieldTokens)
     {
       var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken);
@@ -88,19 +121,13 @@ public class FormulaParser
         variableValue = GetMultiSelectListAsString(field, variableValueAsList);
       }
 
-      if(dict.ContainsKey(fieldVariable) is false)
-      {
-        dict.Add(fieldVariable, variableValue);
-      }
+      dict.Add(fieldVariable, variableValue);
     }
     foreach (var listToken in listTokens)
     {
       var listVariable = ConvertListTokenToValidVariableName(listToken);
       var listName = GetListNameFromListToken(listToken);
-      if (dict.ContainsKey(listVariable) is false)
-      {
-        dict.Add(listVariable, listName);
-      }
+      dict.Add(listVariable, listName);
     }
 
     return dict;
@@ -121,6 +148,13 @@ public class FormulaParser
   {
     var listField = field as ListField;
     return listField.Values.FirstOrDefault(v => v.Id == listValueId).Name;
+  }
+
+  private static string ConvertFunctionFieldTokenToValidVariableName(string functionFieldToken)
+  {
+    var fieldName = GetFieldNameFromFieldToken(functionFieldToken);
+    var validFieldName = invalidNameCharactersRegex.Replace(fieldName, "_");
+    return "fn" + validFieldName + "_";
   }
 
   private static string ConvertFieldTokenToValidVariableName(string fieldToken)

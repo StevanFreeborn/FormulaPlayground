@@ -78,4 +78,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'WorkdaysUntil', type: FunctionTypes.date, snippet: 'WorkdaysUntil(date)' },
   { name: 'Count', type: FunctionTypes.other, snippet: 'Count(reference_or_array)' },
   { name: 'IsEmpty', type: FunctionTypes.other, snippet: 'IsEmpty(value)' },
+  { name: 'ListNum', type: FunctionTypes.other, snippet: 'ListNum(list_field)' },
 ];

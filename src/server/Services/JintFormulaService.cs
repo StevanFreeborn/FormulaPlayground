@@ -61,11 +61,12 @@ public class JintFormulaService : IFormulaService
   {
     LoadScripts();
     SetFunctions(formulaContext);
+    var functionParameterFieldTokens = FormulaParser.GetFunctionParameterFieldTokens(formula);
     var fieldTokens = FormulaParser.GetFieldTokens(formula);
     var listTokens = FormulaParser.GetListTokens(formula);
-    FormulaParser.ValidateTokens(fieldTokens, listTokens, formulaContext);
-    var parsedFormula = FormulaParser.ReplaceTokensWithValidVariableNames(formula, fieldTokens, listTokens);
-    var tokenVariableToValueMap = FormulaParser.GetVariableToValueMap(fieldTokens, listTokens, formulaContext);
+    FormulaParser.ValidateTokens(functionParameterFieldTokens, fieldTokens, listTokens, formulaContext);
+    var parsedFormula = FormulaParser.ReplaceTokensWithValidVariableNames(formula, functionParameterFieldTokens, fieldTokens, listTokens);
+    var tokenVariableToValueMap = FormulaParser.GetVariableToValueMap(functionParameterFieldTokens, fieldTokens, listTokens, formulaContext);
     SetTokenVariableValues(tokenVariableToValueMap);
     return parsedFormula;
   }
