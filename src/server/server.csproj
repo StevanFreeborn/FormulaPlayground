@@ -8,15 +8,21 @@
 
   <ItemGroup>
     <PackageReference Include="Jint" Version="3.0.0-beta-2044" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
-    <PackageReference Include="Onspring.API.SDK" Version="4.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include=".\Models\Functions\Scripts\**">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Onspring.API.SDK">
+      <HintPath>..\..\..\onspring-api-sdk\Onspring.API.SDK\bin\Debug\netstandard2.1\Onspring.API.SDK.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

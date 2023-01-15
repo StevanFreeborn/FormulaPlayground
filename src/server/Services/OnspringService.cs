@@ -9,11 +9,11 @@ namespace server.Services;
 public class OnspringService : IOnspringService
 {
   private readonly string _baseUrl = "https://api.onspring.com";
-  private readonly ILogger<OnspringService> _logger;
+  // private readonly ILogger<OnspringService> _logger;
 
-  public OnspringService(ILogger<OnspringService> logger)
+  public OnspringService()
   {
-    _logger = logger;
+    // _logger = logger;
   }
 
   public async Task<List<App>> GetApps(string apiKey)
@@ -73,15 +73,6 @@ public class OnspringService : IOnspringService
       totalPages = response.Value.TotalPages;
     } while (currentPage <= totalPages);
 
-    fields = fields.FindAll(field =>
-      field.Type is FieldType.Number ||
-      field.Type is FieldType.AutoNumber ||
-      field.Type is FieldType.Date ||
-      field.Type is FieldType.Text ||
-      field.Type is FieldType.List ||
-      field.Type is FieldType.Formula ||
-      field.Type is FieldType.TimeSpan);
-
     return fields;
   }
 
@@ -100,6 +91,7 @@ public class OnspringService : IOnspringService
 
       context.Fields.AddRange(fields);
       context.FieldValues.AddRange(fieldValues);
+      context.ApiKey = apiKey;
     }
 
     return context;

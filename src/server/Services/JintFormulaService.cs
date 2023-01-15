@@ -25,13 +25,13 @@ public class JintFormulaService : IFormulaService
     };
   }
 
-  public FormulaRunResult RunFormula(string formula, FormulaContext formulaContext)
+  public async Task<FormulaRunResult> RunFormula(string formula, FormulaContext formulaContext)
   {
     var result = new FormulaRunResult();
     
     try
     {
-      var parsedFormula = GetParsedFormula(formula, formulaContext);
+      var parsedFormula = await GetParsedFormula(formula, formulaContext);
       var engineResult = _engine.Evaluate(parsedFormula, _parserOptions).ToObject();
       result.Value = FormulaProcessor.GetResultAsString(engineResult, formulaContext.InstanceTimezone);
     }
@@ -42,12 +42,12 @@ public class JintFormulaService : IFormulaService
     return result;
   }
 
-  public FormulaValidationResult ValidateFormula(string formula, FormulaContext formulaContext)
+  public async Task<FormulaValidationResult> ValidateFormula(string formula, FormulaContext formulaContext)
   {
     var result = new FormulaValidationResult();
     try
     {
-      var parsedFormula = GetParsedFormula(formula, formulaContext);
+      var parsedFormula = await GetParsedFormula(formula, formulaContext);
       _engine.Execute(parsedFormula);
     }
     catch (Exception e) when (e is JavaScriptException || e is ParserException || e is AggregateException)
@@ -57,14 +57,14 @@ public class JintFormulaService : IFormulaService
     return result;
   }
 
-  private string GetParsedFormula(string formula, FormulaContext formulaContext)
+  private async Task<string> GetParsedFormula(string formula, FormulaContext formulaContext)
   {
     LoadScripts();
     SetFunctions(formulaContext);
     var functionParameterFieldTokens = FormulaParser.GetFunctionParameterFieldTokens(formula, formulaContext);
     var fieldTokens = FormulaParser.GetFieldTokens(formula);
     var listTokens = FormulaParser.GetListTokens(formula);
-    FormulaParser.ValidateTokens(functionParameterFieldTokens, fieldTokens, listTokens, formulaContext);
+    await FormulaParser.ValidateTokens(functionParameterFieldTokens, fieldTokens, listTokens, formulaContext);
     var parsedFormula = FormulaParser.ReplaceTokensWithValidVariableNames(formula, functionParameterFieldTokens, fieldTokens, listTokens);
     var tokenVariableToValueMap = FormulaParser.GetVariableToValueMap(functionParameterFieldTokens, fieldTokens, listTokens, formulaContext);
     SetTokenVariableValues(tokenVariableToValueMap);

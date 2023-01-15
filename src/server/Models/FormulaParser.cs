@@ -4,6 +4,7 @@ using Jint;
 using Onspring.API.SDK.Enums;
 using Onspring.API.SDK.Models;
 using server.Extensions;
+using server.Services;
 
 namespace server.Models;
 
@@ -51,7 +52,7 @@ public class FormulaParser
     return listTokenRegex.Matches(formula).Select(listTokenMatch => listTokenMatch.Value).Distinct().ToList();
   }
 
-  public static void ValidateTokens(List<string> functionFieldTokens, List<string> fieldTokens, List<string> listTokens, FormulaContext formulaContext)
+  public static async Task ValidateTokens(List<string> functionFieldTokens, List<string> fieldTokens, List<string> listTokens, FormulaContext formulaContext)
   {
     var exceptions = new List<Exception>();
     var combinedFieldTokens = new List<string>();
@@ -60,7 +61,7 @@ public class FormulaParser
     var uniqueFieldTokens = combinedFieldTokens.Distinct().ToList();
     try
     {
-      ValidateFieldTokens(uniqueFieldTokens, formulaContext.Fields);
+      await ValidateFieldTokens(uniqueFieldTokens, formulaContext);
     }
     catch (Exception e) when (e is AggregateException)
     {
@@ -184,13 +185,27 @@ public class FormulaParser
     return "$$" + validListName + "$";
   }
 
-  private static void ValidateFieldTokens(List<string> fieldTokens, List<Field> fields)
+  private static async Task ValidateFieldTokens(List<string> fieldTokens, FormulaContext context)
   {
     var exceptions = new List<Exception>();
     foreach (var fieldToken in fieldTokens)
     {
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
-      var field = fields.FirstOrDefault(f => f.Name == fieldName);
+      var referenceChain = fieldName.Split("::").ToList();
+      var isReferenceChain = referenceChain.Count > 1;
+      
+      if (isReferenceChain is true)
+      {
+        var referenceChainException = await ValidateReferenceChain(referenceChain, context);
+        if (referenceChainException is not null)
+        {
+          exceptions.Add(referenceChainException);
+        }
+        continue;
+      }
+
+      var field = context.Fields.FirstOrDefault(f => f.Name == fieldName);
+
       if (field is null)
       {
         var exception = new ParserException($"'{fieldName}' was not recongized as a valid field.");
@@ -201,6 +216,38 @@ public class FormulaParser
     {
       throw new AggregateException("field token errors", exceptions);
     }
+  }
+
+  private static async Task<Exception> ValidateReferenceChain(List<string> referenceChain, FormulaContext context)
+  {
+    var referenceFieldName = referenceChain[0];
+    var referencedFieldName = referenceChain[1];
+    var referenceField = context.Fields.FirstOrDefault(field => field.Name == referenceFieldName) as ReferenceField;
+
+    if (referenceField is null || referenceField.Type is not FieldType.Reference or FieldType.SurveyReference)
+    {
+      return new ParserException($"'{referenceFieldName}' was not recognized as a valid field in the '{String.Join("::", referenceChain)}' field reference.");
+    }
+
+    var onspringService = new OnspringService();
+    var referencedAppId = referenceField.ReferencedAppId;
+    var referencedAppFields = await onspringService.GetFields(context.ApiKey, referencedAppId);
+    var referencedField = referencedAppFields.FirstOrDefault(field => field.Name == referencedFieldName);
+
+    if (referencedField is null)
+    {
+      return new ParserException($"'{referencedFieldName}' was not recognized as a valid field in the '{String.Join("::", referenceChain)}' field reference.");
+    }
+
+    var newChain = referenceChain.Skip(1).ToList();
+
+    if (referenceField.Type is FieldType.Reference or FieldType.SurveyReference && newChain.Count > 1)
+    {
+      context.Fields.Add(referencedField);
+      await ValidateReferenceChain(referenceChain.Skip(1).ToList(), context);
+    }
+
+    return null;
   }
 
   private static void ValidateListTokens(List<string> listTokens, List<string> fieldTokens, List<Field> fields)

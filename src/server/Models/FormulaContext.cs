@@ -4,6 +4,7 @@ namespace server.Models;
 
 public class FormulaContext
 {
+  public String ApiKey { get; set; } = "";
   public TimeZoneInfo InstanceTimezone { get; set; } = TimeZoneInfo.Utc;
 
   public List<Field> Fields { get; set; } = new List<Field>();
@@ -15,10 +16,11 @@ public class FormulaContext
   {
   }
 
-  public FormulaContext(List<Field> fields, List<RecordFieldValue> fieldValues, TimeZoneInfo timezone)
+  public FormulaContext(List<Field> fields, List<RecordFieldValue> fieldValues, TimeZoneInfo timezone, String apiKey)
   {
     Fields = fields;
     FieldValues = fieldValues;
     InstanceTimezone = timezone;
+    ApiKey = apiKey;
   }
 }

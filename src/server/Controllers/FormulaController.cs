@@ -30,7 +30,7 @@ public class FormulaController : ControllerBase
     try
     {
       var formulaContext = await _onspringService.GetFormulaContext(apiKey, request.Timezone, request.AppId, request.RecordId);
-      var validationResult = _formulaService.ValidateFormula(request.Formula, formulaContext);
+      var validationResult = await _formulaService.ValidateFormula(request.Formula, formulaContext);
       
       if (validationResult.IsValid is false) 
       {
@@ -60,7 +60,7 @@ public class FormulaController : ControllerBase
     try
     {
       var formulaContext = await _onspringService.GetFormulaContext(apiKey, request.Timezone, request.AppId, request.RecordId);
-      var runResult = _formulaService.RunFormula(request.Formula, formulaContext);
+      var runResult = await _formulaService.RunFormula(request.Formula, formulaContext);
       response.Result = runResult.Value;
 
       if (runResult.IsValid is false)
@@ -75,6 +75,7 @@ public class FormulaController : ControllerBase
     catch (Exception e)
     {
       Console.WriteLine(e);
+      Console.WriteLine(e.Data["OnspringResponse"]);
       response.Errors.Add("Failed to run formula.");
       return StatusCode(500, response);
     }
