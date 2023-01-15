@@ -69,7 +69,7 @@ public class FormulaParser
     }
     try
     {
-      ValidateListTokens(listTokens, formulaContext.Fields);
+      ValidateListTokens(listTokens, uniqueFieldTokens, formulaContext.Fields);
     }
     catch (Exception e) when (e is AggregateException)
     {
@@ -203,11 +203,12 @@ public class FormulaParser
     }
   }
 
-  private static void ValidateListTokens(List<string> listTokens, List<Field> fields)
+  private static void ValidateListTokens(List<string> listTokens, List<string> fieldTokens, List<Field> fields)
   {
     var exceptions = new List<Exception>();
+    var fieldNames = fieldTokens.Select(fieldToken => GetFieldNameFromFieldToken(fieldToken)).ToList();
     var listValues = fields
-    .Where(f => f.Type == FieldType.List)
+    .Where(f => f.Type == FieldType.List && fieldNames.Contains(f.Name))
     .Select(f => f as ListField)
     .SelectMany(f => f.Values)
     .ToList();

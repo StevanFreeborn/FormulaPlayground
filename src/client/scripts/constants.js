@@ -79,4 +79,5 @@ export const CUSTOM_FUNCTIONS = [
   { name: 'Count', type: FunctionTypes.other, snippet: 'Count(reference_or_array)' },
   { name: 'IsEmpty', type: FunctionTypes.other, snippet: 'IsEmpty(value)' },
   { name: 'ListNum', type: FunctionTypes.other, snippet: 'ListNum(list_field)' },
+  { name: 'ListContains', type: FunctionTypes.other, snippet: 'ListContains(list_field, list_value1, list_value2, ...)' },
 ];
