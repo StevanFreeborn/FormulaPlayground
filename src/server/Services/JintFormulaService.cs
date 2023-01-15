@@ -61,7 +61,7 @@ public class JintFormulaService : IFormulaService
   {
     LoadScripts();
     SetFunctions(formulaContext);
-    var functionParameterFieldTokens = FormulaParser.GetFunctionParameterFieldTokens(formula);
+    var functionParameterFieldTokens = FormulaParser.GetFunctionParameterFieldTokens(formula, formulaContext);
     var fieldTokens = FormulaParser.GetFieldTokens(formula);
     var listTokens = FormulaParser.GetListTokens(formula);
     FormulaParser.ValidateTokens(functionParameterFieldTokens, fieldTokens, listTokens, formulaContext);

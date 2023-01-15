@@ -3,6 +3,7 @@ using Esprima;
 using Jint;
 using Onspring.API.SDK.Enums;
 using Onspring.API.SDK.Models;
+using server.Extensions;
 
 namespace server.Models;
 
@@ -16,9 +17,9 @@ public class FormulaParser
   private static readonly Regex listTokenRegex = new Regex(@"\[:(.+?)\]");
   private static readonly Regex invalidNameCharactersRegex = new Regex(@"(\s|\+|-|\*|/|=|>|<|>=|<=|&|\||%|!|\^|\(|\))");
 
-  private static readonly Regex funcRegex = new Regex(@"(?:ListNum)\(.*\)");
+  private static readonly Regex funcRegex = new Regex(@"(ListNum|DateAddSpan|DateSubtractSpan|GetNextFutureDateBySpan)\(.*\)");
 
-  public static List<string> GetFunctionParameterFieldTokens(string formula)
+  public static List<string> GetFunctionParameterFieldTokens(string formula, FormulaContext context)
   {
     var funcMatches = funcRegex.Matches(formula).Select(funcMatch => funcMatch.Value).ToList();
     var fieldTokens = new List<string>();
@@ -26,7 +27,15 @@ public class FormulaParser
     foreach (var funcMatch in funcMatches)
     {
       var fieldTokenMatches = fieldTokenRegex.Matches(funcMatch).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
-      fieldTokens.AddRange(fieldTokenMatches);
+      foreach (var fieldTokenMatch in fieldTokenMatches)
+      {
+        var fieldName = GetFieldNameFromFieldToken(fieldTokenMatch);
+        var field = context.Fields.FirstOrDefault(field => field.Name == fieldName);
+        if (field is not null && field.Type is FieldType.List or FieldType.TimeSpan)
+        {
+          fieldTokens.Add(fieldTokenMatch);
+        }
+      }
     }
 
     return fieldTokens.Distinct().ToList();
@@ -119,6 +128,10 @@ public class FormulaParser
       {
         var variableValueAsList = variableValue as List<Guid>;
         variableValue = GetMultiSelectListAsString(field, variableValueAsList);
+      }
+      if (variableValue is TimeSpanData timeSpanData)
+      {
+        variableValue = timeSpanData.GetAsString();
       }
 
       dict.Add(fieldVariable, variableValue);

@@ -15,7 +15,14 @@ public class DateAddSpan : FunctionBase
   protected override object Function(params object[] arguments)
   {
     var date = ArgumentHelper.GetArgByIndex(arguments, 0);
-    var timespan = ArgumentHelper.GetArgByIndex(arguments, 1);
+    var timespanFieldId = ArgumentHelper.GetArgByIndex(arguments, 1);
+    var isInt = ArgumentHelper.TryParseToType(timespanFieldId, out int timespanFieldIdAsInt);
+    var timespanField = Context
+    .Fields
+    .FirstOrDefault(
+      field => field.Id == timespanFieldIdAsInt && 
+      field.Type is FieldType.TimeSpan
+    );
     
     if (
       ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false
@@ -24,30 +31,33 @@ public class DateAddSpan : FunctionBase
       throw new ParserException("DateAddSpan() takes a date, a timespan.");
     }
 
-    if (
-      ArgumentHelper.TryParseToType(timespan, out TimeSpanData timespanAsTimeSpanData) is false
-    )
+    if (isInt is false || timespanField is null)
     {
       throw new ParserException("The second parameter to DateAddSpan() does not appear to be a timespan.");
     }
 
-    switch (timespanAsTimeSpanData.Increment)
+    var timespanData = Context
+    .FieldValues
+    .FirstOrDefault(fieldValue => fieldValue.FieldId == timespanFieldIdAsInt)
+    .AsTimeSpanData();
+
+    switch (timespanData.Increment)
     {
       case TimeSpanIncrement.Years:
-        return dateAsDateTime.AddYears((int) timespanAsTimeSpanData.Quantity);
+        return dateAsDateTime.AddYears((int) timespanData.Quantity);
       case TimeSpanIncrement.Months:
-        return dateAsDateTime.AddMonths((int) timespanAsTimeSpanData.Quantity);
+        return dateAsDateTime.AddMonths((int) timespanData.Quantity);
       case TimeSpanIncrement.Weeks:
-        return dateAsDateTime.AddDays((double) timespanAsTimeSpanData.Quantity * 7);
+        return dateAsDateTime.AddDays((double) timespanData.Quantity * 7);
       case TimeSpanIncrement.Days:
-        return dateAsDateTime.AddDays((double) timespanAsTimeSpanData.Quantity);
+        return dateAsDateTime.AddDays((double) timespanData.Quantity);
       case TimeSpanIncrement.Hours:
-        return dateAsDateTime.AddHours((double) timespanAsTimeSpanData.Quantity);
+        return dateAsDateTime.AddHours((double) timespanData.Quantity);
       case TimeSpanIncrement.Minutes:
-        return dateAsDateTime.AddMinutes((double) timespanAsTimeSpanData.Quantity);
+        return dateAsDateTime.AddMinutes((double) timespanData.Quantity);
       case TimeSpanIncrement.Seconds:
       default:
-        return dateAsDateTime.AddSeconds((double) timespanAsTimeSpanData.Quantity);
+        return dateAsDateTime.AddSeconds((double) timespanData.Quantity);
     }
   }
 }
