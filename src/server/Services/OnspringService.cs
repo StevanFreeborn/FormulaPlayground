@@ -92,6 +92,7 @@ public class OnspringService : IOnspringService
       context.Fields.AddRange(fields);
       context.FieldValues.AddRange(fieldValues);
       context.ApiKey = apiKey;
+      context.PrimaryAppId = appId;
     }
 
     return context;
