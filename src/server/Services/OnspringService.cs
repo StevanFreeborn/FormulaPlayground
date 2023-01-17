@@ -73,7 +73,9 @@ public class OnspringService : IOnspringService
       totalPages = response.Value.TotalPages;
     } while (currentPage <= totalPages);
 
-    var filteredFields = fields.Where(field => field.Type is not FieldType.Attachment or FieldType.Image).ToList();
+    var filteredFields = fields
+    .Where(field => field.Type is not FieldType.Attachment or FieldType.Image or FieldType.SurveyDelegation)
+    .ToList();
 
     return filteredFields;
   }

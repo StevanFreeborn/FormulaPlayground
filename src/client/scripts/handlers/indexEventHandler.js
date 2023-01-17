@@ -92,13 +92,15 @@ export default class IndexEventHandler {
   };
 
   handleFieldsListClick = e => {
-    if (e.target.id == 'fieldsPlaceHolder') {
-      return;
+    if (e.target.classList.contains('field-name') == true) {
+      this.state.insertFieldToken(e.target.innerText);
+      this.state.hideFieldsModal();
+      this.state.focusOnEditor();
     }
 
-    this.state.insertFieldToken(e.target.innerText);
-    this.state.hideFieldsModal();
-    this.state.focusOnEditor();
+    if(e.target.classList.contains('caret') == true) {
+      e.target.classList.toggle('caret-expand');
+    }
   };
 
   handleOperatorListClick = e => {

@@ -224,3 +224,19 @@
 #validationModalTitle {
   font-size: 14px;
 }
+
+.caret {
+  cursor: pointer;
+  user-select: none;
+}
+
+.caret::before {
+  content: url(../images/caret-right-fill.svg);
+  color: black;
+  display: inline-block;
+  margin-right: 0.25em;
+}
+
+.caret-expand::before {
+  transform: rotate(45deg);
+}

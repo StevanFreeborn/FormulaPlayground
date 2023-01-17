@@ -3,6 +3,7 @@ import Events from './events.js';
 import IndexEventHandler from './handlers/indexEventHandler.js';
 import { CUSTOM_FUNCTIONS, OPERATORS } from './constants.js';
 import OperatorTypes from './operatorTypes.js';
+import FieldTypes from './fieldTypes.js';
 
 const state = {
   timezoneInput: document.getElementById('timezone'),
@@ -203,14 +204,23 @@ const state = {
     const placeHolder = document.createElement('li');
     placeHolder.id = 'fieldsPlaceHolder';
     placeHolder.innerText = 'No fields yet retrieved.';
+    placeHolder.classList.add('px-3');
     this.fieldsList.append(placeHolder);
   },
   addFieldListItem(field) {
     const fieldElement = document.createElement('li');
+    fieldElement.classList.add('px-3')
     const fieldNameElement = document.createElement('span');
     fieldNameElement.innerText = field.name;
-
     fieldNameElement.classList.add('field-name');
+
+    if (field.type == FieldTypes.Reference) {
+      const expandElement = document.createElement('span');
+      expandElement.classList.add('caret');
+      fieldElement.classList.remove('px-3');
+      fieldElement.append(expandElement);
+    }
+
     fieldElement.append(fieldNameElement);
     this.fieldsList.append(fieldElement);
   },
