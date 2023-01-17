@@ -20,11 +20,15 @@ public partial class DateAdd : FunctionBase
     if (
       ArgumentHelper.TryParseToType(date, out DateTime dateAsDateTime) is false ||
       ArgumentHelper.TryParseToType(number, out int numberAsInt) is false ||
-      ArgumentHelper.TryParseToType(format, out string formatAsString) is false ||
-      Enum.IsDefined(typeof(FormatOptions), formatAsString) is false
+      ArgumentHelper.TryParseToType(format, out string formatAsString) is false
     )
     {
       throw new ParserException(@"DateAdd() takes a date, a number, and a format string. Use ""y"" for years, ""M"" for months, ""w"" for weeks, ""wd"" for work days, ""d"" for days, ""h"" for hours, ""m"" for minutes, ""s"" for seconds");
+    }
+
+    if (Enum.IsDefined(typeof(FormatOptions), formatAsString) is false)
+    {
+      throw new ParserException(@"Incorrect format for DateAdd() function. Use ""y"" for years, ""M"" for months, ""w"" for weeks, ""wd"" for work days, ""d"" for days, ""h"" for hours, ""m"" for minutes, ""s"" for seconds");
     }
 
     var formatAsFormatOption = Enum.Parse(typeof(FormatOptions), formatAsString);

@@ -110,7 +110,7 @@ public class FormulaParser
     {
       var functionFieldVariable = ConvertFunctionFieldTokenToValidVariableName(functionFieldToken, context);
       var fieldName = GetFieldNameFromFieldToken(functionFieldToken);
-      var field = context.Fields.First(f => f.Name == fieldName);
+      var field = GetFieldFromFieldName(fieldName, context);
       var variableValue = field.Id;
       dict.Add(functionFieldVariable, variableValue);
     }
@@ -118,24 +118,28 @@ public class FormulaParser
     {
       var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken, context);
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
-      var field = context.Fields.First(f => f.Name == fieldName);
-      var variableValue = context.FieldValues.FirstOrDefault(fv => fv.FieldId == field.Id).GetValue();
-      if (variableValue is Guid?)
+      var field = GetFieldFromFieldName(fieldName, context);
+      var recordValues = context
+      .FieldValues
+      .Where(fv => fv.FieldId == field.Id).ToList();
+
+      if (recordValues.Count is 0)
       {
-        var variableValueAsGuid = variableValue as Guid?;
-        variableValue = GetListValueName(field, variableValueAsGuid);
-      }
-      if (variableValue is List<Guid>)
-      {
-        var variableValueAsList = variableValue as List<Guid>;
-        variableValue = GetMultiSelectListAsString(field, variableValueAsList);
-      }
-      if (variableValue is TimeSpanData timeSpanData)
-      {
-        variableValue = timeSpanData.GetAsString();
+        dict.Add(fieldVariable, null);
+        continue;
       }
 
-      dict.Add(fieldVariable, variableValue);
+      var variableValues = recordValues
+      .Select(fv => GetRecordValuesVariableValue(fv, field))
+      .ToArray();
+
+      if (variableValues.Length is 1)
+      {
+        dict.Add(fieldVariable, variableValues[0]);
+        continue;
+      }
+
+      dict.Add(fieldVariable, variableValues);
     }
     foreach (var listToken in listTokens)
     {
@@ -145,6 +149,30 @@ public class FormulaParser
     }
 
     return dict;
+  }
+
+  private static object GetRecordValuesVariableValue(RecordFieldValue recordFieldValue, Field field)
+  {
+    var variableValue = recordFieldValue.GetValue();
+    if (variableValue is Guid?)
+    {
+      var variableValueAsGuid = variableValue as Guid?;
+      variableValue = GetListValueName(field, variableValueAsGuid);
+    }
+    if (variableValue is List<Guid>)
+    {
+      var variableValueAsList = variableValue as List<Guid>;
+      variableValue = GetMultiSelectListAsString(field, variableValueAsList);
+    }
+    if (variableValue is TimeSpanData timeSpanData)
+    {
+      variableValue = timeSpanData.GetAsString();
+    }
+    if (variableValue is List<int> ints)
+    {
+      variableValue = ints.ToArray();
+    }
+    return variableValue;
   }
 
   private static string GetMultiSelectListAsString(Field field, List<Guid> fieldValue)
@@ -167,15 +195,17 @@ public class FormulaParser
   private static string ConvertFunctionFieldTokenToValidVariableName(string functionFieldToken, FormulaContext context)
   {
     var fieldName = GetFieldNameFromFieldToken(functionFieldToken);
-    var validFieldName = invalidNameCharactersRegex.Replace(fieldName, "_");
-    return "fn" + validFieldName + "_";
+    var field = GetFieldFromFieldName(fieldName, context);
+    var validFieldName = invalidNameCharactersRegex.Replace(field.Name, "_");
+    return "fn" + validFieldName + "_" + field.Id;
   }
 
   private static string ConvertFieldTokenToValidVariableName(string fieldToken, FormulaContext context)
   {
     var fieldName = GetFieldNameFromFieldToken(fieldToken);
-    var validFieldName = invalidNameCharactersRegex.Replace(fieldName, "_");
-    return "__" + validFieldName + "_";
+    var field = GetFieldFromFieldName(fieldName, context);
+    var validFieldName = invalidNameCharactersRegex.Replace(field.Name, "_");
+    return "__" + validFieldName + "_" + field.Id;
   }
 
   private static string ConvertListTokenToValidVariableName(string listToken)
@@ -188,9 +218,12 @@ public class FormulaParser
   private static async Task ValidateFieldTokens(List<string> fieldTokens, FormulaContext context)
   {
     var exceptions = new List<Exception>();
+    
     foreach (var fieldToken in fieldTokens)
     {
-      if (IsReferenceChain(fieldToken, out List<string> referenceChain) is true)
+      var fieldName = GetFieldNameFromFieldToken(fieldToken);
+
+      if (IsReferenceChain(fieldName, out List<string> referenceChain) is true)
       {
         var referenceChainException = await ValidateReferenceChain(referenceChain, context);
         if (referenceChainException is not null)
@@ -200,7 +233,6 @@ public class FormulaParser
         continue;
       }
 
-      var fieldName = GetFieldNameFromFieldToken(fieldToken);
       var field = context.Fields.FirstOrDefault(field => field.Name == fieldName);
 
       if (field is null)
@@ -227,6 +259,22 @@ public class FormulaParser
     }
 
     var onspringService = new OnspringService();
+    var referenceFieldValue = context.FieldValues.FirstOrDefault(fieldValue => fieldValue.FieldId == referenceField.Id).GetValue();
+    var referenceFieldRecordIds = new List<int>();
+    
+    if (referenceFieldValue is int?)
+    {
+      var recordId = referenceFieldValue as int?;
+      if (recordId.HasValue)
+      {
+        referenceFieldRecordIds.Add(recordId.Value);
+      }
+    }
+    if (referenceFieldValue is List<int> recordIds)
+    {
+      referenceFieldRecordIds.AddRange(recordIds);
+    }
+
     var referencedAppId = referenceField.ReferencedAppId;
     var referencedAppFields = await onspringService.GetFields(context.ApiKey, referencedAppId);
     var referencedField = referencedAppFields.FirstOrDefault(field => field.Name == referencedFieldName);
@@ -234,6 +282,17 @@ public class FormulaParser
     if (referencedField is null)
     {
       return new ParserException($"'{referencedFieldName}' was not recognized as a valid field in the '{String.Join("::", referenceChain)}' field reference.");
+    }
+
+    context.Fields.Add(referencedField);
+
+    foreach(var recordId in referenceFieldRecordIds)
+    {
+      var recordValue = await onspringService.GetRecordFieldValue(context.ApiKey, referencedAppId, recordId, referencedField.Id);
+      if (recordValue is not null)
+      {
+        context.FieldValues.Add(recordValue);
+      }
     }
 
     var newChain = referenceChain.Skip(1).ToList();
@@ -272,6 +331,33 @@ public class FormulaParser
     }
   }
 
+  private static Field GetFieldFromFieldName(string fieldName, FormulaContext context)
+  {
+    if (IsReferenceChain(fieldName, out List<string> referenceChain) is false)
+    {
+      var name = referenceChain[0];
+      return context.Fields.FirstOrDefault(field => field.Name == name);
+    }
+
+    return GetLastFieldInReferenceChain(referenceChain, context);
+  }
+
+  private static Field GetLastFieldInReferenceChain(List<string> referenceChain, FormulaContext context)
+  {
+    var referenceFieldName = referenceChain[0];
+    var referencedFieldName = referenceChain[1];
+    var referenceField = context.Fields.FirstOrDefault(field => field.Name == referenceFieldName && field.AppId == context.PrimaryAppId) as ReferenceField;
+    var referencedField = context.Fields.FirstOrDefault(field => field.Name == referencedFieldName && field.AppId == referenceField.ReferencedAppId);
+    var newChain = referenceChain.Skip(1).ToList();
+    
+    if (newChain.Count > 1)
+    {
+      return GetLastFieldInReferenceChain(newChain, context);
+    }
+
+    return referencedField;
+  }
+
   private static string GetListNameFromListToken(string listToken)
   {
     var startOffset = listTokenStart.Length;
@@ -286,9 +372,9 @@ public class FormulaParser
     return fieldToken.Substring(startOffset, fieldToken.Length - lengthOffset);
   }
 
-  private static bool IsReferenceChain(string fieldToken, out List<string> referenceChain)
+  private static bool IsReferenceChain(string fieldName, out List<string> referenceChain)
   {
-    referenceChain = fieldToken.Split("::").ToList();
+    referenceChain = fieldName.Split("::").ToList();
     if (referenceChain.Count > 1)
     {
       return true;

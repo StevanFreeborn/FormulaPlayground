@@ -73,7 +73,9 @@ public class OnspringService : IOnspringService
       totalPages = response.Value.TotalPages;
     } while (currentPage <= totalPages);
 
-    return fields;
+    var filteredFields = fields.Where(field => field.Type is not FieldType.Attachment or FieldType.Image).ToList();
+
+    return filteredFields;
   }
 
   public async Task<FormulaContext> GetFormulaContext(string apiKey, string timezone, int appId, int recordId)
@@ -96,6 +98,12 @@ public class OnspringService : IOnspringService
     }
 
     return context;
+  }
+
+  public async Task<RecordFieldValue> GetRecordFieldValue(string apiKey, int appId, int recordId, int fieldId)
+  {
+    var recordFieldValues = await GetRecordFieldValues(apiKey, appId, recordId);
+    return recordFieldValues.FirstOrDefault(fieldValue => fieldValue.FieldId == fieldId);
   }
 
   private async Task<List<RecordFieldValue>> GetRecordFieldValues(string apiKey, int appId, int recordId)
