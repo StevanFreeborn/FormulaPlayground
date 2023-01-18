@@ -98,7 +98,8 @@ export default class IndexEventHandler {
       this.state.hideFieldsModal();
       this.state.focusOnEditor();
     }
-
+    
+    // TODO: Refactor into smaller methods
     if (e.target.classList.contains('caret') == true) {
       const fieldElement = e.target.closest('li');
       const fieldId = fieldElement.getAttribute('data-field-id');

@@ -297,6 +297,8 @@ const state = {
     functionListElements.forEach(functionListElement =>
       this.hideFunctionListElement(functionListElement, nameFilter, typeFilter)
     );
+
+    // TODO: check to see if any type of functions have been completely filtered out and if so hide the corresponding button.
   },
   insertFunctionSnippet(snippet) {
     const transaction = this.editorView.state.replaceSelection(snippet);

@@ -20,6 +20,7 @@ public class FormulaParser
 
   private static readonly Regex funcRegex = new Regex(@"(ListNum|DateAddSpan|DateSubtractSpan|GetNextFutureDateBySpan)\(.*\)");
 
+  // TODO: Look at how this class could be better organized or methods further refined
   public static List<string> GetFunctionParameterFieldTokens(string formula, FormulaContext context)
   {
     var funcMatches = funcRegex.Matches(formula).Select(funcMatch => funcMatch.Value).ToList();
