@@ -240,3 +240,25 @@
 .caret-expand::before {
   transform: rotate(45deg);
 }
+
+.loading::before {
+  content: url(../images/spinner-solid.svg);
+  color: black;
+  display: inline-block;
+  margin-right: 0.25em;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.sub-list {
+  margin: 0 0 0 0.75em;
+}

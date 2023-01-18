@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Onspring.API.SDK.Models;
 using server.Services;
 
 namespace server.Controllers;
@@ -17,6 +18,7 @@ public class AppsController : ControllerBase
   }
 
   [HttpGet]
+  [ProducesResponseType(typeof(App), StatusCodes.Status200OK)]
   public async Task<IActionResult> GetApps([FromHeader(Name = "x-apikey")] string apiKey)
   {
     if (String.IsNullOrWhiteSpace(apiKey)) {

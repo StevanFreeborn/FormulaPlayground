@@ -15,8 +15,21 @@ public class GetNextFutureDateBySpan : FunctionBase
   protected override object Function(params object[] arguments)
   {
     var date = ArgumentHelper.GetArgByIndex(arguments, 0);
-    var timespanFieldId = ArgumentHelper.GetArgByIndex(arguments, 1);
-    var isInt = ArgumentHelper.TryParseToType(timespanFieldId, out int timespanFieldIdAsInt);
+    var fieldIds = ArgumentHelper.GetArgByIndex(arguments, 1);
+    var isString = ArgumentHelper.TryParseToType(fieldIds, out string fieldIdsAsString);
+    var fieldIdsAsInt = fieldIdsAsString
+    .Split(",")
+    .Where(id => int.TryParse(id, out var result) is true)
+    .Select(id => int.Parse(id)).ToList();
+
+    var multiRefFields = Context
+    .Fields
+    .Where(field => fieldIdsAsInt.Contains(field.Id) && field.Type is FieldType.Reference)
+    .Select(field => field as ReferenceField)
+    .Where(field => field.Multiplicity is Multiplicity.MultiSelect)
+    .ToList();
+
+    var timespanFieldIdAsInt = fieldIdsAsInt.Count > 0 ? fieldIdsAsInt.Last() : 0;
     var timespanField = Context
     .Fields
     .FirstOrDefault(
@@ -31,7 +44,7 @@ public class GetNextFutureDateBySpan : FunctionBase
       throw new ParserException("GetNextFutureDateBySpan() takes a date, a timespan.");
     }
 
-    if (isInt is false || timespanField is null)
+    if (isString is false || timespanField is null || multiRefFields.Count > 0)
     {
       throw new ParserException("The second parameter to GetNextFutureDateBySpan() does not appear to be a timespan.");
     }

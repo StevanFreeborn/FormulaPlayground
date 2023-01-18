@@ -30,12 +30,7 @@ public class FormulaParser
       var fieldTokenMatches = fieldTokenRegex.Matches(funcMatch).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
       foreach (var fieldTokenMatch in fieldTokenMatches)
       {
-        var fieldName = GetFieldNameFromFieldToken(fieldTokenMatch);
-        var field = context.Fields.FirstOrDefault(field => field.Name == fieldName);
-        if (field is not null && field.Type is FieldType.List or FieldType.TimeSpan)
-        {
-          fieldTokens.Add(fieldTokenMatch);
-        }
+        fieldTokens.Add(fieldTokenMatch);
       }
     }
 
@@ -111,7 +106,15 @@ public class FormulaParser
       var functionFieldVariable = ConvertFunctionFieldTokenToValidVariableName(functionFieldToken, context);
       var fieldName = GetFieldNameFromFieldToken(functionFieldToken);
       var field = GetFieldFromFieldName(fieldName, context);
-      var variableValue = field.Id;
+      
+      if (field.Type is FieldType.List or FieldType.TimeSpan)
+      {
+        var ids = GetFieldIdsAsString(fieldName, context);
+        dict.Add(functionFieldVariable, ids);
+        continue;
+      }
+
+      var variableValue = GetVariableValue(field, context);
       dict.Add(functionFieldVariable, variableValue);
     }
     foreach (var fieldToken in fieldTokens)
@@ -119,27 +122,8 @@ public class FormulaParser
       var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken, context);
       var fieldName = GetFieldNameFromFieldToken(fieldToken);
       var field = GetFieldFromFieldName(fieldName, context);
-      var recordValues = context
-      .FieldValues
-      .Where(fv => fv.FieldId == field.Id).ToList();
-
-      if (recordValues.Count is 0)
-      {
-        dict.Add(fieldVariable, null);
-        continue;
-      }
-
-      var variableValues = recordValues
-      .Select(fv => GetRecordValuesVariableValue(fv, field))
-      .ToArray();
-
-      if (variableValues.Length is 1)
-      {
-        dict.Add(fieldVariable, variableValues[0]);
-        continue;
-      }
-
-      dict.Add(fieldVariable, variableValues);
+      var variableValue = GetVariableValue(field, context);
+      dict.Add(fieldVariable, variableValue);
     }
     foreach (var listToken in listTokens)
     {
@@ -149,6 +133,29 @@ public class FormulaParser
     }
 
     return dict;
+  }
+
+  private static object GetVariableValue(Field field, FormulaContext context)
+  {
+    var recordValues = context
+      .FieldValues
+      .Where(fv => fv.FieldId == field.Id).ToList();
+
+    if (recordValues.Count is 0)
+    {
+      return null;
+    }
+
+    var variableValues = recordValues
+    .Select(fv => GetRecordValuesVariableValue(fv, field))
+    .ToArray();
+
+    if (variableValues.Length is 1)
+    {
+      return variableValues[0];
+    }
+
+    return variableValues;
   }
 
   private static object GetRecordValuesVariableValue(RecordFieldValue recordFieldValue, Field field)
@@ -339,20 +346,61 @@ public class FormulaParser
       return context.Fields.FirstOrDefault(field => field.Name == name);
     }
 
-    return GetLastFieldInReferenceChain(referenceChain, context);
+    return GetLastFieldInReferenceChain(referenceChain, context, context.PrimaryAppId);
   }
 
-  private static Field GetLastFieldInReferenceChain(List<string> referenceChain, FormulaContext context)
+  private static string GetFieldIdsAsString(string fieldName, FormulaContext context)
+  {
+    if (IsReferenceChain(fieldName, out List<string> referenceChain) is false)
+    {
+      var name = referenceChain[0];
+      return context.Fields.FirstOrDefault(field => field.Name == name).Id.ToString();
+    }
+
+    return GetReferenceChainAsStringOfIds(referenceChain, context, context.PrimaryAppId, new List<int>());
+  }
+
+  private static string GetReferenceChainAsStringOfIds(List<string> referenceChain, FormulaContext context, int currentApp, List<int> ids)
+  {
+    var fieldIds = new List<int>();
+    fieldIds.AddRange(ids);
+    
+    var referenceFieldName = referenceChain[0];
+    var referencedFieldName = referenceChain[1];
+    var referenceField = context.Fields.FirstOrDefault(field => field.Name == referenceFieldName && field.AppId == currentApp) as ReferenceField;
+    var referencedField = context.Fields.FirstOrDefault(field => field.Name == referencedFieldName && field.AppId == referenceField.ReferencedAppId);
+    
+    if (referenceField is not null)
+    {
+      fieldIds.Add(referenceField.Id);
+    }
+
+    if (referencedField is not null)
+    {
+      fieldIds.Add(referencedField.Id);
+    }
+
+    var newChain = referenceChain.Skip(1).ToList();
+    
+    if (newChain.Count > 1)
+    {
+      return GetReferenceChainAsStringOfIds(newChain, context, referenceField.ReferencedAppId, fieldIds);
+    }
+
+    return String.Join(",", fieldIds);
+  }
+
+  private static Field GetLastFieldInReferenceChain(List<string> referenceChain, FormulaContext context, int currentApp)
   {
     var referenceFieldName = referenceChain[0];
     var referencedFieldName = referenceChain[1];
-    var referenceField = context.Fields.FirstOrDefault(field => field.Name == referenceFieldName && field.AppId == context.PrimaryAppId) as ReferenceField;
+    var referenceField = context.Fields.FirstOrDefault(field => field.Name == referenceFieldName && field.AppId == currentApp) as ReferenceField;
     var referencedField = context.Fields.FirstOrDefault(field => field.Name == referencedFieldName && field.AppId == referenceField.ReferencedAppId);
     var newChain = referenceChain.Skip(1).ToList();
     
     if (newChain.Count > 1)
     {
-      return GetLastFieldInReferenceChain(newChain, context);
+      return GetLastFieldInReferenceChain(newChain, context, referenceField.ReferencedAppId);
     }
 
     return referencedField;

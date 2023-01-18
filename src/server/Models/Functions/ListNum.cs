@@ -1,4 +1,5 @@
 using Esprima;
+using Onspring.API.SDK.Enums;
 using Onspring.API.SDK.Models;
 using server.Models;
 using server.Models.Functions;
@@ -13,8 +14,21 @@ public class ListNum : FunctionBase
 
   protected override object Function(params object[] arguments)
   {
-    var listFieldId = ArgumentHelper.GetArgByIndex(arguments, 0);
-    var isInt = ArgumentHelper.TryParseToType(listFieldId, out int listFieldIdAsInt);
+    var fieldIds = ArgumentHelper.GetArgByIndex(arguments, 0);
+    var isString = ArgumentHelper.TryParseToType(fieldIds, out string fieldIdsAsString);
+    var fieldIdsAsInt = fieldIdsAsString
+    .Split(",")
+    .Where(id => int.TryParse(id, out var result) is true)
+    .Select(id => int.Parse(id)).ToList();
+
+    var multiRefFields = Context
+    .Fields
+    .Where(field => fieldIdsAsInt.Contains(field.Id) && field.Type is FieldType.Reference)
+    .Select(field => field as ReferenceField)
+    .Where(field => field.Multiplicity is Multiplicity.MultiSelect)
+    .ToList();
+
+    var listFieldIdAsInt = fieldIdsAsInt.Count > 0 ? fieldIdsAsInt.Last() : 0;
     var listField = Context
     .Fields
     .FirstOrDefault(
@@ -22,9 +36,9 @@ public class ListNum : FunctionBase
       field.Type == Onspring.API.SDK.Enums.FieldType.List
     ) as ListField;
 
-    if (isInt is false || listField is null)
+    if (isString is false || listField is null || multiRefFields.Count > 0)
     {
-      throw new ParserException($"{listFieldId} is not a valid list reference");
+      throw new ParserException($"{fieldIdsAsString} is not a valid list reference");
     }
 
     var recordFieldValue = Context

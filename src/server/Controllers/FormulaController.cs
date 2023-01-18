@@ -21,7 +21,7 @@ public class FormulaController : ControllerBase
   }
 
   [HttpPost("validate")]
-  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
   public async Task<ActionResult<ValidateFormulaResult>> ValidateFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] FormulaRequest request)
   {
@@ -51,7 +51,7 @@ public class FormulaController : ControllerBase
   }
 
   [HttpPost("run")]
-  [ProducesResponseType(StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(RunFormulaResult), StatusCodes.Status400BadRequest)]
   public async Task<ActionResult<RunFormulaResult>> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] FormulaRequest request)
   {

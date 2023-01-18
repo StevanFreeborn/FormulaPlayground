@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Services;
 using server.Dtos;
+using Onspring.API.SDK.Enums;
+using Onspring.API.SDK.Models;
 
 namespace server.Controllers;
 
@@ -18,6 +20,7 @@ public class FieldsController : ControllerBase
   }
 
   [HttpPost]
+  [ProducesResponseType(typeof(Field), StatusCodes.Status200OK)]
   public async Task<IActionResult> GetFields([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] GetFieldsRequest request)
   {
     if (String.IsNullOrWhiteSpace(apiKey)) {
@@ -31,7 +34,8 @@ public class FieldsController : ControllerBase
     try
     {
       var fields = await _onspringService.GetFields(apiKey, request.AppId);
-      return Ok(fields);
+      var objs = fields.Select(field => field as Object).ToList();
+      return Ok(objs);
     }
     catch (Exception e)
     {

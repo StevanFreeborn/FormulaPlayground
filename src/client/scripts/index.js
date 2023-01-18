@@ -118,7 +118,7 @@ const state = {
   },
   addAppOption(app) {
     const option = document.createElement('option');
-    option.id = app.id;
+    option.id = `app-${app.id}`;
     option.value = app.id;
     option.text = app.name;
     this.appInput.append(option);
@@ -207,9 +207,13 @@ const state = {
     placeHolder.classList.add('px-3');
     this.fieldsList.append(placeHolder);
   },
-  addFieldListItem(field) {
+  addFieldListItem(field, listElement) {
     const fieldElement = document.createElement('li');
-    fieldElement.classList.add('px-3')
+    fieldElement.classList.add('px-3');
+    fieldElement.id = `field-${field.id}`;
+    fieldElement.setAttribute('data-field-id', field.id);
+    fieldElement.setAttribute('data-field-name', field.name);
+
     const fieldNameElement = document.createElement('span');
     fieldNameElement.innerText = field.name;
     fieldNameElement.classList.add('field-name');
@@ -217,15 +221,16 @@ const state = {
     if (field.type == FieldTypes.Reference) {
       const expandElement = document.createElement('span');
       expandElement.classList.add('caret');
+      expandElement.setAttribute('data-app-id', field.referencedAppId);
       fieldElement.classList.remove('px-3');
       fieldElement.append(expandElement);
     }
 
     fieldElement.append(fieldNameElement);
-    this.fieldsList.append(fieldElement);
+    listElement.append(fieldElement);
   },
-  addFieldListItems(fields) {
-    fields.forEach(field => this.addFieldListItem(field));
+  addFieldListItems(fields, listElement) {
+    fields.forEach(field => this.addFieldListItem(field, listElement));
   },
   insertFieldToken(tokenText) {
     const fieldToken = `{:${tokenText}}`;

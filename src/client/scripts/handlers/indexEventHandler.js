@@ -65,7 +65,7 @@ export default class IndexEventHandler {
 
     const fields = await response.json();
 
-    this.state.addFieldListItems(fields);
+    this.state.addFieldListItems(fields, this.state.fieldsList);
   };
 
   handleFieldsButtonClick = e => {
@@ -91,16 +91,67 @@ export default class IndexEventHandler {
     this.state.filterFieldsList(filterValue);
   };
 
-  handleFieldsListClick = e => {
+  handleFieldsListClick = async e => {
     if (e.target.classList.contains('field-name') == true) {
-      this.state.insertFieldToken(e.target.innerText);
+      const fieldName = this.getFieldName(e.target.parentNode, e.target.innerText);
+      this.state.insertFieldToken(fieldName);
       this.state.hideFieldsModal();
       this.state.focusOnEditor();
     }
 
-    if(e.target.classList.contains('caret') == true) {
+    if (e.target.classList.contains('caret') == true) {
+      const fieldElement = e.target.closest('li');
+      const fieldId = fieldElement.getAttribute('data-field-id');
+      let subFieldsList = document.getElementById(`sub-fields-list-${fieldId}`);
+      const isLoaded = subFieldsList?.getAttribute('isLoaded');
+      
+      if (e.target.classList.contains('caret-expand')) {
+        subFieldsList.style.display = 'none';
+      }
+      else if (isLoaded == 'true') {
+        subFieldsList.style.display = 'block';
+      }
+      else {
+        e.target.classList.remove('caret');
+        e.target.classList.add('loading');
+        
+        const apiKey = this.state.apiKeyInput.value;
+        const appId = e.target.getAttribute('data-app-id');
+        const response = await FieldService.getFields(apiKey, appId);
+        
+        e.target.classList.remove('loading');
+        e.target.classList.add('caret');
+        
+        if (response.ok == false) {
+          return;
+        }
+  
+        const fields = await response.json();
+        const filteredFields = fields.filter(field => field.id != fieldId);
+        subFieldsList = document.createElement('ul');
+        subFieldsList.classList.add('list-unstyled', 'px-2', 'sub-list');
+        subFieldsList.id = `sub-fields-list-${fieldId}`;
+        fieldElement.append(subFieldsList);
+        this.state.addFieldListItems(filteredFields, subFieldsList);
+        subFieldsList.setAttribute('isLoaded', true);
+        const filterValue = this.state.fieldsSearchBox.value.toLowerCase();
+        this.state.filterFieldsList(filterValue);
+      }
+      
       e.target.classList.toggle('caret-expand');
     }
+  };
+
+  getFieldName = (fieldElement, fieldName) => {
+    const parentFieldElement = fieldElement.parentNode.closest('#fieldsList li');
+    
+    if (parentFieldElement == null) {
+      return fieldName;
+    }
+
+    const parentFieldName = parentFieldElement.getAttribute('data-field-name');
+    const name = parentFieldName + '::' + fieldName;
+    return this.getFieldName(parentFieldElement, name);
   };
 
   handleOperatorListClick = e => {
@@ -187,7 +238,7 @@ export default class IndexEventHandler {
       this.state.resetValidationModal();
 
       responseBody.errors.forEach(error => {
-        var errorElement = document.createElement('div');
+        const errorElement = document.createElement('div');
         errorElement.innerText = error;
         this.state.validationModalBody.append(errorElement);
       });
@@ -208,7 +259,7 @@ export default class IndexEventHandler {
     this.state.resetValidationModal();
 
     result.messages.forEach(message => {
-      var messageElement = document.createElement('div');
+      const messageElement = document.createElement('div');
       messageElement.innerText = message;
       this.state.validationModalBody.append(messageElement);
     });
