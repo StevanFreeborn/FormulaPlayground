@@ -29,6 +29,7 @@ public class FormulaParser
     foreach (var funcMatch in funcMatches)
     {
       var fieldTokenMatches = fieldTokenRegex.Matches(funcMatch).Select(fieldTokenMatch => fieldTokenMatch.Value).ToList();
+      
       foreach (var fieldTokenMatch in fieldTokenMatches)
       {
         fieldTokens.Add(fieldTokenMatch);
@@ -52,9 +53,12 @@ public class FormulaParser
   {
     var exceptions = new List<Exception>();
     var combinedFieldTokens = new List<string>();
+
     combinedFieldTokens.AddRange(functionFieldTokens);
     combinedFieldTokens.AddRange(fieldTokens);
+
     var uniqueFieldTokens = combinedFieldTokens.Distinct().ToList();
+
     try
     {
       await ValidateFieldTokens(uniqueFieldTokens, formulaContext);
@@ -64,6 +68,7 @@ public class FormulaParser
       var aggregateException = e as AggregateException;
       exceptions.AddRange(aggregateException.InnerExceptions);
     }
+
     try
     {
       ValidateListTokens(listTokens, uniqueFieldTokens, formulaContext);
@@ -73,6 +78,7 @@ public class FormulaParser
       var aggregateException = e as AggregateException;
       exceptions.AddRange(aggregateException.InnerExceptions);
     }
+
     if (exceptions.Count > 0)
     {
       throw new AggregateException("formula parsing errors", exceptions);
@@ -86,22 +92,26 @@ public class FormulaParser
       var validFieldParameterVariable = ConvertFunctionFieldTokenToValidVariableName(functionFieldToken, context);
       formula = formula.Replace(functionFieldToken, validFieldParameterVariable);
     }
+
     foreach (var fieldToken in fieldTokens)
     {
       var validFieldVariable = ConvertFieldTokenToValidVariableName(fieldToken, context);
       formula = formula.Replace(fieldToken, validFieldVariable);
     }
+
     foreach (var listToken in listTokens)
     {
       var validListVariable = ConvertListTokenToValidVariableName(listToken);
       formula = formula.Replace(listToken, validListVariable);
     }
+
     return formula;
   }
 
   public static Dictionary<string, object> GetVariableToValueMap(List<string> functionFieldTokens, List<string> fieldTokens, List<string> listTokens, FormulaContext context)
   {
     var dict = new Dictionary<string, object>();
+
     foreach (var functionFieldToken in functionFieldTokens)
     {
       var functionFieldVariable = ConvertFunctionFieldTokenToValidVariableName(functionFieldToken, context);
@@ -118,6 +128,7 @@ public class FormulaParser
       var variableValue = GetVariableValue(field, context);
       dict.Add(functionFieldVariable, variableValue);
     }
+
     foreach (var fieldToken in fieldTokens)
     {
       var fieldVariable = ConvertFieldTokenToValidVariableName(fieldToken, context);
@@ -126,6 +137,7 @@ public class FormulaParser
       var variableValue = GetVariableValue(field, context);
       dict.Add(fieldVariable, variableValue);
     }
+
     foreach (var listToken in listTokens)
     {
       var listVariable = ConvertListTokenToValidVariableName(listToken);
@@ -162,35 +174,42 @@ public class FormulaParser
   private static object GetRecordValuesVariableValue(RecordFieldValue recordFieldValue, Field field)
   {
     var variableValue = recordFieldValue.GetValue();
+
     if (variableValue is Guid?)
     {
       var variableValueAsGuid = variableValue as Guid?;
       variableValue = GetListValueName(field, variableValueAsGuid);
     }
+
     if (variableValue is List<Guid>)
     {
       var variableValueAsList = variableValue as List<Guid>;
       variableValue = GetMultiSelectListAsString(field, variableValueAsList);
     }
+
     if (variableValue is TimeSpanData timeSpanData)
     {
       variableValue = timeSpanData.GetAsString();
     }
+
     if (variableValue is List<int> ints)
     {
       variableValue = ints.ToArray();
     }
+
     return variableValue;
   }
 
   private static string GetMultiSelectListAsString(Field field, List<Guid> fieldValue)
   {
     var listNames = new List<string>();
+
     foreach (var value in fieldValue)
     {
       var listName = GetListValueName(field, value);
       listNames.Add(listName);
     }
+
     return String.Join(", ", listNames);
   }
 
@@ -249,6 +268,7 @@ public class FormulaParser
         exceptions.Add(exception);
       }
     }
+
     if (exceptions.Count > 0)
     {
       throw new AggregateException("field token errors", exceptions);
@@ -278,6 +298,7 @@ public class FormulaParser
         referenceFieldRecordIds.Add(recordId.Value);
       }
     }
+
     if (referenceFieldValue is List<int> recordIds)
     {
       referenceFieldRecordIds.AddRange(recordIds);
@@ -339,7 +360,7 @@ public class FormulaParser
         exceptions.Add(exception);
       }
     }
-    
+
     if (exceptions.Count > 0)
     {
       throw new AggregateException("list token errors", exceptions);
@@ -431,10 +452,12 @@ public class FormulaParser
   private static bool IsReferenceChain(string fieldName, out List<string> referenceChain)
   {
     referenceChain = fieldName.Split("::").ToList();
+
     if (referenceChain.Count > 1)
     {
       return true;
     }
+
     return false;
   }
 }
