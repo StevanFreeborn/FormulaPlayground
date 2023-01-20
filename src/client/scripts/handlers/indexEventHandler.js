@@ -100,7 +100,10 @@ export default class IndexEventHandler {
       this.state.focusOnEditor();
     }
     
-    // TODO: Refactor into smaller methods
+    // this could likely be cleaned up
+    // but i think abstracting this routine
+    // into methods might make it more difficult
+    // to read or reason about.
     if (e.target.classList.contains('caret') == true) {
       const fieldElement = e.target.closest('li');
       const fieldId = fieldElement.getAttribute('data-field-id');
