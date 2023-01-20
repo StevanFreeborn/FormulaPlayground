@@ -66,7 +66,7 @@ public class FormulaParser
     }
     try
     {
-      ValidateListTokens(listTokens, uniqueFieldTokens, formulaContext.Fields);
+      ValidateListTokens(listTokens, uniqueFieldTokens, formulaContext);
     }
     catch (Exception e) when (e is AggregateException)
     {
@@ -314,15 +314,21 @@ public class FormulaParser
     return null;
   }
 
-  private static void ValidateListTokens(List<string> listTokens, List<string> fieldTokens, List<Field> fields)
+  private static void ValidateListTokens(List<string> listTokens, List<string> fieldTokens, FormulaContext context)
   {
     var exceptions = new List<Exception>();
-    var fieldNames = fieldTokens.Select(fieldToken => GetFieldNameFromFieldToken(fieldToken)).ToList();
-    var listValues = fields
-    .Where(f => f.Type == FieldType.List && fieldNames.Contains(f.Name))
+
+    var fields = fieldTokens
+    .Select(fieldToken => GetFieldNameFromFieldToken(fieldToken))
+    .Select(fieldName => GetFieldFromFieldName(fieldName, context))
+    .ToList();
+    
+    var listValues = context.Fields
+    .Where(f => f.Type == FieldType.List)
     .Select(f => f as ListField)
     .SelectMany(f => f.Values)
     .ToList();
+
     foreach (var listToken in listTokens)
     {
       var listName = GetListNameFromListToken(listToken);
@@ -333,6 +339,7 @@ public class FormulaParser
         exceptions.Add(exception);
       }
     }
+    
     if (exceptions.Count > 0)
     {
       throw new AggregateException("list token errors", exceptions);
