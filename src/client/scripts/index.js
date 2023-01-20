@@ -4,6 +4,8 @@ import IndexEventHandler from './handlers/indexEventHandler.js';
 import { CUSTOM_FUNCTIONS, OPERATORS } from './constants.js';
 import OperatorTypes from './operatorTypes.js';
 import FieldTypes from './fieldTypes.js';
+import FunctionTypes from './functionTypes.js';
+import { keymap } from '@codemirror/view';
 
 const state = {
   timezoneInput: document.getElementById('timezone'),
@@ -26,7 +28,7 @@ const state = {
   functionsButton: document.getElementById('functionsButton'),
   functionsModal: document.getElementById('functionsModal'),
   functionsSearchBox: document.getElementById('functionsSearchBox'),
-  functionTabButtons: document.getElementsByClassName('fn-type-btn'),
+  functionTabButtons: document.querySelectorAll('.fn-type-btn'),
   functionsList: document.getElementById('functionsList'),
   editorView: Editor.setup(document.getElementById('editor')),
   runFormulaButton: document.getElementById('runFormulaButton'),
@@ -275,12 +277,12 @@ const state = {
   getActiveFunctionTab() {
     return document.querySelector('.fn-type-btn.active');
   },
-  hideFunctionListElement(element, nameFilter, typeFilter) {
+  hideFunctionListElement(element, nameFilter, typeFilter = FunctionTypes.all) {
     const elementText = element.innerText.toLowerCase();
     const elementType = element.getAttribute('data-type');
 
     const isNameMatch = elementText.includes(nameFilter.toLowerCase());
-    const isTypeMatch = elementType == typeFilter || typeFilter == 'all';
+    const isTypeMatch = elementType == typeFilter || typeFilter == FunctionTypes.all;
 
     if (isNameMatch && isTypeMatch) {
       element.style.display = '';
@@ -297,8 +299,32 @@ const state = {
     functionListElements.forEach(functionListElement =>
       this.hideFunctionListElement(functionListElement, nameFilter, typeFilter)
     );
+  },
+  filterFunctionButtons(){
+    this.functionTabButtons.forEach(button => {
+      var type = button.getAttribute('data-type');
+      var count = type == FunctionTypes.all 
+      ? this.getCountOfDisplayedFunctions()
+      : this.getCountOfDisplayedFunctionsByType(type);
 
-    // TODO: check to see if any type of functions have been completely filtered out and if so hide the corresponding button.
+      if (count == 0) {
+        button.style.display = 'none';
+      } 
+      else {
+        button.style.display = '';
+      }
+    });
+  },
+  getCountOfDisplayedFunctions() {
+    var functions = this.functionsList.querySelectorAll('.function');
+    return [...functions].filter(fn => fn.style.display != 'none').length;
+  },
+  getCountOfDisplayedFunctionsByType(type) {
+    var functions = this.functionsList.querySelectorAll(
+      `li[data-type="${type}"]`
+    );
+
+    return [...functions].filter(fn => fn.style.display != 'none').length;
   },
   insertFunctionSnippet(snippet) {
     const transaction = this.editorView.state.replaceSelection(snippet);

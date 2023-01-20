@@ -4,4 +4,5 @@ export default class FunctionTypes {
   static logical = 'logical';
   static date = 'date';
   static other = 'other';
+  static all = 'all';
 }

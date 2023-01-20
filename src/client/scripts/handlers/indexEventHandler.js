@@ -1,3 +1,4 @@
+import FunctionTypes from '../functionTypes.js';
 import AppService from '../services/appService.js';
 import FieldService from '../services/fieldService.js';
 import FormulaService from '../services/formulaService.js';
@@ -129,12 +130,15 @@ export default class IndexEventHandler {
   
         const fields = await response.json();
         const filteredFields = fields.filter(field => field.id != fieldId);
+
         subFieldsList = document.createElement('ul');
         subFieldsList.classList.add('list-unstyled', 'px-2', 'sub-list');
         subFieldsList.id = `sub-fields-list-${fieldId}`;
         fieldElement.append(subFieldsList);
+
         this.state.addFieldListItems(filteredFields, subFieldsList);
         subFieldsList.setAttribute('isLoaded', true);
+
         const filterValue = this.state.fieldsSearchBox.value.toLowerCase();
         this.state.filterFieldsList(filterValue);
       }
@@ -173,9 +177,8 @@ export default class IndexEventHandler {
 
   handleFnSearchBoxInput = e => {
     const nameFilter = e.currentTarget.value;
-    const activeTab = this.state.getActiveFunctionTab();
-    const typeFilter = activeTab.getAttribute('data-type');
-    this.state.filterFunctionsList(nameFilter, typeFilter);
+    this.state.filterFunctionsList(nameFilter);
+    this.state.filterFunctionButtons();
   };
 
   handleFunctionTabButtonClick = e => {
