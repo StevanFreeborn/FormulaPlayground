@@ -26,7 +26,7 @@ public class FormulaController : ControllerBase
   public async Task<ActionResult<ValidateFormulaResult>> ValidateFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] FormulaRequest request)
   {
     var response = new ValidateFormulaResult();
-    // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
+
     try
     {
       var formulaContext = await _onspringService.GetFormulaContext(apiKey, request.Timezone, request.AppId, request.RecordId);
@@ -56,7 +56,7 @@ public class FormulaController : ControllerBase
   public async Task<ActionResult<RunFormulaResult>> RunFormula([FromHeader(Name = "x-apikey")] string apiKey, [FromBody] FormulaRequest request)
   {
     var response = new RunFormulaResult();
-    // TODO: Need to parse the formula to account for onspring specific tokens and validation issues.
+
     try
     {
       var formulaContext = await _onspringService.GetFormulaContext(apiKey, request.Timezone, request.AppId, request.RecordId);
